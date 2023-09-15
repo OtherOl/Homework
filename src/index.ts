@@ -11,12 +11,12 @@ let videos = [{
     author: "Pilya",
     canBeDownloaded: true,
     createdAt: new Date().toISOString(),
-    publicationDate: new Date(+1).toISOString(),
-    availableResolutions: ["P144"]
+    publicationDate: new Date().toISOString(),
+    availableResolutions:  ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
 }]
 
 app.get('/videos', (req: Request, res: Response) => {
-    res.status(200).send(videos)
+    res.status(200)
 })
 
 app.post('/videos', (req: Request, res: Response) => {
