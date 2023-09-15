@@ -1,15 +1,13 @@
 import express, {Request, Response} from "express";
 import bodyParser from "body-parser";
 
-const currentDay = new Date()
-const dateOne = currentDay.setDate(currentDay.getDate() + 1)
 let videos = [{
     id: +(new Date()),
     title: "Homework",
     author: "Pilya",
     canBeDownloaded: true,
     createdAt: new Date().toISOString(),
-    publicationDate: dateOne.toString(),
+    publicationDate: new Date().toISOString(),
     availableResolutions:  ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
 }]
 
@@ -24,18 +22,18 @@ app.get('/videos', (req: Request, res: Response) => {
 app.post('/videos', (req: Request, res: Response) => {
     const quality = req.body.title
     const name = req.body.author
-    if(!quality || typeof quality !== "string" || quality.length > 40 || !quality.trim()) {
-        res.status(400).send({
-            errorsMessages: [{
-                message: 'Incorrect title',
-                field: 'title'
-            }]
-        })
-    } else if(!name || typeof name !== "string" || name.length > 20 || !name.trim()) {
+    if(!name || typeof name !== "string" || name.length > 20 || !name.trim()) {
         res.status(400).send({
             errorsMessages: [{
                 message: 'Incorrect author',
                 field: 'author'
+            }]
+        })
+    } else if(!quality || typeof quality !== "string" || quality.length > 40 || !quality.trim()) {
+        res.status(400).send({
+            errorsMessages: [{
+                message: 'Incorrect title',
+                field: 'title'
             }]
         })
         return;
@@ -47,8 +45,8 @@ app.post('/videos', (req: Request, res: Response) => {
         author: 'Pilya',
         canBeDownloaded: true,
         createdAt: new Date().toISOString(),
-        publicationDate: dateOne.toString(),
-        availableResolutions: ["P144"]
+        publicationDate: new Date().toISOString(),
+        availableResolutions: req.body.availableResolutions
     }
     videos.push(newVideo)
     res.status(201).send(newVideo)
