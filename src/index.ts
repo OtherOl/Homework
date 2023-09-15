@@ -11,7 +11,7 @@ let videos = [{
     author: "Pilya",
     canBeDownloaded: true,
     createdAt: new Date().toISOString(),
-    publicationDate: new Date().toISOString(),
+    publicationDate: (new Date().toISOString()) + 1,
     availableResolutions: ["P144"]
 }]
 
