@@ -7,7 +7,7 @@ const port = 4000
 app.use(express.json())
 
 app.get('/', (req: Request, res: Response) => {
-    let helloWorld = "Hello, let's talk about our code?"
+    let helloWorld = "Hello, let's start"
     res.send(helloWorld)
 })
 
