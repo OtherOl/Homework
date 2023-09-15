@@ -1,5 +1,6 @@
 import {Request, Response, Router} from "express";
 
+
 let videos = [{
     id: +(new Date()),
     title: "Homework",
@@ -18,11 +19,19 @@ videosRouter.get('/', (req: Request, res: Response) => {
 
 videosRouter.post('/', (req: Request, res: Response) => {
     const quality = req.body.title
+    const name = req.body.author
     if(!quality || typeof quality !== "string" || quality.length > 40 || !quality.trim()) {
         res.status(400).send({
             errorsMessages: [{
                 message: 'Incorrect title',
                 field: 'title'
+            }]
+        })
+    } else if(!name || typeof name !== "string" || name.length > 20 || !name.trim()) {
+        res.status(400).send({
+            errorsMessages: [{
+                message: 'Incorrect author',
+                field: 'author'
             }]
         })
         return;
