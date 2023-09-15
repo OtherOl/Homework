@@ -9,7 +9,7 @@ let videos = [{
     author: "Pilya",
     canBeDownloaded: true,
     createdAt: new Date().toISOString(),
-    publicationDate: dateOne,
+    publicationDate: dateOne.toString(),
     availableResolutions:  ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
 }]
 
@@ -47,7 +47,7 @@ app.post('/videos', (req: Request, res: Response) => {
         author: 'Pilya',
         canBeDownloaded: true,
         createdAt: new Date().toISOString(),
-        publicationDate: dateOne,
+        publicationDate: dateOne.toString(),
         availableResolutions: ["P144"]
     }
     videos.push(newVideo)
