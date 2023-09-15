@@ -10,8 +10,8 @@ let videos = [{
     title: "Homework",
     author: "Pilya",
     canBeDownloaded: true,
-    createdAt: new Date(),
-    publicationDate: new Date(),
+    createdAt: new Date().toISOString(),
+    publicationDate: new Date().toISOString(),
     availableResolutions: ["P144"]
 }]
 
@@ -35,8 +35,8 @@ app.post('/videos', (req: Request, res: Response) => {
         title: req.body.title,
         author: 'Pilya',
         canBeDownloaded: true,
-        createdAt: new Date(),
-        publicationDate: new Date(),
+        createdAt: new Date().toISOString(),
+        publicationDate: new Date().toISOString(),
         availableResolutions: ["P144"]
     }
     videos.push(newVideo)
@@ -77,6 +77,11 @@ app.delete('/videos/:id', (req: Request, res: Response) => {
             res.status(404)
         }
     }
+})
+
+app.delete('/testing/all-data', (req: Request, res: Response) => {
+    videos.splice(0)
+    res.status(204)
 })
 
 const parserMiddleware = bodyParser({})
