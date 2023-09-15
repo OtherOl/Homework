@@ -1,13 +1,15 @@
 import express, {Request, Response} from "express";
 import bodyParser from "body-parser";
 
+const currentDay = new Date()
+const dateOne = currentDay.setDate(currentDay.getDate() + 1)
 let videos = [{
     id: +(new Date()),
     title: "Homework",
     author: "Pilya",
     canBeDownloaded: true,
     createdAt: new Date().toISOString(),
-    publicationDate: new Date().toISOString(),
+    publicationDate: dateOne,
     availableResolutions:  ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
 }]
 
@@ -38,13 +40,14 @@ app.post('/videos', (req: Request, res: Response) => {
         })
         return;
     }
+
     const newVideo = {
         id: +(new Date()),
         title: req.body.title,
         author: 'Pilya',
         canBeDownloaded: true,
         createdAt: new Date().toISOString(),
-        publicationDate: new Date().toISOString(),
+        publicationDate: dateOne,
         availableResolutions: ["P144"]
     }
     videos.push(newVideo)
