@@ -11,7 +11,7 @@ let videos = [{
     author: "Pilya",
     canBeDownloaded: true,
     createdAt: new Date().toISOString(),
-    publicationDate: (new Date().toISOString()) + 1,
+    publicationDate: new Date(+1).toISOString(),
     availableResolutions: ["P144"]
 }]
 
@@ -55,18 +55,20 @@ app.get('/videos/:id', (req: Request, res: Response) => {
 app.put('/videos/:id', (req: Request, res: Response) => {
     let update = videos.find(p => p.id === +(req.params.id))
     if(update) {
-        update.title = req.body.title
-        res.status(204)
-    } else if(!req.body.title || typeof req.body.title !== "string" || req.body.title.length > 40 || !req.body.title.trim()) {
-        res.status(404).send({
-            errorsMessages: [{
-                message: 'Incorrect title',
-                field: 'title'
-            }]
-        })} else {
-        res.status(400)
-    }
-})
+        if(!req.body.title || typeof req.body.title !== "string" || req.body.title.length > 40 || !req.body.title.trim()) {
+            res.status(400).send({
+                errorsMessages: [{
+                    message: 'Incorrect title',
+                    field: 'title'
+                }]
+            })} else if(!update){
+                res.status(404)
+            } else {
+                update.title = req.body.title
+                res.status(204)
+            }
+        }
+    })
 
 app.delete('/videos/:id', (req: Request, res: Response) => {
     for(let i = 0; i < videos.length; i++) {
@@ -79,7 +81,7 @@ app.delete('/videos/:id', (req: Request, res: Response) => {
     }
 })
 
-app.delete('/testing/all-data', (req: Request, res: Response) => {
+app.delete('/videos/testing/all-data', (req: Request, res: Response) => {
     videos.splice(0)
     res.status(204)
 })
