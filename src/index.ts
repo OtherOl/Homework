@@ -42,7 +42,7 @@ app.post('/videos', (req: Request, res: Response) => {
     const newVideo = {
         id: +(new Date()),
         title: req.body.title,
-        author: 'Pilya',
+        author: req.body.author,
         canBeDownloaded: true,
         createdAt: new Date().toISOString(),
         publicationDate: new Date().toISOString(),
@@ -62,20 +62,29 @@ app.get('/videos/:id', (req: Request, res: Response) => {
 })
 
 app.put('/videos/:id', (req: Request, res: Response) => {
-    let update = videos.find(p => p.id === +(req.params.id))
-    if(update) {
-        if(!req.body.title || typeof req.body.title !== "string" || req.body.title.length > 40 || !req.body.title.trim()) {
-            res.status(400).send({
-                errorsMessages: [{
-                    message: 'Incorrect title',
-                    field: 'title'
-                }]
-            })} else if(!update){
-            res.status(404)
-        } else {
-            update.title = req.body.title
-            res.status(204)
-        }
+    if(!req.body.title || typeof req.body.title !== "string" || req.body.title.length > 40 || !req.body.title.trim()) {
+        res.status(400).send({
+            errorsMessages: [{
+                message: 'Incorrect title',
+                field: 'title'
+            }]
+        })}
+    if(typeof req.body.canBeDownloaded !== 'boolean') {
+        res.status(400).send({
+            errorsMessages: [{
+                message: 'Incorrect canBeDownloaded',
+                field: 'canBeDownloaded'
+            }]
+        })
+        return;
+    }
+    const id = +req.params.id
+    const video = videos.find(p => p.id === id)
+    if(video) {
+        video.title = req.body.title
+        res.status(204).send(video)
+    } else {
+        res.send(404)
     }
 })
 
