@@ -16,7 +16,7 @@ const port = 4000
 app.use(express.json())
 
 app.get('/videos', (req: Request, res: Response) => {
-    res.status(200)
+    res.status(200).send(videos)
 })
 
 app.post('/videos', (req: Request, res: Response) => {
