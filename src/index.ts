@@ -1,4 +1,4 @@
-import express from "express";
+import express, {Request, Response} from "express";
 import bodyParser from "body-parser";
 import {videosRouter} from "./routes/videos-router";
 
