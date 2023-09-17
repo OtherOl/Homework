@@ -5,7 +5,8 @@ let videos = [{
     id: +(new Date()),
     title: "Homework",
     author: "Pilya",
-    canBeDownloaded: true,
+    canBeDownloaded: false,
+    minAgeRestriction: null,
     createdAt: new Date().toISOString(),
     publicationDate: new Date((date1.setDate(date1.getDate() + 1))).toISOString(),
     availableResolutions:  ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
@@ -29,7 +30,8 @@ app.post('/videos', (req: Request, res: Response) => {
                 field: 'author'
             }]
         })
-    } else if(!quality || typeof quality !== "string" || quality.length > 40 || !quality.trim()) {
+    }
+    if(!quality || typeof quality !== "string" || quality.length > 40 || !quality.trim()) {
         res.status(400).send({
             errorsMessages: [{
                 message: 'Incorrect title',
@@ -46,6 +48,7 @@ app.post('/videos', (req: Request, res: Response) => {
         title: req.body.title,
         author: req.body.author,
         canBeDownloaded: false,
+        minAgeRestriction: null,
         createdAt: date.toISOString(),
         publicationDate: new Date((date.setDate(date.getDate() + 1))).toISOString(),
         availableResolutions: req.body.availableResolutions,
