@@ -97,7 +97,7 @@ app.put('/videos/:id', (req: Request, res: Response) => {
             field: 'title'
         })
     }
-    if (!req.body.author || typeof req.body.author !== "string" || req.body.author.length > 20 || req.body.author.trim()) {
+    if (!req.body.author || typeof req.body.author !== "string" || req.body.author.length > 20 || !req.body.author.trim()) {
         errors.errorsMessages.push({
             message: 'Incorrect author',
             field: 'author'
@@ -115,7 +115,7 @@ app.put('/videos/:id', (req: Request, res: Response) => {
             title: 'minAgeRestriction'
         })
     }
-    if (req.body.publicationDate < new Date() || req.body.publicationDate !== "number") {
+    if (req.body.publicationDate < new Date()) {
         errors.errorsMessages.push({
             message: 'Incorrect publicationDate',
             field: 'publicationDate'
