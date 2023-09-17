@@ -109,7 +109,7 @@ app.put('/videos/:id', (req: Request, res: Response) => {
             field: 'canBeDownloaded'
         })
     }
-    if (typeof req.body.minAgeRestriction !== "number") { // number || 1 <= mAR <= 18
+    if (typeof req.body.minAgeRestriction !== "number" || req.body.minAgeRestriction > 18 || req.body.minAgeRestriction < 1) { // number || 1 <= mAR <= 18
         errors.errorsMessages.push({
             message: 'Incorrect minAgeRestriction',
             title: 'minAgeRestriction'
