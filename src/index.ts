@@ -1,13 +1,13 @@
 import express, {Request, Response} from "express";
 import bodyParser from "body-parser";
-
+const date1 = new Date()
 let videos = [{
     id: +(new Date()),
     title: "Homework",
     author: "Pilya",
     canBeDownloaded: true,
     createdAt: new Date().toISOString(),
-    publicationDate: new Date().toISOString(),
+    publicationDate: new Date((date1.setDate(date1.getDate() + 1))).toISOString(),
     availableResolutions:  ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
 }]
 
