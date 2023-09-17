@@ -20,8 +20,9 @@ let videos = [{
     minAgeRestriction: null,
     createdAt: new Date().toISOString(),
     publicationDate: new Date().toISOString(),
-    availableResolutions: ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
+    availableResolutions: AvailableResolutionsEnum
 }]
+// ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
 // new Date((date1.setDate(date1.getDate() + 1))).toISOString()
 const app = express()
 const port = 4000
@@ -159,8 +160,13 @@ app.delete('/videos/:id', (req: Request, res: Response) => {
 })
 
 app.delete('/videos/testing/all-data', (req: Request, res: Response) => {
-    videos.splice(0)
-    res.status(204)
+    if(videos.length > -1) {
+        videos.splice(0)
+        res.status(204)
+    } else {
+        res.status(404)
+    }
+
 })
 
 const parserMiddleware = bodyParser({})
