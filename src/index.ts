@@ -1,15 +1,26 @@
 import express, {Request, Response} from "express";
 import bodyParser from "body-parser";
+
 const date1 = new Date()
+enum AvailableResolutionsEnum {
+    P144 = 'P144',
+    P240 = 'P240',
+    P360 = 'P360',
+    P480 = 'P480',
+    P720 = 'P720',
+    P1080 = 'P1080',
+    P1440 = 'P1440',
+    P2160 = 'P2160'
+}
 let videos = [{
     id: Number(date1),
-    title: "Homework",
-    author: "Pilya",
+    title: "",
+    author: "",
     canBeDownloaded: false,
     minAgeRestriction: null,
     createdAt: new Date().toISOString(),
     publicationDate: new Date().toISOString(),
-    availableResolutions:  ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
+    availableResolutions: ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
 }]
 // new Date((date1.setDate(date1.getDate() + 1))).toISOString()
 const app = express()
@@ -48,6 +59,13 @@ app.post('/videos', (req: Request, res: Response) => {
         errors.errorsMessages.push({
             message: 'Incorrect title',
             field: 'title'
+        })
+    }
+    const resolution = req.body.availableResolutions in AvailableResolutionsEnum
+    if(!resolution) {
+        errors.errorsMessages.push({
+            message: 'Incorrect vailableResolutions',
+            field: 'vailableResolutions'
         })
     }
     if(errors.errorsMessages.length) {
@@ -93,7 +111,7 @@ app.put('/videos/:id', (req: Request, res: Response) => {
         // })
         errors.errorsMessages.push({
             message: 'Incorrect title',
-            field: 'title'
+             field: 'title'
         })
     }
     if(typeof req.body.canBeDownloaded !== 'boolean') {
@@ -105,7 +123,13 @@ app.put('/videos/:id', (req: Request, res: Response) => {
         // })
         errors.errorsMessages.push({
             message: 'Incorrect canBeDownloaded',
-            field: 'canBeDownloaded'
+             field: 'canBeDownloaded'
+        })
+    }
+    if(typeof req.body.minAgeRestriction !== null) {
+        errors.errorsMessages.push({
+            message: 'Incorrect minAgeRestriction',
+             title: 'minAgeRestriction'
         })
     }
     if(errors.errorsMessages.length) {
