@@ -1,7 +1,5 @@
 import express, {Request, Response} from "express";
-import bodyParser from "body-parser";
 
-const date1 = new Date()
 enum AvailableResolutionsEnum {
     P144 = 'P144',
     P240 = 'P240',
@@ -12,8 +10,9 @@ enum AvailableResolutionsEnum {
     P1440 = 'P1440',
     P2160 = 'P2160'
 }
+
 let videos = [{
-    id: Number(date1),
+    id: 1,
     title: "",
     author: "",
     canBeDownloaded: false,
@@ -22,8 +21,7 @@ let videos = [{
     publicationDate: new Date().toISOString(),
     availableResolutions: AvailableResolutionsEnum
 }]
-// ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
-// new Date((date1.setDate(date1.getDate() + 1))).toISOString()
+
 const app = express()
 const port = 4000
 app.use(express.json())
@@ -35,41 +33,30 @@ app.get('/videos', (req: Request, res: Response) => {
 app.post('/videos', (req: Request, res: Response) => {
     const quality = req.body.title
     const name = req.body.author
+    const availableResolutions = req.body.availableResolutions
     let errors: any = {
         errorsMessages: []
     }
-    if(!name || typeof name !== "string" || name.length > 20 || !name.trim()) {
-        // res.status(400).send({
-        //     errorsMessages: [{
-        //         message: 'Incorrect author',
-        //         field: 'author'
-        //     }]
-        // })
+    if (!name || typeof name !== "string" || name.length > 20 || !name.trim()) {
         errors.errorsMessages.push({
             message: 'Incorrect author',
             field: 'author'
         })
     }
-    if(!quality || typeof quality !== "string" || quality.length > 40 || !quality.trim()) {
-        // res.status(400).send({
-        //     errorsMessages: [{
-        //         message: 'Incorrect title',
-        //         field: 'title'
-        //     }]
-        // })
+    if (!quality || typeof quality !== "string" || quality.length > 40 || !quality.trim()) {
         errors.errorsMessages.push({
             message: 'Incorrect title',
             field: 'title'
         })
     }
-    const resolution = req.body.availableResolutions in AvailableResolutionsEnum
-    if(!resolution) {
+    if (!availableResolutions || !Array.isArray(availableResolutions) || !availableResolutions.every(e => Object.values(AvailableResolutionsEnum).includes(e))) {
         errors.errorsMessages.push({
-            message: 'Incorrect vailableResolutions',
-            field: 'vailableResolutions'
+            message: 'Incorrect availableResolutions',
+            field: 'availableResolutions'
         })
     }
-    if(errors.errorsMessages.length) {
+
+    if (errors.errorsMessages.length) {
         res.status(400).send(errors)
         return
     }
@@ -86,16 +73,16 @@ app.post('/videos', (req: Request, res: Response) => {
         publicationDate: new Date((date.setDate(date.getDate() + 1))).toISOString(),
         availableResolutions: req.body.availableResolutions,
     }
-        videos.push(newVideo)
+    videos.push(newVideo)
     res.status(201).send(newVideo)
 })
 
 app.get('/videos/:id', (req: Request, res: Response) => {
     let video = videos.find(p => p.id === +(req.params.id))
-    if(video) {
-        res.status(200)
+    if (video) {
+        res.status(200).send(video)
     } else {
-        res.status(404)
+        res.sendStatus(404)
     }
 })
 
@@ -103,74 +90,77 @@ app.put('/videos/:id', (req: Request, res: Response) => {
     let errors: any = {
         errorsMessages: []
     }
-    if(!req.body.title || typeof req.body.title !== "string" || req.body.title.length > 40 || !req.body.title.trim()) {
-        // res.status(400).send({
-        //     errorsMessages: [{
-        //         message: 'Incorrect title',
-        //         field: 'title'
-        //     }]
-        // })
+    const resolutions = req.body.availableResolutions
+    if (!req.body.title || typeof req.body.title !== "string" || req.body.title.length > 40 || !req.body.title.trim()) {
         errors.errorsMessages.push({
             message: 'Incorrect title',
-             field: 'title'
+            field: 'title'
         })
     }
-    if(typeof req.body.canBeDownloaded !== 'boolean') {
-        // res.status(400).send({
-        //     errorsMessages: [{
-        //         message: 'Incorrect canBeDownloaded',
-        //         field: 'canBeDownloaded'
-        //     }]
-        // })
+    if (!req.body.author || typeof req.body.author !== "string" || req.body.author.length > 20 || req.body.author.trim()) {
+        errors.errorsMessages.push({
+            message: 'Incorrect author',
+            field: 'author'
+        })
+    }
+    if (typeof req.body.canBeDownloaded !== 'boolean') {
         errors.errorsMessages.push({
             message: 'Incorrect canBeDownloaded',
-             field: 'canBeDownloaded'
+            field: 'canBeDownloaded'
         })
     }
-    if(typeof req.body.minAgeRestriction !== null) {
+    if (typeof req.body.minAgeRestriction !== "number") { // number || 1 <= mAR <= 18
         errors.errorsMessages.push({
             message: 'Incorrect minAgeRestriction',
-             title: 'minAgeRestriction'
+            title: 'minAgeRestriction'
         })
     }
-    if(errors.errorsMessages.length) {
+    if (req.body.publicationDate < new Date() || req.body.publicationDate !== "number") {
+        errors.errorsMessages.push({
+            message: 'Incorrect publicationDate',
+            field: 'publicationDate'
+        })
+    }
+    if (!resolutions || !Array.isArray(resolutions) || !resolutions.every(e => Object.values(AvailableResolutionsEnum).includes(e))) {
+        errors.errorsMessages.push({
+            message: 'Incorrect availableResolutions',
+            field: 'availableResolutions'
+        })
+    }
+    // author + avRes + publDate
+    if (errors.errorsMessages.length) {
         res.status(400).send(errors)
         return
     }
 
     const id = +req.params.id
     const video = videos.find(p => p.id === id)
-    if(video) {
+    if (video) {
         video.title = req.body.title
-        res.status(204).send(video)
+        video.canBeDownloaded = req.body.canBeDownloaded
+        video.minAgeRestriction = req.body.minAgeRestriction
+        video.author = req.body.author
+        video.availableResolutions = req.body.availableResolutions
+        video.publicationDate = req.body.publicationDate
+        res.sendStatus(204)
     } else {
-        res.send(404)
+        res.sendStatus(404)
     }
 })
 
 app.delete('/videos/:id', (req: Request, res: Response) => {
-    for(let i = 0; i < videos.length; i++) {
-        if(+(req.params.id) === videos[i].id) {
-            videos.splice(i, 1)
-            res.status(204)
-        } else {
-            res.status(404)
-        }
-    }
+    const video = videos.find(v => v.id === +req.params.id)
+    if(!video) return res.sendStatus(404)
+    videos = videos.filter(v => v.id !== video.id)
+    return res.sendStatus(204)
 })
 
-app.delete('/videos/testing/all-data', (req: Request, res: Response) => {
-    if(videos.length > -1) {
-        videos.splice(0)
-        res.status(204)
-    } else {
-        res.status(404)
-    }
+app.delete('/testing/all-data', (req: Request, res: Response) => {
+    videos = []
+    return res.sendStatus(204)
 
 })
 
-const parserMiddleware = bodyParser({})
-app.use(parserMiddleware)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
