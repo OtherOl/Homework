@@ -22,7 +22,7 @@ let videos = [{
     availableResolutions: AvailableResolutionsEnum
 }]
 
-const app = express()
+export const app = express()
 const port = 4000
 app.use(express.json())
 
@@ -34,21 +34,25 @@ app.post('/videos', (req: Request, res: Response) => {
     const quality = req.body.title
     const name = req.body.author
     const availableResolutions = req.body.availableResolutions
+
     let errors: any = {
         errorsMessages: []
     }
+
     if (!name || typeof name !== "string" || name.length > 20 || !name.trim()) {
         errors.errorsMessages.push({
             message: 'Incorrect author',
             field: 'author'
         })
     }
+
     if (!quality || typeof quality !== "string" || quality.length > 40 || !quality.trim()) {
         errors.errorsMessages.push({
             message: 'Incorrect title',
             field: 'title'
         })
     }
+
     if (!availableResolutions || !Array.isArray(availableResolutions) || !availableResolutions.every(e => Object.values(AvailableResolutionsEnum).includes(e))) {
         errors.errorsMessages.push({
             message: 'Incorrect availableResolutions',
@@ -79,6 +83,7 @@ app.post('/videos', (req: Request, res: Response) => {
 
 app.get('/videos/:id', (req: Request, res: Response) => {
     let video = videos.find(p => p.id === +(req.params.id))
+
     if (video) {
         res.status(200).send(video)
     } else {
@@ -90,44 +95,51 @@ app.put('/videos/:id', (req: Request, res: Response) => {
     let errors: any = {
         errorsMessages: []
     }
+
     const resolutions = req.body.availableResolutions
+
     if (!req.body.title || typeof req.body.title !== "string" || req.body.title.length > 40 || !req.body.title.trim()) {
         errors.errorsMessages.push({
             message: 'Incorrect title',
             field: 'title'
         })
     }
+
     if (!req.body.author || typeof req.body.author !== "string" || req.body.author.length > 20 || !req.body.author.trim()) {
         errors.errorsMessages.push({
             message: 'Incorrect author',
             field: 'author'
         })
     }
+
     if (typeof req.body.canBeDownloaded !== 'boolean') {
         errors.errorsMessages.push({
             message: 'Incorrect canBeDownloaded',
             field: 'canBeDownloaded'
         })
     }
+
     if (typeof req.body.minAgeRestriction !== "number" || req.body.minAgeRestriction > 18 || req.body.minAgeRestriction < 1) { // number || 1 <= mAR <= 18
         errors.errorsMessages.push({
             message: 'Incorrect minAgeRestriction',
             field: 'minAgeRestriction'
         })
     }
+
     if (req.body.publicationDate < new Date()) {
         errors.errorsMessages.push({
             message: 'Incorrect publicationDate',
             field: 'publicationDate'
         })
     }
+
     if (!resolutions || !Array.isArray(resolutions) || !resolutions.every(e => Object.values(AvailableResolutionsEnum).includes(e))) {
         errors.errorsMessages.push({
             message: 'Incorrect availableResolutions',
             field: 'availableResolutions'
         })
     }
-    // author + avRes + publDate
+
     if (errors.errorsMessages.length) {
         res.status(400).send(errors)
         return
@@ -135,6 +147,7 @@ app.put('/videos/:id', (req: Request, res: Response) => {
 
     const id = +req.params.id
     const video = videos.find(p => p.id === id)
+
     if (video) {
         video.title = req.body.title
         video.canBeDownloaded = req.body.canBeDownloaded
@@ -150,7 +163,9 @@ app.put('/videos/:id', (req: Request, res: Response) => {
 
 app.delete('/videos/:id', (req: Request, res: Response) => {
     const video = videos.find(v => v.id === +req.params.id)
+
     if(!video) return res.sendStatus(404)
+
     videos = videos.filter(v => v.id !== video.id)
     return res.sendStatus(204)
 })
@@ -158,7 +173,6 @@ app.delete('/videos/:id', (req: Request, res: Response) => {
 app.delete('/testing/all-data', (req: Request, res: Response) => {
     videos = []
     return res.sendStatus(204)
-
 })
 
 
