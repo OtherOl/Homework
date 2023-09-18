@@ -1,7 +1,7 @@
 import request from 'supertest'
 import {app} from "../../src/setting";
 import {videos} from "../../src/routes/video-router";
-import {erAuthor, erTitle} from "../../src/errors/errors-fields";
+import {erAuthor, erAvailableResolutions, erTitle} from "../../src/errors/errors-fields";
 
 
 describe('/videos', () => {
@@ -14,11 +14,12 @@ describe('/videos', () => {
     it('POST video - fail - invalid', async () => {
         await request(app)
             .post('/videos')
-            .send({title: "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", author: ''})
+            .send({title: "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", author: '', availableResolutions: ''})
             .expect(400, {
                 errorsMessages: [
+                    erAuthor,
                     erTitle,
-                    erAuthor
+                    erAvailableResolutions
                 ]
             })
     })
