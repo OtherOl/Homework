@@ -1,7 +1,6 @@
-// @ts-ignore
 import request from "supertest"
 import {app} from "../../src/settings";
-import {errDescription, errId, errName, errWebsiteUrl} from "../../src/models/blogs-errors-model";
+import {errDescription, errName, errWebsiteUrl} from "../../src/models/blogs-errors-model";
 
 describe("tests for blogs", () => {
     beforeAll(async () => {
@@ -22,9 +21,15 @@ describe("tests for blogs", () => {
     })
 
     it('Post - fail - invalid fields', async () => {
+        const fakeBlog = {
+            name: '',
+            description: '',
+            websiteUrl: ''
+        }
+
         await request(app)
             .post('/blogs')
-            .send({id: "12345678", name: "1234567890123456jjj", description: null, websiteUrl: undefined})
+            .send(fakeBlog)
             .expect(400, {
                 errorsMessages: [
                     errName,
@@ -38,9 +43,8 @@ describe("tests for blogs", () => {
 
     it('Post - success', async () => {
         const blog = {
-            id: "123",
             name: "Basic",
-            description: "We will create our first programm",
+            description: "We will create our first program",
             websiteUrl: "https://create.ts"
         }
         const createdblog1 = await request(app)

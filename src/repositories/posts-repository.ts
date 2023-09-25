@@ -1,4 +1,6 @@
 import {errBlogId, errContent, errPostDesc, errTitle} from "../models/posts-errors-model";
+import {postModel} from "../models/post-model";
+import {randomUUID} from "crypto";
 
 let posts = [{
     id: "dasdsa",
@@ -14,38 +16,38 @@ export const postsRepository = {
         return posts
     },
 
-    createPost(title: string, description: string, content: string, blogId: string) {
+    createPost(inputData: postModel) {
         let errors: any = {
             errorsMessages: []
         }
 
-        if(!title || !title.trim() || title.length > 30) {
+        if (!inputData.title || !inputData.title.trim() || inputData.title.length > 30) {
             errors.push(errTitle)
         }
 
-        if(!description || !description.trim() || description.length > 100) {
+        if (!inputData.shortDescription || !inputData.shortDescription.trim() || inputData.shortDescription.length > 100) {
             errors.push(errPostDesc)
         }
 
-        if(!content || !content.trim() || content.length > 1000) {
+        if (!inputData.content || !inputData.content.trim() || inputData.content.length > 1000) {
             errors.push(errContent)
         }
 
-        if(!blogId || !blogId.trim()) {
+        if (!inputData.blogId || !inputData.blogId.trim()) {
             errors.push(errBlogId)
         }
 
-        if(errors.errorsMessages.length) {
+        if (errors.errorsMessages.length) {
             return errors
         }
 
         const newPost = {
-            id: `${title}-${blogId}`,
-            title: title,
-            shortDescription: description,
-            content: content,
-            blogId: blogId,
-            blogName: `blog.${title}`
+            id: randomUUID(),
+            title: inputData.title,
+            shortDescription: inputData.shortDescription,
+            content: inputData.content,
+            blogId: inputData.blogId,
+            blogName: `blog.${inputData.title}`
         }
 
         posts.push(newPost)
@@ -53,8 +55,58 @@ export const postsRepository = {
     },
 
     getByid(id: string) {
-        let foundPost = posts.find(p => p.id === id)
-        return foundPost
-    }
+        return posts.find(p => p.id === id)
+    },
 
+    updatePost(inputData: postModel) {
+        let foundPost = posts.find(p => p.id === inputData.id)
+
+        let errors: any = {
+            errorsMessages: []
+        }
+
+        if(!inputData.title || !inputData.title.trim() || inputData.title.length > 30) {
+            errors.push(errTitle)
+        }
+
+        if(!inputData.shortDescription || !inputData.shortDescription.trim() || inputData.shortDescription.length > 100) {
+            errors.push(errPostDesc)
+        }
+
+        if(!inputData.content || !inputData.content.trim() || inputData.content.length > 1000) {
+            errors.push(errContent)
+        }
+
+        if(typeof inputData.blogId.trim()) {
+            errors.push(errBlogId)
+        }
+
+        if(errors.errorsMessages.length) {
+            return errors
+        }
+
+        if(!foundPost) {
+            return null
+        } else {
+            foundPost.title = inputData.title
+            foundPost.shortDescription = inputData.shortDescription
+            foundPost.content = inputData.content
+            foundPost.blogId = inputData.blogId
+        }
+    },
+
+    deletePost(inputData: postModel) {
+        const findPost = posts.find(p => p.id === inputData.id)
+        if(!findPost) {
+            return false
+        }
+
+        posts = posts.filter(p => p.id !== findPost.id)
+        return true
+    },
+
+    deleteAll() {
+        posts = []
+        return true
+    }
 }

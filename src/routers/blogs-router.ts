@@ -1,6 +1,8 @@
 import {Request, Response, Router} from "express";
-import {errName, errDescription, errWebsiteUrl, errId} from "../models/blogs-errors-model";
+import {errName, errDescription, errWebsiteUrl} from "../models/blogs-errors-model";
 export const blogsRouter = Router({})
+import {blogModel} from "../models/blog-model";
+import {randomUUID} from "crypto";
 
 let blogs = [{
     id: "12345",
@@ -40,7 +42,7 @@ blogsRouter.post('/', (req: Request, res: Response) => {
     }
 
     const newBlog = {
-        id: `${name}1`,
+        id: randomUUID(),
         name: name,
         description: description,
         websiteUrl: websiteUrl
