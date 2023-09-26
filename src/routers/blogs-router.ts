@@ -5,7 +5,7 @@ import {blogModel} from "../models/blog-model";
 import {randomUUID} from "crypto";
 
 let blogs = [{
-    id: "12345",
+    id: randomUUID(),
     name: "a little bit",
     description: "shortcut",
     websiteUrl: "https://asda"

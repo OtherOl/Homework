@@ -1,16 +1,19 @@
 import {Request, Response, Router} from "express";
 export const postsRouter = Router({})
 import {postsRepository} from "../repositories/posts-repository";
+import {inputPostValidation} from "../middlewares/input-post-validation";
+import {postModel} from "../models/post-model";
 
 postsRouter.get('/', (req: Request, res: Response) => {
     const allPosts = postsRepository.getAllPosts()
     res.status(200).send(allPosts)
 })
 
-postsRouter.post('/', (req: Request, res: Response) => {
-    const {title , shortDescription, content, blogId} = req.body
+postsRouter.post('/', inputPostValidation, (req: Request, res: Response) => {
+    // const {title , shortDescription, content, blogId} = req.body
+    const inputData: any = [req.body.title, req.body.shortDescription, req.body.content, req.body.blogId]
 
-    const newPost = postsRepository.createPost(req.body)
+    const newPost = postsRepository.createPost(inputData)
     res.status(201).send(newPost)
 })
 
@@ -23,9 +26,9 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
     }
 })
 
-postsRouter.put('/:id', (req: Request, res: Response) => {
-    const {title, shortDescription, content, blogId} = req.body
-    const updatePost = postsRepository.updatePost(req.body)
+postsRouter.put('/:id', inputPostValidation, (req: Request, res: Response) => {
+    const inputData: any = [req.body.title, req.body.shortDescription, req.body.content, req.body.blogId]
+    const updatePost = postsRepository.updatePost(inputData)
     if(!updatePost) {
         res.status(404)
     } else {

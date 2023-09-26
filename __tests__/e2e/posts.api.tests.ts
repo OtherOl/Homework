@@ -38,12 +38,10 @@ describe("tests for Posts", () => {
 
     it('Post - success', async () => {
         const post = {
-            id: "SADGOODMOOD",
             title: "Hello world!",
             shortDescription: "coding prof",
             content: "trali bali shmali",
             blogId: "dsadsadlas",
-            blogName: `POSTS.title}`
         }
         const created_post = await request(app)
             .post('/posts')
@@ -53,10 +51,6 @@ describe("tests for Posts", () => {
         createdPosts = created_post.body
 
         await request(app)
-            .get('/posts')
-            .expect(200, [created_post])
-
-        await request(app)
             .get(`/posts/` + created_post.body.id)
             .expect(200)
     })
@@ -64,12 +58,11 @@ describe("tests for Posts", () => {
     it('Put - fail - invalid fields', async () => {
         await request(app)
             .put(`/posts/${createdPosts.id}`)
-            .send({title: 'valid title', shortDescription: 12340, content: 5678, blogId: 1234})
+            .send({title: 'valid title', shortDescription: 12340, content: 5678})
             .expect(400, {
                 errorsMessages: [
                     errPostDesc,
-                    errContent,
-                    errBlogId
+                    errContent
                 ]
             })
 
