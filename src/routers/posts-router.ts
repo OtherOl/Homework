@@ -8,7 +8,7 @@ postsRouter.get('/', (req: Request, res: Response) => {
 })
 
 postsRouter.post('/', (req: Request, res: Response) => {
-    const {title , shortDescription, content, blogId} = req.body
+    const {title , shortDescription, content, blogId} = req.params
 
     const newPost = postsRepository.createPost(req.body)
     res.status(201).send(newPost)
