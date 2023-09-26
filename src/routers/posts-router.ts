@@ -11,7 +11,7 @@ postsRouter.get('/', (req: Request, res: Response) => {
 
 postsRouter.post('/', inputPostValidation, (req: Request, res: Response) => {
     const {title , shortDescription, content, blogId} = req.body
-    // const inputData: any = [req.body.title, req.body.shortDescription, req.body.content, req.body.blogId]
+    const inputData = req.body.title
 
     const newPost = postsRepository.createPost(req.body)
     res.status(201).send(newPost)
@@ -27,8 +27,8 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
 })
 
 postsRouter.put('/:id', inputPostValidation, (req: Request, res: Response) => {
-    const inputData: any = [req.body.title, req.body.shortDescription, req.body.content, req.body.blogId]
-    const updatePost = postsRepository.updatePost(inputData)
+    const {title, shortDescription, content, blogId} = req.body
+    const updatePost = postsRepository.updatePost(req.body)
     if(!updatePost) {
         res.status(404)
     } else {
