@@ -68,7 +68,7 @@ describe("tests for Posts", () => {
 
         await request(app)
             .put('/posts/99999999999999999')
-            .send({title: 'Kok', shortDescription: 'Im well', content: 'https://dasdsa.com', blogId: 'Hello'})
+            .send({title: 'Kok', shortDescription: 'Im well', content: 'https://dasdsa.com'})
             .expect(404)
     })
 

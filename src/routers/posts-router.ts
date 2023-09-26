@@ -10,10 +10,10 @@ postsRouter.get('/', (req: Request, res: Response) => {
 })
 
 postsRouter.post('/', inputPostValidation, (req: Request, res: Response) => {
-    // const {title , shortDescription, content, blogId} = req.body
-    const inputData: any = [req.body.title, req.body.shortDescription, req.body.content, req.body.blogId]
+    const {title , shortDescription, content, blogId} = req.body
+    // const inputData: any = [req.body.title, req.body.shortDescription, req.body.content, req.body.blogId]
 
-    const newPost = postsRepository.createPost(inputData)
+    const newPost = postsRepository.createPost(req.body)
     res.status(201).send(newPost)
 })
 
