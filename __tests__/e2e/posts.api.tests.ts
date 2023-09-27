@@ -58,7 +58,7 @@ describe("tests for Posts", () => {
     it('Put - fail - invalid fields', async () => {
         await request(app)
             .put(`/posts/${createdPosts.id}`)
-            .send({title: 'valid title', shortDescription: 12340, content: 5678})
+            .send({title: 'valid title', shortDescription: 12340, content: 5678, blogId: 'NOOOOO'})
             .expect(400, {
                 errorsMessages: [
                     errPostDesc,
@@ -75,7 +75,7 @@ describe("tests for Posts", () => {
     it('Put - success', async () => {
         await request(app)
             .put(`/posts/${createdPosts.id}`)
-            .send({title: 'Pilya', shortDescription: 'On the way to be the best developer!', content: 'https://create.com', blogId: "Imalai"})
+            .send({title: 'Pilya', shortDescription: 'On the way to be the best developer!', content: 'Himalaya', blogId: 'YEEEES'})
             .expect(204)
     })
 

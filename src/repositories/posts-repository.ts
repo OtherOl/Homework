@@ -3,16 +3,20 @@ import {randomUUID} from "crypto";
 
 let posts = [{
     id: randomUUID(),
-    title: "string",
-    shortDescription: "string",
-    content: "string",
-    blogId: "string",
+    title: "Little",
+    shortDescription: "Nighmare in the city",
+    content: "This video is about",
+    blogId: "12345435",
     blogName: "string"
 }]
 
 export const postsRepository = {
     getAllPosts() {
         return posts
+    },
+
+    getPostById(id: string) {
+        return posts.find(p => p.id === id)
     },
 
     createPost(inputData: postModel) {
@@ -29,28 +33,22 @@ export const postsRepository = {
         return newPost
     },
 
-    getByid(id: string) {
-        return posts.find(p => p.id === id)
-    },
-
     updatePost(inputData: postModel) {
-        let foundPost = posts.find(p => p.id === inputData.id)
+        let foundPost = this.getPostById(inputData.id)
 
-        if(foundPost){
+        if(!foundPost){
+            return false
+        } else {
             foundPost.title = inputData.title
             foundPost.shortDescription = inputData.shortDescription
             foundPost.content = inputData.content
             foundPost.blogId = inputData.blogId
-        } else {
-            return false
         }
     },
 
-    deletePost(inputData: postModel) {
-        const findPost = posts.find(p => p.id === inputData.id)
-        if(!findPost) {
-            return false
-        }
+    deletePost(id: string) {
+        const findPost = posts.find(p => p.id === id)
+        if(!findPost) return false
 
         posts = posts.filter(p => p.id !== findPost.id)
         return true

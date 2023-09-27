@@ -1,59 +1,25 @@
 import {Request, Response, Router} from "express";
-import {errName, errDescription, errWebsiteUrl} from "../models/blogs-errors-model";
 export const blogsRouter = Router({})
-import {blogModel} from "../models/blog-model";
-import {randomUUID} from "crypto";
+import {bodyBlogValidation} from "../middlewares/body-blog-validation";
+import {blogsRepository} from "../repositories/blogs-repository";
+import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 
-let blogs = [{
-    id: randomUUID(),
-    name: "a little bit",
-    description: "shortcut",
-    websiteUrl: "https://asda"
-}]
+
 
 blogsRouter.get('/', (req: Request, res: Response) => {
-    res.status(200).send(blogs)
+    const allBlogs = blogsRepository.getAllblogs()
+    res.status(200).send(allBlogs)
 })
 
-blogsRouter.post('/', (req: Request, res: Response) => {
-    const name = req.body.name
-    const description = req.body.description
-    const websiteUrl = req.body.websiteUrl
+blogsRouter.post('/', bodyBlogValidation.name, bodyBlogValidation.description, bodyBlogValidation.websiteUrl, inputValidationMiddleware, (req: Request, res: Response) => {
+    const {name, description, websiteUrl} = req.body
+    const newBlog = blogsRepository.createBlog(req.body)
 
-    let errors: any = {
-        errorsMessages: []
-    }
-
-    if(!name || !name.trim() || name.length > 15 || typeof name !== "string") {
-        errors.push(errName)
-    }
-
-    if(!description || !description.trim() || description.length > 500 || typeof description !== "string") {
-        errors.push(errDescription)
-    }
-
-    if(!websiteUrl || !websiteUrl.trim() || websiteUrl.length > 100 || typeof websiteUrl !== "string") {  //should validate pattern ( starts.with('https://" )
-        errors.push(errWebsiteUrl)
-    }
-
-    if(errors.errorsMessages.length) {
-        res.status(400).send(errors)
-        return
-    }
-
-    const newBlog = {
-        id: randomUUID(),
-        name: name,
-        description: description,
-        websiteUrl: websiteUrl
-    }
-
-    blogs.push(newBlog)
     res.status(201).send(newBlog)
 })
 
 blogsRouter.get('/:id', (req: Request, res: Response) => {
-    let findBlog = blogs.find(p => p.id === req.params.id)
+    let findBlog = blogsRepository.getBlogById(req.params.id)
 
     if(!findBlog) {
         res.sendStatus(404)
@@ -62,53 +28,31 @@ blogsRouter.get('/:id', (req: Request, res: Response) => {
     }
 })
 
-blogsRouter.put('/:id', (req: Request, res: Response) => {
-    let foundBlog = blogs.find(p => p.id === req.params.id)
+blogsRouter.put('/:id', bodyBlogValidation.name, bodyBlogValidation.description, bodyBlogValidation.websiteUrl, inputValidationMiddleware, (req: Request, res: Response) => {
+    const {id, name, description, websiteUrl} = req.body
 
-    const name = req.body.name
-    const description = req.body.description
-    const websiteUrl = req.body.websiteUrl
+    let getBlogById = blogsRepository.getBlogById(req.params.id)
+    blogsRepository.updateBlog(req.body)
 
-    let errors: any = {
-        errorsMessages: []
-    }
-
-    if(!name || !name.trim() || typeof name !== "string" || name.length > 15) {
-        errors.errorsMessages.push(errName)
-    }
-
-    if(!description || !description.trim() || typeof description !== "string" || description.length > 500) {
-        errors.errorsMessages.push(errDescription)
-    }
-
-    if(!websiteUrl || !websiteUrl.trim() || typeof websiteUrl !== "string" || websiteUrl.length > 100) { //validate pattern!! starts.with('https://" )
-        errors.errorsMessages.push(errWebsiteUrl)
-    }
-
-    if(errors.errorsMessages.length) {
-        res.status(400).send(errors)
-    }
-
-    if(!foundBlog) {
+    if(!getBlogById) {
         res.sendStatus(404)
     } else {
-        foundBlog.name = name
-        foundBlog.description = description
-        foundBlog.websiteUrl = websiteUrl
         res.sendStatus(204)
     }
 })
 
 blogsRouter.delete('/:id', (req: Request, res: Response) => {
-    const foundBlog = blogs.find(p => p.id === req.params.id)
+    let foundedBlog = blogsRepository.deleteBlog(req.params.id)
 
-    if(!foundBlog) res.sendStatus(404)
-
-    blogs = blogs.filter(p => p.id !== foundBlog?.id)
-    return res.sendStatus(204)
+    if(!foundedBlog) {
+        res.sendStatus(404)
+    } else {
+        res.sendStatus(204)
+    }
 })
 
 blogsRouter.delete('/testing/all-data', (req: Request, res: Response) => {
-    blogs = []
-    res.sendStatus(204)
+    let deletedBlogs = blogsRepository.deleteAllBlogs()
+
+    if(deletedBlogs) res.sendStatus(204)
 })

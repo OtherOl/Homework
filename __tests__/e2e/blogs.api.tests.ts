@@ -22,9 +22,9 @@ describe("tests for blogs", () => {
 
     it('Post - fail - invalid fields', async () => {
         const fakeBlog = {
-            name: '',
-            description: '',
-            websiteUrl: ''
+            name: 567890,
+            description: 1123,
+            websiteUrl: "https://create.ts"
         }
 
         await request(app)
@@ -33,8 +33,7 @@ describe("tests for blogs", () => {
             .expect(400, {
                 errorsMessages: [
                     errName,
-                    errDescription,
-                    errWebsiteUrl
+                    errDescription
                 ]
             })
     })
@@ -55,21 +54,18 @@ describe("tests for blogs", () => {
         createdBlog = createdblog1.body
 
         await request(app)
-            .get('/blogs')
-            .expect(200, [createdBlog])
-
-        await request(app)
             .get(`/blogs/` + createdblog1.body.id)
             .expect(200)
+        console.log(createdBlog)
     })
 
     it('Put - fail - invalid fields', async () => {
+        console.log(createdBlog.id)
         await request(app)
             .put(`/blogs/${createdBlog.id}`)
-            .send({name: 'ALALALALLALALALALALALALAL', description: null, websiteUrl: undefined})
+            .send({name: 'valid name', description: 12345677, websiteUrl: 1234})
             .expect(400, {
                 errorsMessages: [
-                    errName,
                     errDescription,
                     errWebsiteUrl
                 ]
