@@ -23,7 +23,7 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
     if (!foundPost) {
         res.sendStatus(404)
     } else {
-        res.sendStatus(200)
+        res.status(200).send(foundPost)
     }
 })
 

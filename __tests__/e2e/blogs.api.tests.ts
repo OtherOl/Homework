@@ -81,7 +81,7 @@ describe("tests for blogs", () => {
     it('Put - success', async () => {
         await request(app)
             .put(`/blogs/${createdBlog.id}`)
-            .send({name: 'Pilya', description: 'On the way to be the best developer!', websiteUrl: 'https://create.com'})
+            .send({name: 'Pilya'})
             .expect(204)
     })
 
