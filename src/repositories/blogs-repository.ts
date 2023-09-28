@@ -1,20 +1,21 @@
 import {randomUUID} from "crypto";
 import {blogModel} from "../models/blog-model";
+import {DB} from "../data/DB";
 
-let blogs = [{
-    id: randomUUID(),
-    name: "a little bit",
-    description: "shortcut",
-    websiteUrl: "https://asda"
-}]
+// let blogs = [{
+//     id: randomUUID(),
+//     name: "a little bit",
+//     description: "shortcut",
+//     websiteUrl: "https://asda"
+// }]
 
 export const blogsRepository = {
     getAllblogs() {
-        return blogs
+        return DB.blogs
     },
 
     getBlogById(id: string) {
-        return blogs.find(p => p.id === id)
+        return DB.blogs.find(p => p.id === id)
     },
 
     createBlog(inputData: blogModel) {
@@ -25,7 +26,7 @@ export const blogsRepository = {
             description: inputData.description,
             websiteUrl: inputData.websiteUrl
         }
-        blogs.push(newBlog)
+        DB.blogs.push(newBlog)
         return newBlog
     },
 
@@ -42,16 +43,11 @@ export const blogsRepository = {
     },
 
     deleteBlog(id: string) {
-        let foundBlog = blogs.find(p => p.id === id)
+        let foundBlog = DB.blogs.find(p => p.id === id)
 
         if(!foundBlog) return false
 
-        blogs = blogs.filter(p => p.id !== foundBlog?.id)
-        return true
-    },
-
-    deleteAllBlogs() {
-        blogs = []
+        DB.blogs = DB.blogs.filter(p => p.id !== foundBlog?.id)
         return true
     }
 }

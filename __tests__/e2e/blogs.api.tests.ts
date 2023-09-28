@@ -5,7 +5,7 @@ import {errDescription, errName, errWebsiteUrl} from "../../src/models/blogs-err
 describe("tests for blogs", () => {
     beforeAll(async () => {
         await request(app)
-            .delete('/blogs/testing/all-data')
+            .delete('/testing/all-data')
     })
 
     it('Get - success', async () => {

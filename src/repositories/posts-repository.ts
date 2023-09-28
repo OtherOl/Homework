@@ -1,22 +1,14 @@
 import {postModel} from "../models/post-model";
 import {randomUUID} from "crypto";
-
-let posts = [{
-    id: randomUUID(),
-    title: "Little",
-    shortDescription: "Nighmare in the city",
-    content: "This video is about",
-    blogId: "12345435",
-    blogName: "string"
-}]
+import {DB} from "../data/DB";
 
 export const postsRepository = {
     getAllPosts() {
-        return posts
+        return DB.posts
     },
 
     getPostById(id: string) {
-        return posts.find(p => p.id === id)
+        return DB.posts.find(p => p.id === id)
     },
 
     createPost(inputData: postModel) {
@@ -29,7 +21,7 @@ export const postsRepository = {
             blogName: `blog.${inputData.title}`
         }
 
-        posts.push(newPost)
+        DB.posts.push(newPost)
         return newPost
     },
 
@@ -47,15 +39,10 @@ export const postsRepository = {
     },
 
     deletePost(id: string) {
-        const findPost = posts.find(p => p.id === id)
+        const findPost = this.getPostById(id)
         if(!findPost) return false
 
-        posts = posts.filter(p => p.id !== findPost.id)
-        return true
-    },
-
-    deleteAll() {
-        posts = []
+        DB.posts = DB.posts.filter(p => p.id !== findPost.id)
         return true
     }
 }

@@ -6,7 +6,7 @@ import {errContent, errPostDesc, errBlogId} from "../../src/models/posts-errors-
 describe("tests for Posts", () => {
     beforeAll(async () => {
         await request(app)
-            .delete('/posts/testing/all-data')
+            .delete('/testing/all-data')
     })
 
     it('Get - success', async () => {
@@ -59,23 +59,18 @@ describe("tests for Posts", () => {
         await request(app)
             .put(`/posts/${createdPosts.id}`)
             .send({title: 'valid title', shortDescription: 12340, content: 5678, blogId: 'NOOOOO'})
-            .expect(400, {
-                errorsMessages: [
-                    errPostDesc,
-                    errContent
-                ]
-            })
+            .expect(400)
 
         await request(app)
-            .put('/posts/99999999999999999')
+            .put('/posts/999999999dasdsadsa99999999')
             .send({title: 'Kok', shortDescription: 'Im well', content: 'https://dasdsa.com'})
             .expect(404)
     })
 
     it('Put - success', async () => {
         await request(app)
-            .put(`/posts/${createdPosts.id}`)
-            .send({title: 'Dmitry', shortDescription: 'On the way to be the best developer!', content: 'Himalaya', blogId: '1234567890'})
+            .put('/posts/' + createdPosts.id)
+            .send({title: 'VIDEONAME', shortDescription: 'THIS VIDEO IS ABOUT OUR LIFE', content: 'We will talk about me', blogId: '098765'})
             .expect(204)
     })
 

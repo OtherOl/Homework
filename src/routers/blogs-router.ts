@@ -3,6 +3,7 @@ export const blogsRouter = Router({})
 import {bodyBlogValidation} from "../middlewares/body-blog-validation";
 import {blogsRepository} from "../repositories/blogs-repository";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
+import {authorisationMiddleware} from "../middlewares/authorisation-middleware";
 
 
 
@@ -11,7 +12,7 @@ blogsRouter.get('/', (req: Request, res: Response) => {
     res.status(200).send(allBlogs)
 })
 
-blogsRouter.post('/', bodyBlogValidation.name, bodyBlogValidation.description, bodyBlogValidation.websiteUrl, inputValidationMiddleware, (req: Request, res: Response) => {
+blogsRouter.post('/', authorisationMiddleware, bodyBlogValidation.name, bodyBlogValidation.description, bodyBlogValidation.websiteUrl, inputValidationMiddleware, (req: Request, res: Response) => {
     const {name, description, websiteUrl} = req.body
     const newBlog = blogsRepository.createBlog(req.body)
 
@@ -28,7 +29,7 @@ blogsRouter.get('/:id', (req: Request, res: Response) => {
     }
 })
 
-blogsRouter.put('/:id', bodyBlogValidation.name, bodyBlogValidation.description, bodyBlogValidation.websiteUrl, inputValidationMiddleware, (req: Request, res: Response) => {
+blogsRouter.put('/:id', authorisationMiddleware, bodyBlogValidation.name, bodyBlogValidation.description, bodyBlogValidation.websiteUrl, inputValidationMiddleware, (req: Request, res: Response) => {
     const {id, name, description, websiteUrl} = req.body
 
     let getBlogById = blogsRepository.getBlogById(req.params.id)
@@ -41,7 +42,7 @@ blogsRouter.put('/:id', bodyBlogValidation.name, bodyBlogValidation.description,
     }
 })
 
-blogsRouter.delete('/:id', (req: Request, res: Response) => {
+blogsRouter.delete('/:id', authorisationMiddleware, (req: Request, res: Response) => {
     let foundedBlog = blogsRepository.deleteBlog(req.params.id)
 
     if(!foundedBlog) {
@@ -49,10 +50,4 @@ blogsRouter.delete('/:id', (req: Request, res: Response) => {
     } else {
         res.sendStatus(204)
     }
-})
-
-blogsRouter.delete('/testing/all-data', (req: Request, res: Response) => {
-    let deletedBlogs = blogsRepository.deleteAllBlogs()
-
-    if(deletedBlogs) res.sendStatus(204)
 })
