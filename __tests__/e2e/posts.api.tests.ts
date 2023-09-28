@@ -75,7 +75,7 @@ describe("tests for Posts", () => {
     it('Put - success', async () => {
         await request(app)
             .put(`/posts/${createdPosts.id}`)
-            .send({title: 'Pilya', shortDescription: 'On the way to be the best developer!', content: 'Himalaya', blogId: 'YEEEES'})
+            .send({title: 'Dmitry', shortDescription: 'On the way to be the best developer!', content: 'Himalaya', blogId: '1234567890'})
             .expect(204)
     })
 
