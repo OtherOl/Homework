@@ -10,7 +10,7 @@ postsRouter.get('/', (req: Request, res: Response) => {
     res.status(200).send(allPosts)
 })
 
-postsRouter.post('/', authorisationMiddleware,bodyPostValidation.title, bodyPostValidation.shortDescription, bodyPostValidation.content,
+postsRouter.post('/', authorisationMiddleware, bodyPostValidation.title, bodyPostValidation.shortDescription, bodyPostValidation.content,
     bodyPostValidation.blogId, inputValidationMiddleware, (req: Request, res: Response) => {
     const {title, shortDescription, content, blogId} = req.body
 
@@ -27,7 +27,7 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
     }
 })
 
-postsRouter.put('/:id', authorisationMiddleware,bodyPostValidation.title, bodyPostValidation.shortDescription, bodyPostValidation.content,
+postsRouter.put('/:id', authorisationMiddleware, bodyPostValidation.title, bodyPostValidation.shortDescription, bodyPostValidation.content,
     bodyPostValidation.blogId, inputValidationMiddleware, (req: Request, res: Response) => {
     const {title, shortDescription, content, blogId} = req.body
 
