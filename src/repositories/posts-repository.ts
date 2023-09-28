@@ -34,7 +34,7 @@ export const postsRepository = {
     },
 
     updatePost(inputData: postModel) {
-        let foundPost = this.getPostById(inputData.id)
+        const foundPost = this.getPostById(inputData.id)
 
         if(!foundPost){
             return false

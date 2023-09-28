@@ -30,13 +30,13 @@ postsRouter.put('/:id', bodyPostValidation.title, bodyPostValidation.shortDescri
     bodyPostValidation.blogId, inputValidationMiddleware, (req: Request, res: Response) => {
     const {title, shortDescription, content, blogId} = req.body
 
-    let getPostById = postsRepository.getPostById(req.params.id)
+    const getPostById = postsRepository.getPostById(req.params.id)
     postsRepository.updatePost(req.body)
 
     if (!getPostById) {
         res.status(404)
     } else {
-        res.status(200)
+        res.status(204)
     }
 
 })
