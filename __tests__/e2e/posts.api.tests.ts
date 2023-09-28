@@ -3,7 +3,6 @@ import request from "supertest"
 import {app} from "../../src";
 import {errContent, errPostDesc, errBlogId} from "../../src/models/posts-errors-model";
 import {postModel} from "../../src/models/post-model";
-import {DB} from "../../src/data/DB";
 import {blogModel} from "../../src/models/blog-model";
 
 describe("tests for Posts", () => {

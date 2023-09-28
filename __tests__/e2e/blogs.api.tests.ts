@@ -1,5 +1,5 @@
 import request from "supertest"
-import {app} from "../../src/settings";
+import {app} from "../../src";
 import {errDescription, errName, errWebsiteUrl} from "../../src/models/blogs-errors-model";
 import {blogModel} from "../../src/models/blog-model";
 
