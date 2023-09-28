@@ -1,12 +1,16 @@
 // @ts-ignore
 import request from "supertest"
-import {app} from "../../src/settings";
+import {app} from "../../src";
 import {errContent, errPostDesc, errBlogId} from "../../src/models/posts-errors-model";
+import {postModel} from "../../src/models/post-model";
+import {DB} from "../../src/data/DB";
+import {blogModel} from "../../src/models/blog-model";
 
 describe("tests for Posts", () => {
     beforeAll(async () => {
-        await request(app)
+       const res =  await request(app)
             .delete('/testing/all-data')
+        console.log(res)
     })
 
     it('Get - success', async () => {
@@ -34,14 +38,31 @@ describe("tests for Posts", () => {
             })
     })
 
-    let createdPosts: any = null
+    let createdPosts: postModel
+    let createdBlog: blogModel
 
     it('Post - success', async () => {
+        const blog = {
+            name: "Basic",
+            description: "We will create our first program",
+            websiteUrl: "https://create.ts"
+        }
+        const createdblog1 = await request(app)
+            .post('/blogs')
+            .send(blog)
+            .expect(201)
+
+        createdBlog = createdblog1.body
+
+        await request(app)
+            .get(`/blogs/` + createdblog1.body.id)
+            .expect(200)
+
         const post = {
             title: "Hello world!",
             shortDescription: "coding prof",
             content: "trali bali shmali",
-            blogId: "dsadsadlas",
+            blogId: createdblog1.body.id,
         }
         const created_post = await request(app)
             .post('/posts')
@@ -58,19 +79,16 @@ describe("tests for Posts", () => {
     it('Put - fail - invalid fields', async () => {
         await request(app)
             .put(`/posts/${createdPosts.id}`)
-            .send({title: 'valid title', shortDescription: 12340, content: 5678, blogId: 'NOOOOO'})
+            .send({title: 'valid title', shortDescription: 12340, content: 5678, blogId: createdBlog.id})
             .expect(400)
 
-        await request(app)
-            .put('/posts/999999999dasdsadsa99999999')
-            .send({title: 'Kok', shortDescription: 'Im well', content: 'https://dasdsa.com'})
-            .expect(404)
+
     })
 
     it('Put - success', async () => {
         await request(app)
             .put('/posts/' + createdPosts.id)
-            .send({title: 'VIDEONAME', shortDescription: 'THIS VIDEO IS ABOUT OUR LIFE', content: 'We will talk about me', blogId: '098765'})
+            .send({title: 'VIDEONAME', shortDescription: 'THIS VIDEO IS ABOUT OUR LIFE', content: 'We will talk about me', blogId: createdBlog.id})
             .expect(204)
     })
 

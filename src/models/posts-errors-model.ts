@@ -1,19 +1,19 @@
 export const errTitle = {
-    message: 'Invalid Title',
+    message: 'Invalid value',
     field: 'Title'
 }
 
 export const errPostDesc = {
-    message: 'Invalid Description',
-    field: 'Description'
+    message: 'Invalid value',
+    field: 'shortDescription'
 }
 
 export const errContent = {
-    message: 'Invalid Content',
-    field: 'Content'
+    message: 'Invalid value',
+    field: 'content'
 }
 
 export const errBlogId = {
-    message: 'Invalid BlogId',
-    field: 'BlogId'
+    message: 'invalid blogId',
+    field: 'blogId'
 }

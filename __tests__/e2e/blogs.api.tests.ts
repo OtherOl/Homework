@@ -1,6 +1,7 @@
 import request from "supertest"
 import {app} from "../../src/settings";
 import {errDescription, errName, errWebsiteUrl} from "../../src/models/blogs-errors-model";
+import {blogModel} from "../../src/models/blog-model";
 
 describe("tests for blogs", () => {
     beforeAll(async () => {
@@ -39,7 +40,7 @@ describe("tests for blogs", () => {
             // })
     })
 
-    let createdBlog: any = null
+    let createdBlog: blogModel
 
     it('Post - success', async () => {
         const blog = {
