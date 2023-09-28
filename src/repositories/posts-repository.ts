@@ -17,7 +17,7 @@ export const postsRepository = {
             title: inputData.title,
             shortDescription: inputData.shortDescription,
             content: inputData.content,
-            blogId: inputData.blogId,
+            blogId: DB.blogs[0].id,
             blogName: `blog.${inputData.title}`
         }
 
