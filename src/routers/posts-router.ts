@@ -10,7 +10,7 @@ postsRouter.get('/', (req: Request, res: Response) => {
     res.status(200).send(allPosts)
 })
 
-postsRouter.post('/', authorisationMiddleware, bodyPostValidation.title, bodyPostValidation.shortDescription, bodyPostValidation.content,
+postsRouter.post('/', bodyPostValidation.title, bodyPostValidation.shortDescription, bodyPostValidation.content,
     bodyPostValidation.blogId, inputValidationMiddleware, (req: Request, res: Response) => {
     const {title, shortDescription, content, blogId} = req.body
 
@@ -27,22 +27,22 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
     }
 })
 
-postsRouter.put('/:id', authorisationMiddleware, bodyPostValidation.title, bodyPostValidation.shortDescription, bodyPostValidation.content,
+postsRouter.put('/:id', bodyPostValidation.title, bodyPostValidation.shortDescription, bodyPostValidation.content,
     bodyPostValidation.blogId, inputValidationMiddleware, (req: Request, res: Response) => {
     const {title, shortDescription, content, blogId} = req.body
 
     const getPostById = postsRepository.getPostById(req.params.id)
-    const updatedPost = postsRepository.updatePost(req.body)
+    postsRepository.updatePost(req.body)
 
     if (!getPostById) {
         res.sendStatus(404)
     } else {
-        res.status(204).send(updatedPost)
+        res.sendStatus(204)
     }
 
 })
 
-postsRouter.delete('/:id', authorisationMiddleware, (req: Request, res: Response) => {
+postsRouter.delete('/:id', (req: Request, res: Response) => {
     const successDel = postsRepository.deletePost(req.params.id)
 
     if (!successDel) {

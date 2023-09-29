@@ -87,7 +87,7 @@ describe("tests for Posts", () => {
     it('Put - success', async () => {
         await request(app)
             .put('/posts/' + createdPosts.id)
-            .send({title: 'VIDEONAME', shortDescription: 'THIS VIDEO IS ABOUT OUR LIFE', content: 'We will talk about me', blogId: createdBlog.id})
+            .send({title: 'VIDEONAME', shortDescription: 'THIS VIDEO IS ABOUT OUR LIFE', blogId: createdBlog.id})
             .expect(204)
     })
 
