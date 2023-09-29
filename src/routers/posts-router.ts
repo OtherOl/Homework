@@ -29,14 +29,14 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
 
 postsRouter.put('/:id', authorisationMiddleware, bodyPostValidation.title, bodyPostValidation.shortDescription, bodyPostValidation.content,
     bodyPostValidation.blogId, inputValidationMiddleware, (req: Request, res: Response) => {
-    const {id, title, shortDescription, content, blogId} = req.body
+    const {title, shortDescription, content, blogId} = req.body
 
-    const updatedPost = postsRepository.updatePost(req.body)
+    const updatedPost = postsRepository.updatePost(req.params.id, req.body)
 
-    if (!updatedPost) {
-        res.sendStatus(404)
-    } else {
+    if (updatedPost) {
         res.sendStatus(204)
+    } else {
+        res.sendStatus(404)
     }
 
 })
