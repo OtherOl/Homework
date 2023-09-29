@@ -37,7 +37,7 @@ postsRouter.put('/:id', authorisationMiddleware, bodyPostValidation.title, bodyP
     if (!getPostById) {
         res.sendStatus(404)
     } else {
-        res.status(204).send(updatedPost)
+        res.status(204).send(getPostById)
     }
 
 })
