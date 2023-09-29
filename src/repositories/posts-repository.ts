@@ -28,15 +28,12 @@ export const postsRepository = {
     updatePost(inputData: postModel) {
         const foundPost = this.getPostById(inputData.id)
 
-        if(!foundPost){
-            return false
-        } else {
-            foundPost.title = inputData.title
-            foundPost.shortDescription = inputData.shortDescription
-            foundPost.content = inputData.content
-            foundPost.blogId = inputData.blogId
-            return true
-        }
+        if(!foundPost) return false
+
+        foundPost.title = inputData.title
+        foundPost.shortDescription = inputData.shortDescription
+        foundPost.content = inputData.content
+        foundPost.blogId = inputData.blogId
     },
 
     deletePost(id: string) {
