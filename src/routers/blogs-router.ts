@@ -30,15 +30,14 @@ blogsRouter.get('/:id', (req: Request, res: Response) => {
 })
 
 blogsRouter.put('/:id', authorisationMiddleware, bodyBlogValidation.name, bodyBlogValidation.description, bodyBlogValidation.websiteUrl, inputValidationMiddleware, (req: Request, res: Response) => {
-    const {id, name, description, websiteUrl} = req.body
+    const {name, description, websiteUrl} = req.body
 
-    let getBlogById = blogsRepository.getBlogById(req.params.id)
-    blogsRepository.updateBlog(req.body)
+    const updatedBlog = blogsRepository.updateBlog(req.params.id, req.body)
 
-    if(!getBlogById) {
-        res.sendStatus(404)
-    } else {
+    if(updatedBlog) {
         res.sendStatus(204)
+    } else {
+        res.sendStatus(404)
     }
 })
 

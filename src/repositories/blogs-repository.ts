@@ -30,16 +30,16 @@ export const blogsRepository = {
         return newBlog
     },
 
-    updateBlog(inputData: blogModel) {
-        let foundBlog = this.getBlogById(inputData.id)
+    updateBlog(id: string, inputData: blogModel) {
+        let foundBlog = DB.blogs.find(p => p.id === id)
 
-        if(!foundBlog) {
-            return false
-        } else {
+        if(foundBlog) {
             foundBlog.name = inputData.name
             foundBlog.description = inputData.description
             foundBlog.websiteUrl = inputData.websiteUrl
             return true
+        } else {
+            return false
         }
     },
 
