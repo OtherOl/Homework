@@ -12,7 +12,7 @@ blogsRouter.get('/', (req: Request, res: Response) => {
     res.status(200).send(allBlogs)
 })
 
-blogsRouter.post('/',bodyBlogValidation.name, bodyBlogValidation.description, bodyBlogValidation.websiteUrl, inputValidationMiddleware, (req: Request, res: Response) => {
+blogsRouter.post('/', authorisationMiddleware, bodyBlogValidation.name, bodyBlogValidation.description, bodyBlogValidation.websiteUrl, inputValidationMiddleware, (req: Request, res: Response) => {
     const {name, description, websiteUrl} = req.body
     const newBlog = blogsRepository.createBlog(req.body)
 
