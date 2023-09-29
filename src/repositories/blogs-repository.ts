@@ -39,6 +39,7 @@ export const blogsRepository = {
             foundBlog.name = inputData.name
             foundBlog.description = inputData.description
             foundBlog.websiteUrl = inputData.websiteUrl
+            return true
         }
     },
 
