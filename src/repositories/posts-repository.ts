@@ -35,7 +35,7 @@ export const postsRepository = {
             foundPost.shortDescription = inputData.shortDescription
             foundPost.content = inputData.content
             foundPost.blogId = inputData.blogId
-            return foundPost
+            return true
         }
     },
 
