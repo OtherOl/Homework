@@ -32,9 +32,9 @@ postsRouter.put('/:id', authorisationMiddleware, bodyPostValidation.title, bodyP
     const {title, shortDescription, content, blogId} = req.body
 
     const getPostById = postsRepository.getPostById(req.params.id)
-    postsRepository.updatePost(req.body)
+    const updatedPost = postsRepository.updatePost(req.body)
 
-    if (!getPostById) {
+    if (!updatedPost) {
         res.sendStatus(404)
     } else {
         res.sendStatus(204)
