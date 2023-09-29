@@ -29,9 +29,8 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
 
 postsRouter.put('/:id', authorisationMiddleware, bodyPostValidation.title, bodyPostValidation.shortDescription, bodyPostValidation.content,
     bodyPostValidation.blogId, inputValidationMiddleware, (req: Request, res: Response) => {
-    const {title, shortDescription, content, blogId} = req.body
+    const {id, title, shortDescription, content, blogId} = req.body
 
-    const getPostById = postsRepository.getPostById(req.params.id)
     const updatedPost = postsRepository.updatePost(req.body)
 
     if (!updatedPost) {

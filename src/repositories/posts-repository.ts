@@ -26,7 +26,7 @@ export const postsRepository = {
     },
 
     updatePost(inputData: postModel) {
-        const foundPost = this.getPostById(inputData.id)
+        const foundPost = DB.posts.find(p => p.id === inputData.id)
 
         if(!foundPost) return false
 
