@@ -1,49 +1,44 @@
 import {postModel} from "../models/post-model";
 import {randomUUID} from "crypto";
 import {DB} from "../data/DB";
+import {client} from "../data/DB-Mongo";
 
 export const postsRepository = {
-    getAllPosts() {
-        return DB.posts
+    async getAllPosts() {
+        return client.db('blogs_posts').collection<postModel>('posts').find({}).toArray()
     },
 
-    getPostById(id: string) {
-        return DB.posts.find(p => p.id === id)
+    async getPostById(id: string) {
+        return client.db('blogs_posts').collection<postModel>('posts').findOne({id: id})
     },
 
-    createPost(inputData: postModel) {
+    async createPost(inputData: postModel) {
         const newPost = {
             id: randomUUID(),
             title: inputData.title,
             shortDescription: inputData.shortDescription,
             content: inputData.content,
             blogId: DB.blogs[0].id,
-            blogName: `blog.${inputData.title}`
+            blogName: `blog.${inputData.title}`,
+            createdAt: new Date().toISOString()
         }
 
-        DB.posts.push(newPost)
+        const result = await client.db('blogs_posts').collection<postModel>('posts').insertOne(newPost)
         return newPost
     },
 
-    updatePost(id: string, inputData: postModel) {
-        let foundPost = DB.posts.find(p => p.id === id)
+    async updatePost(id: string, inputData: postModel) {
+        const isUpdated = await client.db('blogs_posts').collection<postModel>('posts').updateOne({id: id}, {$set: {
+                title: inputData.title,
+                shortDescription: inputData.shortDescription,
+                content: inputData.content,
+                blogId: inputData.blogId
+            }})
 
-        if(foundPost) {
-            foundPost.title = inputData.title
-            foundPost.shortDescription = inputData.shortDescription
-            foundPost.content = inputData.content
-            foundPost.blogId = inputData.blogId
-            return true
-        } else {
-            return false
-        }
+        return isUpdated.matchedCount === 1
     },
 
-    deletePost(id: string) {
-        const findPost = this.getPostById(id)
-        if(!findPost) return false
-
-        DB.posts = DB.posts.filter(p => p.id !== findPost.id)
-        return true
+    async deletePost(id: string) {
+        return client.db('blogs_posts').collection<postModel>('posts').deleteOne({id: id})
     }
 }

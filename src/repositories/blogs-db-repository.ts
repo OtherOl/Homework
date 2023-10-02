@@ -17,7 +17,9 @@ export const blogsRepository = {
             id: randomUUID(),
             name: inputData.name,
             description: inputData.description,
-            websiteUrl: inputData.websiteUrl
+            websiteUrl: inputData.websiteUrl,
+            createdAt: new Date().toISOString(),
+            isMembership: false
         }
         const result = await client.db('blogs_posts').collection<blogModel>('blogs').insertOne(newBlog)
         return newBlog

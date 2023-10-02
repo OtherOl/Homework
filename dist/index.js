@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
 const express_1 = __importDefault(require("express"));
-const DB_1 = require("./data/DB");
 const blogs_router_1 = require("./routers/blogs-router");
 const posts_router_1 = require("./routers/posts-router");
 const DB_Mongo_1 = require("./data/DB-Mongo");
@@ -24,11 +23,11 @@ exports.app.use(express_1.default.json());
 exports.app.get('/', (req, res) => {
     res.send('Hello, at this moment we will create our future!');
 });
-exports.app.delete('/testing/all-data', (req, res) => {
-    DB_1.DB.posts = [];
-    DB_1.DB.blogs = [];
+exports.app.delete('/testing/all-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const resultBlog = yield DB_Mongo_1.client.db('blogs_posts').collection('blogs').deleteMany({});
+    const resultPost = yield DB_Mongo_1.client.db('blogs_posts').collection('posts').deleteMany({});
     res.sendStatus(204);
-});
+}));
 exports.app.use(express_1.default.json());
 exports.app.use('/blogs', blogs_router_1.blogsRouter);
 exports.app.use('/posts', posts_router_1.postsRouter);

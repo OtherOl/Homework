@@ -29,7 +29,9 @@ exports.blogsRepository = {
                 id: (0, crypto_1.randomUUID)(),
                 name: inputData.name,
                 description: inputData.description,
-                websiteUrl: inputData.websiteUrl
+                websiteUrl: inputData.websiteUrl,
+                createdAt: new Date().toISOString(),
+                isMembership: false
             };
             const result = yield DB_Mongo_1.client.db('blogs_posts').collection('blogs').insertOne(newBlog);
             return newBlog;
