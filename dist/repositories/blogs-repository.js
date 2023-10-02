@@ -3,12 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRepository = void 0;
 const crypto_1 = require("crypto");
 const DB_1 = require("../data/DB");
-// let blogs = [{
-//     id: randomUUID(),
-//     name: "a little bit",
-//     description: "shortcut",
-//     websiteUrl: "https://asda"
-// }]
 exports.blogsRepository = {
     getAllblogs() {
         return DB_1.DB.blogs;
@@ -26,15 +20,16 @@ exports.blogsRepository = {
         DB_1.DB.blogs.push(newBlog);
         return newBlog;
     },
-    updateBlog(inputData) {
-        let foundBlog = this.getBlogById(inputData.id);
-        if (!foundBlog) {
-            return false;
-        }
-        else {
+    updateBlog(id, inputData) {
+        let foundBlog = DB_1.DB.blogs.find(p => p.id === id);
+        if (foundBlog) {
             foundBlog.name = inputData.name;
             foundBlog.description = inputData.description;
             foundBlog.websiteUrl = inputData.websiteUrl;
+            return true;
+        }
+        else {
+            return false;
         }
     },
     deleteBlog(id) {

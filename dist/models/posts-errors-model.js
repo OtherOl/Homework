@@ -2,18 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.errBlogId = exports.errContent = exports.errPostDesc = exports.errTitle = void 0;
 exports.errTitle = {
-    message: 'Invalid Title',
+    message: 'Invalid value',
     field: 'Title'
 };
 exports.errPostDesc = {
-    message: 'Invalid Description',
-    field: 'Description'
+    message: 'Invalid value',
+    field: 'shortDescription'
 };
 exports.errContent = {
-    message: 'Invalid Content',
-    field: 'Content'
+    message: 'Invalid value',
+    field: 'content'
 };
 exports.errBlogId = {
-    message: 'Invalid BlogId',
-    field: 'BlogId'
+    message: 'invalid blogId',
+    field: 'blogId'
 };

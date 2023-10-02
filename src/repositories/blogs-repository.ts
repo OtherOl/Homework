@@ -2,13 +2,6 @@ import {randomUUID} from "crypto";
 import {blogModel} from "../models/blog-model";
 import {DB} from "../data/DB";
 
-// let blogs = [{
-//     id: randomUUID(),
-//     name: "a little bit",
-//     description: "shortcut",
-//     websiteUrl: "https://asda"
-// }]
-
 export const blogsRepository = {
     getAllblogs() {
         return DB.blogs
