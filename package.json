@@ -10,6 +10,7 @@
     "jest": "jest"
   },
   "dependencies": {
+    "@types/cors": "^2.8.14",
     "@types/jest": "^29.5.5",
     "@types/supertest": "^2.0.12",
     "cors": "^2.8.5",
