@@ -1,7 +1,7 @@
 import {MongoClient} from "mongodb";
 import {blogModel} from "../models/blog-model";
 
-const mongoUri = process.env.mongoUri || 'mongodb://0.0.0.0:27017'
+const mongoUri = "mongodb+srv://OtherOl:24092003d@cluster0.c2fjrgk.mongodb.net/?retryWrites=true&w=majority"
 
 export const client = new MongoClient(mongoUri)
 
