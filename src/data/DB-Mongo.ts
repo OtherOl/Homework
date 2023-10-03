@@ -1,7 +1,12 @@
 import {MongoClient} from "mongodb";
-import {blogModel} from "../models/blog-model";
+import dotenv from 'dotenv'
+dotenv.config()
 
-const mongoUri = "mongodb+srv://OtherOl:24092003d@cluster0.c2fjrgk.mongodb.net/?retryWrites=true&w=majority"
+const mongoUri = process.env.MONGO_URL
+
+if(!mongoUri) {
+    throw new Error('URL doesnt found')
+}
 
 export const client = new MongoClient(mongoUri)
 
