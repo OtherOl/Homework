@@ -21,7 +21,7 @@ export const blogsRepository = {
             createdAt: new Date().toISOString(),
             isMembership: false
         }
-        const result = await client.db('blogs_posts').collection<blogModel>('blogs').insertOne(newBlog)
+        const result = await client.db('blogs_posts').collection<blogModel>('blogs').insertOne({...newBlog})
         return newBlog
     },
 

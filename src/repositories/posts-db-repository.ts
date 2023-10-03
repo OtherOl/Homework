@@ -22,7 +22,7 @@ export const postsRepository = {
             createdAt: new Date().toISOString()
         }
 
-        const result = await client.db('blogs_posts').collection<postModel>('posts').insertOne(newPost)
+        const result = await client.db('blogs_posts').collection<postModel>('posts').insertOne({...newPost})
         return newPost
     },
 
