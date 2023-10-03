@@ -11,8 +11,8 @@ blogsRouter.get('/', async (req: Request, res: Response) => {
     res.status(200).send(allBlogs)
 })
 
-blogsRouter.post('/', authorisationMiddleware, bodyBlogValidation.name, bodyBlogValidation.description, bodyBlogValidation.websiteUrl, inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+blogsRouter.post('/', authorisationMiddleware, bodyBlogValidation.name, bodyBlogValidation.description,
+    bodyBlogValidation.websiteUrl, inputValidationMiddleware, async (req: Request, res: Response) => {
     const {name, description, websiteUrl} = req.body
     const newBlog = await blogsRepository.createBlog(req.body)
 

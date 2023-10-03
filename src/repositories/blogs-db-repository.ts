@@ -12,7 +12,6 @@ export const blogsRepository = {
     },
 
     async createBlog(inputData: blogModel) {
-
         const newBlog = {
             id: randomUUID(),
             name: inputData.name,
