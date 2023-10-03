@@ -38,6 +38,8 @@ export const postsRepository = {
     },
 
     async deletePost(id: string) {
-        return client.db('blogs_posts').collection<postModel>('posts').deleteOne({id: id})
+        const deleteBlog = await client.db('blogs_posts').collection<postModel>('posts').deleteOne({id: id})
+
+        return deleteBlog.deletedCount === 1
     }
 }
