@@ -4,11 +4,11 @@ import {client} from "../data/DB-Mongo";
 
 export const blogsRepository = {
     async getAllBlogs() {
-        return client.db('blogs_posts').collection<blogModel>('blogs').find({}).toArray()
+        return client.db('blogs_posts').collection<blogModel>('blogs').find({}, {projection: {_id: 0}}).toArray()
     },
 
     async getBlogById(id: string) {
-        return client.db('blogs_posts').collection<blogModel>('blogs').findOne({id: id})
+        return client.db('blogs_posts').collection<blogModel>('blogs').findOne({id: id}, {projection: {_id: 0}})
     },
 
     async createBlog(inputData: blogModel) {

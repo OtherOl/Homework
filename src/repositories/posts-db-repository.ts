@@ -1,15 +1,14 @@
 import {postModel} from "../models/post-model";
 import {randomUUID} from "crypto";
-import {DB} from "../data/DB";
 import {client} from "../data/DB-Mongo";
 
 export const postsRepository = {
     async getAllPosts() {
-        return client.db('blogs_posts').collection<postModel>('posts').find({}).toArray()
+        return client.db('blogs_posts').collection<postModel>('posts').find({}, {projection: {_id: 0}}).toArray()
     },
 
     async getPostById(id: string) {
-        return client.db('blogs_posts').collection<postModel>('posts').findOne({id: id})
+        return client.db('blogs_posts').collection<postModel>('posts').findOne({id: id}, {projection: {_id: 0}})
     },
 
     async createPost(inputData: postModel) {
@@ -18,7 +17,7 @@ export const postsRepository = {
             title: inputData.title,
             shortDescription: inputData.shortDescription,
             content: inputData.content,
-            blogId: DB.blogs[0].id,
+            blogId: inputData.blogId,
             blogName: `blog.${inputData.title}`,
             createdAt: new Date().toISOString()
         }

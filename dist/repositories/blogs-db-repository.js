@@ -15,12 +15,12 @@ const DB_Mongo_1 = require("../data/DB-Mongo");
 exports.blogsRepository = {
     getAllBlogs() {
         return __awaiter(this, void 0, void 0, function* () {
-            return DB_Mongo_1.client.db('blogs_posts').collection('blogs').find({}).toArray();
+            return DB_Mongo_1.client.db('blogs_posts').collection('blogs').find({}, { projection: { _id: 0 } }).toArray();
         });
     },
     getBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return DB_Mongo_1.client.db('blogs_posts').collection('blogs').findOne({ id: id });
+            return DB_Mongo_1.client.db('blogs_posts').collection('blogs').findOne({ id: id }, { projection: { _id: 0 } });
         });
     },
     createBlog(inputData) {

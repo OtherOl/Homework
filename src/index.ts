@@ -1,5 +1,4 @@
 import express, {Request, Response} from "express";
-import {DB} from "./data/DB";
 import {blogsRouter} from "./routers/blogs-router";
 import {postsRouter} from "./routers/posts-router";
 import {client, runDb} from "./data/DB-Mongo";

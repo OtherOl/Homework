@@ -20,7 +20,7 @@ exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
     const allPosts = yield posts_db_repository_1.postsRepository.getAllPosts();
     res.status(200).send(allPosts);
 }));
-exports.postsRouter.post('/', authorisation_middleware_1.authorisationMiddleware, body_post_validation_1.bodyPostValidation.title, body_post_validation_1.bodyPostValidation.shortDescription, body_post_validation_1.bodyPostValidation.content, body_post_validation_1.bodyPostValidation.blogId, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.post('/', authorisation_middleware_1.authorisationMiddleware, body_post_validation_1.bodyPostValidation.blogId, body_post_validation_1.bodyPostValidation.title, body_post_validation_1.bodyPostValidation.shortDescription, body_post_validation_1.bodyPostValidation.content, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { title, shortDescription, content, blogId } = req.body;
     const newPost = yield posts_db_repository_1.postsRepository.createPost(req.body);
     res.status(201).send(newPost);

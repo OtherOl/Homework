@@ -11,17 +11,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRepository = void 0;
 const crypto_1 = require("crypto");
-const DB_1 = require("../data/DB");
 const DB_Mongo_1 = require("../data/DB-Mongo");
 exports.postsRepository = {
     getAllPosts() {
         return __awaiter(this, void 0, void 0, function* () {
-            return DB_Mongo_1.client.db('blogs_posts').collection('posts').find({}).toArray();
+            return DB_Mongo_1.client.db('blogs_posts').collection('posts').find({}, { projection: { _id: 0 } }).toArray();
         });
     },
     getPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return DB_Mongo_1.client.db('blogs_posts').collection('posts').findOne({ id: id });
+            return DB_Mongo_1.client.db('blogs_posts').collection('posts').findOne({ id: id }, { projection: { _id: 0 } });
         });
     },
     createPost(inputData) {
@@ -31,7 +30,7 @@ exports.postsRepository = {
                 title: inputData.title,
                 shortDescription: inputData.shortDescription,
                 content: inputData.content,
-                blogId: DB_1.DB.blogs[0].id,
+                blogId: inputData.blogId,
                 blogName: `blog.${inputData.title}`,
                 createdAt: new Date().toISOString()
             };
