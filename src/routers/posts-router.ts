@@ -1,13 +1,13 @@
 import {Request, Response, Router} from "express";
-import {postsRepository} from "../repositories/posts-db-repository";
 import {bodyPostValidation} from "../middlewares/body-post-validation";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {authorisationMiddleware} from "../middlewares/authorisation-middleware";
+import {postsService} from "../domain/posts-service";
 
 export const postsRouter = Router({})
 
 postsRouter.get('/', async (req: Request, res: Response) => {
-    const allPosts = await postsRepository.getAllPosts()
+    const allPosts = await postsService.getAllPosts()
     res.status(200).send(allPosts)
 })
 
@@ -15,12 +15,12 @@ postsRouter.post('/', authorisationMiddleware, bodyPostValidation.blogId, bodyPo
     bodyPostValidation.content, inputValidationMiddleware, async (req: Request, res: Response) => {
     const {title, shortDescription, content, blogId} = req.body
 
-    const newPost = await postsRepository.createPost(req.body)
+    const newPost = await postsService.createPost(req.body)
     res.status(201).send(newPost)
 })
 
 postsRouter.get('/:id', async (req: Request, res: Response) => {
-    const foundPost = await postsRepository.getPostById(req.params.id)
+    const foundPost = await postsService.getPostById(req.params.id)
     if (!foundPost) {
         res.sendStatus(404)
     } else {
@@ -32,7 +32,7 @@ postsRouter.put('/:id', authorisationMiddleware, bodyPostValidation.title, bodyP
     bodyPostValidation.blogId, inputValidationMiddleware, async (req: Request, res: Response) => {
     const {title, shortDescription, content, blogId} = req.body
 
-    const updatedPost = await postsRepository.updatePost(req.params.id, req.body)
+    const updatedPost = await postsService.updatePost(req.params.id, req.body)
 
     if (updatedPost) {
         res.sendStatus(204)
@@ -43,7 +43,7 @@ postsRouter.put('/:id', authorisationMiddleware, bodyPostValidation.title, bodyP
 })
 
 postsRouter.delete('/:id', authorisationMiddleware, async (req: Request, res: Response) => {
-    const successDel = await postsRepository.deletePost(req.params.id)
+    const successDel = await postsService.deletePost(req.params.id)
 
     if (!successDel) {
         res.sendStatus(404)
