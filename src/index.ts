@@ -4,7 +4,6 @@ import {postsRouter} from "./routers/posts-router";
 import {client, runDb} from "./data/DB-Mongo";
 import {blogModel} from "./models/blog-model";
 import {postModel} from "./models/post-model";
-import cors from 'cors'
 
 export const app = express()
 const port = process.env.PORT || 3000
@@ -21,7 +20,6 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
     res.sendStatus(204)
 })
 app.use(express.json())
-app.use(cors())
 app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)
 

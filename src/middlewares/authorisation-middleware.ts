@@ -10,7 +10,7 @@ export const authorisationMiddleware = (req: Request, res: Response, next: NextF
     const [authType, base64Credentials] = authHeader.split(' ')
 
     if(authType !== 'Basic') {
-        res.status(401).send('Invalid credentials')
+        return res.status(401).send('Invalid credentials')
     }
 
     const credentials = Buffer.from(base64Credentials, 'base64').toString('utf-8')
@@ -19,6 +19,6 @@ export const authorisationMiddleware = (req: Request, res: Response, next: NextF
     if(username === 'admin' && password === 'qwerty') {
         next()
     } else {
-        res.status(401).send('Invalid credentials')
+        return res.status(401).send('Invalid credentials')
     }
 }
