@@ -1,26 +1,26 @@
 import {Request, Response, Router} from "express";
 import {bodyBlogValidation} from "../middlewares/body-blog-validation";
-import {blogsRepository} from "../repositories/blogs-db-repository";
+import {blogsService} from "../domain/blogs-service";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {authorisationMiddleware} from "../middlewares/authorisation-middleware";
 
 export const blogsRouter = Router({})
 
 blogsRouter.get('/', async (req: Request, res: Response) => {
-    const allBlogs = await blogsRepository.getAllBlogs()
+    const allBlogs = await blogsService.getAllBlogs()
     res.status(200).send(allBlogs)
 })
 
 blogsRouter.post('/', authorisationMiddleware, bodyBlogValidation.name, bodyBlogValidation.description,
     bodyBlogValidation.websiteUrl, inputValidationMiddleware, async (req: Request, res: Response) => {
     const {name, description, websiteUrl} = req.body
-    const newBlog = await blogsRepository.createBlog(req.body)
+    const newBlog = await blogsService.createBlog(req.body)
 
     res.status(201).send(newBlog)
 })
 
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
-    let findBlog = await blogsRepository.getBlogById(req.params.id)
+    let findBlog = await blogsService.getBlogById(req.params.id)
 
     if(!findBlog) {
         res.sendStatus(404)
@@ -33,7 +33,7 @@ blogsRouter.put('/:id', authorisationMiddleware, bodyBlogValidation.name, bodyBl
     async (req: Request, res: Response) => {
     const {name, description, websiteUrl} = req.body
 
-    const updatedBlog = await blogsRepository.updateBlog(req.params.id, req.body)
+    const updatedBlog = await blogsService.updateBlog(req.params.id, req.body)
 
     if(updatedBlog) {
         res.sendStatus(204)
@@ -43,7 +43,7 @@ blogsRouter.put('/:id', authorisationMiddleware, bodyBlogValidation.name, bodyBl
 })
 
 blogsRouter.delete('/:id', authorisationMiddleware, async (req: Request, res: Response) => {
-    const foundedBlog = await blogsRepository.deleteBlog(req.params.id)
+    const foundedBlog = await blogsService.deleteBlog(req.params.id)
 
     if(!foundedBlog) {
         res.sendStatus(404)

@@ -1,4 +1,3 @@
-import {randomUUID} from "crypto";
 import {blogModel} from "../models/blog-model";
 import {client} from "../data/DB-Mongo";
 
@@ -12,16 +11,8 @@ export const blogsRepository = {
     },
 
     async createBlog(inputData: blogModel) {
-        const newBlog = {
-            id: randomUUID(),
-            name: inputData.name,
-            description: inputData.description,
-            websiteUrl: inputData.websiteUrl,
-            createdAt: new Date().toISOString(),
-            isMembership: false
-        }
-        const result = await client.db('blogs_posts').collection<blogModel>('blogs').insertOne({...newBlog})
-        return newBlog
+        const result = await client.db('blogs_posts').collection<blogModel>('blogs').insertOne({...inputData})
+        return inputData
     },
 
     async updateBlog(id: string, inputData: blogModel) {
