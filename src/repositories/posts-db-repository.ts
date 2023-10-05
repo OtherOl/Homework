@@ -2,12 +2,16 @@ import {postModel} from "../models/post-model";
 import {clientPostCollection} from "../data/DB-Mongo";
 
 export const postsRepository = {
-    async getAllPosts(pageNumber: number = 1, pageSize: number = 10) {
-        return clientPostCollection.find({}, {projection: {_id: 0}}).sort({createdAt: 1}).skip(pageNumber).limit(pageSize).toArray()
+    async getAllPosts(sortBy: string = "createdAT", sortDirection: string = "desc", pageNumber: number = 1, pageSize: number = 10) {
+        let sortQuery: any = {};
+        sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
+
+        return await clientPostCollection.find({}, {projection: {_id: 0}}).sort(sortQuery).skip(pageNumber - 1)
+            .limit(pageSize).toArray()
     },
 
     async getPostById(id: string) {
-        return clientPostCollection.findOne({id: id}, {projection: {_id: 0}})
+        return await clientPostCollection.findOne({id: id}, {projection: {_id: 0}})
     },
 
     async createPost(inputData: postModel) {
