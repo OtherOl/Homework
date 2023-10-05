@@ -3,7 +3,7 @@ import {client} from "../data/DB-Mongo";
 
 export const postsRepository = {
     async getAllPosts() {
-        return client.db('blogs_posts').collection<postModel>('posts').find({}, {projection: {_id: 0}}).sort({createdAt: 1}).toArray()
+        return client.db('blogs_posts').collection<postModel>('posts').find({}, {projection: {_id: 0}}).sort({createdAt: 1}).skip(1).limit(10).toArray()
     },
 
     async getPostById(id: string) {
