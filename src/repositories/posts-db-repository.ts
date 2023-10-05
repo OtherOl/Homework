@@ -2,8 +2,8 @@ import {postModel} from "../models/post-model";
 import {clientPostCollection} from "../data/DB-Mongo";
 
 export const postsRepository = {
-    async getAllPosts() {
-        return clientPostCollection.find({}, {projection: {_id: 0}}).sort({createdAt: 1}).skip(1).limit(3).toArray()
+    async getAllPosts(pageNumber: number = 1, pageSize: number = 10) {
+        return clientPostCollection.find({}, {projection: {_id: 0}}).sort({createdAt: 1}).skip(pageNumber).limit(pageSize).toArray()
     },
 
     async getPostById(id: string) {

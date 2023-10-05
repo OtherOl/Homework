@@ -3,8 +3,8 @@ import {randomUUID} from "crypto";
 import {postsRepository} from "../repositories/posts-db-repository";
 
 export const postsService = {
-    async getAllPosts() {
-        return postsRepository.getAllPosts()
+    async getAllPosts(pageNumber: number, pageSize: number) {
+        return postsRepository.getAllPosts(pageNumber, pageSize)
     },
 
     async getPostById(id: string) {
