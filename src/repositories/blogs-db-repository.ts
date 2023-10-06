@@ -7,7 +7,9 @@ export const blogsRepository = {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
-        return await clientBlogCollection.find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}}).sort(sortQuery).skip(pageNumber - 1)
+        return await clientBlogCollection
+            .find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}})
+            .sort(sortQuery).skip(pageNumber - 1)
             .limit(pageSize).toArray()
     },
 

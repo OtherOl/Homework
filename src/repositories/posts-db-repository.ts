@@ -6,7 +6,8 @@ export const postsRepository = {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
 
-        return await clientPostCollection.find({}, {projection: {_id: 0}}).sort(sortQuery).skip(pageNumber - 1)
+        return await clientPostCollection.find({}, {projection: {_id: 0}})
+            .sort(sortQuery).skip(pageNumber - 1)
             .limit(pageSize).toArray()
     },
 
