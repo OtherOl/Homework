@@ -7,8 +7,11 @@ import {authorisationMiddleware} from "../middlewares/authorisation-middleware";
 export const blogsRouter = Router({})
 
 blogsRouter.get('/', async (req: Request, res: Response) => {
-    const allBlogs = await blogsService.getAllBlogs(req.body.sortBy, req.body.sortDirection, req.body.pageNumber, req.body.pageSize,
-        req.body.searchNameTerm)
+    const allBlogs = await blogsService.getAllBlogs(
+        req.body.searchNameTerm, req.body.sortBy,
+        req.body.sortDirection, req.body.pageNumber,
+        req.body.pageSize,
+        )
     res.status(200).send(allBlogs)
 })
 

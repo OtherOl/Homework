@@ -3,7 +3,7 @@ import {blogModel} from "../models/blog-model";
 import {blogsRepository} from "../repositories/blogs-db-repository";
 
 export const blogsService = {
-    async getAllBlogs(sortBy: string, sortDirection: string, pageNumber: number, pageSize: number, searchNameTerm: string) {
+    async getAllBlogs(searchNameTerm: string, sortBy: string, sortDirection: string, pageNumber: number, pageSize: number) {
         return blogsRepository.getAllBlogs()
     },
 
