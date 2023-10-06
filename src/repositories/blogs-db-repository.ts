@@ -2,11 +2,11 @@ import {blogModel} from "../models/blog-model";
 import {clientBlogCollection} from "../data/DB-Mongo";
 
 export const blogsRepository = {
-    async getAllBlogs(searchNameTerm: string = "", sortBy: string = "createdAt", sortDirection: string = "desc", pageNumber: number = 1, pageSize: number = 10) {
+    async getAllBlogs(searchNameTerm: string, sortBy: string = "createdAt", sortDirection: string = "desc", pageNumber: number = 1, pageSize: number = 10) {
         let sortQuery: any = {}
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
-        return await clientBlogCollection.find({name:[RegExp(searchNameTerm, "i")]}, {projection: {_id: 0}}).sort(sortQuery).skip(pageNumber - 1)
+        return await clientBlogCollection.find({name:RegExp(searchNameTerm, "i")}, {projection: {_id: 0}}).sort(sortQuery).skip(pageNumber - 1)
             .limit(pageSize).toArray()
     },
 
