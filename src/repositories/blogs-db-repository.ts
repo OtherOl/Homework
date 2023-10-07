@@ -1,16 +1,52 @@
 import {blogModel} from "../models/blog-model";
 import {clientBlogCollection} from "../data/DB-Mongo";
+import {randomUUID} from "crypto";
+import {paginationModel} from "../models/pagination-model";
+import {blogsRouter} from "../routers/blogs-router";
 
 export const blogsRepository = {
     async getAllBlogs(searchNameTerm: string = "", sortBy: string = "createdAt", sortDirection: string = "desc",
                       pageNumber: number = 1, pageSize: number = 10) {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
+        const countBlogs: number = await clientBlogCollection.find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}}).count()
+        const foundBlog: any = await clientBlogCollection.find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}})
 
-        return await clientBlogCollection
-            .find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}})
-            .sort(sortQuery).skip(pageNumber - 1)
-            .limit(pageSize).toArray()
+        const objects: paginationModel[] = [{
+            pagesCount: Math.ceil(pageSize / countBlogs),
+            page: pageNumber,
+            pageSize: pageSize,
+            totalCount: countBlogs,
+            foundBlog: foundBlog
+        }]
+        const blogs: blogModel[] = []
+
+
+        // return await clientBlogCollection
+        //     .find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}})
+        //     .sort(sortQuery).skip(pageNumber - 1)
+        //     .limit(pageSize).toArray()
+        return objects.map(object => {
+
+            const blog = blogs.find(a => a.name === object.foundBlog)
+
+            return {
+                pagesCount: object.pagesCount,
+                page: object.page,
+                pageSize: pageSize,
+                totalCount: countBlogs,
+                items: [
+                    {
+                        id: blog?.id,
+                        name: blog?.name,
+                        description: blog?.description,
+                        websiteUrl: blog?.websiteUrl,
+                        createdAt: blog?.createdAt,
+                        isMembership: false
+                    }
+                ]
+            }
+        })
     },
 
     async getBlogById(id: string) {
