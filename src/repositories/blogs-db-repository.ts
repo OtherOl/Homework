@@ -28,7 +28,7 @@ export const blogsRepository = {
         //     .limit(pageSize).toArray()
         return objects.map(object => {
 
-            const blog = blogs.find(a => a.name === object.foundBlog)
+            const blog = blogs.find(a => a.name === foundBlog.name)
 
             return {
                 pagesCount: object.pagesCount,
@@ -42,7 +42,7 @@ export const blogsRepository = {
                         description: blog?.description,
                         websiteUrl: blog?.websiteUrl,
                         createdAt: blog?.createdAt,
-                        isMembership: false
+                        isMembership: blog?.isMembership
                     }
                 ]
             }
