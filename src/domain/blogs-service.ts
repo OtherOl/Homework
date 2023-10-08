@@ -5,16 +5,16 @@ import {blogsRepository} from "../repositories/blogs-db-repository";
 export const blogsService = {
     async getAllBlogs(searchNameTerm: string, sortBy: string, sortDirection: string,
                       pageNumber: number, pageSize: number) {
-        return blogsRepository.getAllBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize)
+        return await blogsRepository.getAllBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize)
     },
 
     async getPostByBlogId(blogId: string, sortBy: string, sortDirection: string,
                           pageNumber: number, pageSize: number) {
-        return blogsRepository.getPostByBlogId(blogId, sortBy, sortDirection, pageNumber, pageSize)
+        return await blogsRepository.getPostByBlogId(blogId, sortBy, sortDirection, pageNumber, pageSize)
     },
 
     async getBlogById(id: string) {
-        return blogsRepository.getBlogById(id)
+        return await blogsRepository.getBlogById(id)
     },
 
     async createBlog(inputData: blogModel) {

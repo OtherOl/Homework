@@ -4,11 +4,11 @@ import {postsRepository} from "../repositories/posts-db-repository";
 
 export const postsService = {
     async getAllPosts(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string) {
-        return postsRepository.getAllPosts(pageNumber, pageSize, sortBy, sortDirection)
+        return await postsRepository.getAllPosts(pageNumber, pageSize, sortBy, sortDirection)
     },
 
     async getPostById(id: string) {
-        return postsRepository.getPostById(id)
+        return await postsRepository.getPostById(id)
     },
 
     async createPost(inputData: postModel) {
