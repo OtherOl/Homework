@@ -12,6 +12,10 @@ export const blogsService = {
         return blogsRepository.getBlogById(id)
     },
 
+    async getPostByBlogId(id: string) {
+      return blogsRepository.getPostByBlogId(id)
+    },
+
     async createBlog(inputData: blogModel) {
         const newBlog = {
             id: randomUUID(),

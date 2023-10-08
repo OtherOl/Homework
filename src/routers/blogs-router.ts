@@ -33,6 +33,16 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
     }
 })
 
+blogsRouter.get('/:blogId/posts', async (req: Request, res: Response) => {
+    const foundPost = blogsService.getPostByBlogId(req.body.id)
+
+    if(!foundPost) {
+        return res.sendStatus(404)
+    } else {
+        return res.status(200).send(foundPost)
+    }
+})
+
 blogsRouter.put('/:id', authorisationMiddleware, bodyBlogValidation.name, bodyBlogValidation.description, bodyBlogValidation.websiteUrl, inputValidationMiddleware,
     async (req: Request, res: Response) => {
     const {name, description, websiteUrl} = req.body

@@ -1,5 +1,5 @@
 import {blogModel} from "../models/blog-model";
-import {clientBlogCollection} from "../data/DB-Mongo";
+import {clientBlogCollection, clientPostCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
 
 export const blogsRepository = {
@@ -38,6 +38,10 @@ export const blogsRepository = {
 
     async getBlogById(id: string) {
         return await clientBlogCollection.findOne({id: id}, {projection: {_id: 0}})
+    },
+
+    async getPostByBlogId(id: string) {
+        return await clientPostCollection.find({blogId: id}).toArray()
     },
 
     async createBlog(inputData: blogModel) {
