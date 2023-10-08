@@ -33,12 +33,14 @@ export const postsRepository = {
     },
 
     async updatePost(id: string, inputData: postModel) {
-        const isUpdated = await clientPostCollection.updateOne({id: id}, {$set: {
+        const isUpdated = await clientPostCollection.updateOne({id: id}, {
+            $set: {
                 title: inputData.title,
                 shortDescription: inputData.shortDescription,
                 content: inputData.content,
                 blogId: inputData.blogId
-            }})
+            }
+        })
 
         return isUpdated.matchedCount === 1
     },

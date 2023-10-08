@@ -29,7 +29,7 @@ export const blogsRepository = {
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
         const countPosts: number = await clientPostCollection.countDocuments({blogId: blogId})
-        const foundPosts: any =  await clientPostCollection.find({blogId: blogId}, {projection: {_id: 0}})
+        const foundPosts: any = await clientPostCollection.find({blogId: blogId}, {projection: {_id: 0}})
             .sort(sortQuery).skip(pageNumber - 1).limit(pageSize).toArray()
 
         const objects: paginationModel = {
@@ -53,11 +53,13 @@ export const blogsRepository = {
     },
 
     async updateBlog(id: string, inputData: blogModel) {
-        const foundBlog = await clientBlogCollection.updateOne({id: id}, {$set: {
-            name: inputData.name,
-            description: inputData.description,
-            websiteUrl: inputData.websiteUrl
-        }})
+        const foundBlog = await clientBlogCollection.updateOne({id: id}, {
+            $set: {
+                name: inputData.name,
+                description: inputData.description,
+                websiteUrl: inputData.websiteUrl
+            }
+        })
 
         return foundBlog.matchedCount === 1
     },
