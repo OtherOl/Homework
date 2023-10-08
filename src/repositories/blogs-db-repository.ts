@@ -32,12 +32,8 @@ export const blogsRepository = {
         })
     },
 
-    async getBlogById(id: string) {
-        return await clientBlogCollection.findOne({id: id}, {projection: {_id: 0}})
-    },
-
     async getPostByBlogId(id: string, sortBy: string = "createdAt", sortDirection: string = "desc",
-    pageNumber: number = 1, pageSize: number = 10) {
+                          pageNumber: number = 1, pageSize: number = 10) {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
@@ -62,6 +58,10 @@ export const blogsRepository = {
                 items: foundPosts
             }
         })
+    },
+
+    async getBlogById(id: string) {
+        return await clientBlogCollection.findOne({id: id}, {projection: {_id: 0}})
     },
 
     async createBlog(inputData: blogModel) {
