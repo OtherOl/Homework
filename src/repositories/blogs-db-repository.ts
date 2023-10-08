@@ -28,7 +28,7 @@ export const blogsRepository = {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
-        const countPosts: number = await clientPostCollection.find({blogId: blogId}, {projection: {_id: 0}}).count()
+        const countPosts: number = await clientPostCollection.countDocuments({blogId: blogId})
         const foundPosts: any =  await clientPostCollection.find({blogId: blogId}, {projection: {_id: 0}})
             .sort(sortQuery).skip(pageNumber - 1).limit(pageSize).toArray()
 
