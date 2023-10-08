@@ -8,12 +8,13 @@ export const blogsService = {
         return blogsRepository.getAllBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize)
     },
 
-    async getBlogById(blogId: string) {
-        return blogsRepository.getBlogById(blogId)
+    async getBlogById(id: string) {
+        return blogsRepository.getBlogById(id)
     },
 
-    async getPostByBlogId(id: string) {
-      return blogsRepository.getPostByBlogId(id)
+    async getPostByBlogId(id: string, sortBy: string, sortDirection: string,
+                          pageNumber: number, pageSize: number) {
+      return blogsRepository.getPostByBlogId(id, sortBy, sortDirection, pageNumber, pageSize)
     },
 
     async createBlog(inputData: blogModel) {
