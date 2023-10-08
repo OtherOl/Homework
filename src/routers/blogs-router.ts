@@ -23,6 +23,20 @@ blogsRouter.post('/', authorisationMiddleware, bodyBlogValidation.name, bodyBlog
     res.status(201).send(newBlog)
 })
 
+blogsRouter.get('/:BlogId/posts', async (req: Request, res: Response) => {
+    const foundPost = blogsService.getPostByBlogId(
+        req.params.id, req.body.sortBy,
+        req.body.sortDirection, req.body.pageNumber,
+        req.body.pageSize
+    )
+
+    if(!foundPost) {
+        return res.sendStatus(404)
+    } else {
+        return res.status(200).send(foundPost)
+    }
+})
+
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
     let findBlog = await blogsService.getBlogById(req.params.id)
 
@@ -30,18 +44,6 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
         res.sendStatus(404)
     } else {
         res.status(200).send(findBlog)
-    }
-})
-
-blogsRouter.get('/:BlogId/posts', async (req: Request, res: Response) => {
-    const foundPost = blogsService.getPostByBlogId(req.params.id, req.body.sortBy,
-        req.body.sortDirection, req.body.pageNumber,
-        req.body.pageSize)
-
-    if(!foundPost) {
-        return res.sendStatus(404)
-    } else {
-        return res.status(200).send(foundPost)
     }
 })
 
