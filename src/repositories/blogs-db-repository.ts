@@ -20,16 +20,6 @@ export const blogsRepository = {
             foundBlog: foundBlog,
         }
 
-        // return objects.map(object => {
-        //
-        //     return {
-        //         pagesCount: object.pagesCount,
-        //         page: object.page,
-        //         pageSize: pageSize,
-        //         totalCount: countBlogs,
-        //         items: foundBlog
-        //     }
-        // })
         return objects
     },
 

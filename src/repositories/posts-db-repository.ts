@@ -8,7 +8,7 @@ export const postsRepository = {
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
 
         const countPosts: number = await clientPostCollection.find({}, {projection: {_id: 0}}).count()
-        const foundPost: any = await clientPostCollection.find({}, {projection: {_id: 0}})
+        const foundPost: any[] = await clientPostCollection.find({}, {projection: {_id: 0}})
             .sort(sortQuery).skip(pageNumber - 1)
             .limit(pageSize).toArray()
 
@@ -20,15 +20,17 @@ export const postsRepository = {
             foundBlog: foundPost,
         }]
 
-        return objects.map(object => {
-            return {
-                pagesCount: object.pagesCount,
-                page: object.page,
-                pageSize: pageSize,
-                totalCount: countPosts,
-                items: foundPost
-            }
-        })
+        // return objects.map(object => {
+        //     return {
+        //         pagesCount: object.pagesCount,
+        //         page: object.page,
+        //         pageSize: pageSize,
+        //         totalCount: countPosts,
+        //         items: foundPost
+        //     }
+        // })
+
+        return objects
     },
 
     async getPostById(id: string) {
