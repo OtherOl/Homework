@@ -9,27 +9,28 @@ export const blogsRepository = {
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
         const countBlogs: number = await clientBlogCollection.find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}}).count()
-        const foundBlog: any = await clientBlogCollection.find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}})
-            .sort(sortQuery).skip((pageNumber - 1) * pageSize).limit(pageSize).toArray()
+        const foundBlog: any[] = await clientBlogCollection.find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}})
+            .sort(sortQuery).skip(pageNumber - 1).limit(pageSize).toArray()
 
-        const objects: paginationModel[] = [{
+        const objects: paginationModel = {
             pagesCount: Math.ceil(countBlogs / pageSize),
             page: pageNumber,
             pageSize: pageSize,
             totalCount: countBlogs,
             foundBlog: foundBlog,
-        }]
+        }
 
-        return objects.map(object => {
-
-            return {
-                pagesCount: object.pagesCount,
-                page: object.page,
-                pageSize: pageSize,
-                totalCount: countBlogs,
-                items: foundBlog
-            }
-        })
+        // return objects.map(object => {
+        //
+        //     return {
+        //         pagesCount: object.pagesCount,
+        //         page: object.page,
+        //         pageSize: pageSize,
+        //         totalCount: countBlogs,
+        //         items: foundBlog
+        //     }
+        // })
+        return objects
     },
 
     async getPostByBlogId(blogId: string, sortBy: string = "createdAt", sortDirection: string = "desc",
