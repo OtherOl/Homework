@@ -9,7 +9,7 @@ export const postsRepository = {
 
         const countPosts: number = await clientPostCollection.find({}, {projection: {_id: 0}}).count()
         const foundPost: any = await clientPostCollection.find({}, {projection: {_id: 0}})
-            .sort(sortQuery).skip(pageNumber - 1)
+            .sort(sortQuery).skip((pageNumber - 1) * pageSize)
             .limit(pageSize).toArray()
 
         const objects: paginationModel[] = [{

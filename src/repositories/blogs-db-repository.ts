@@ -10,7 +10,7 @@ export const blogsRepository = {
 
         const countBlogs: number = await clientBlogCollection.find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}}).count()
         const foundBlog: any = await clientBlogCollection.find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}})
-            .sort(sortQuery).skip(pageNumber - 1).limit(pageSize).toArray()
+            .sort(sortQuery).skip((pageNumber - 1) * pageSize).limit(pageSize).toArray()
 
         const objects: paginationModel[] = [{
             pagesCount: Math.ceil(countBlogs / pageSize),
