@@ -8,9 +8,9 @@ export const blogsRouter = Router({})
 
 blogsRouter.get('/', async (req: Request, res: Response) => {
     const allBlogs = await blogsService.getAllBlogs(
-        req.body.searchNameTerm, req.body.sortBy,
-        req.body.sortDirection, req.body.pageNumber,
-        req.body.pageSize
+        req.params.searchNameTerm, req.params.sortBy,
+        req.params.sortDirection, +req.params.pageNumber,
+        +req.params.pageSize
     )
     res.status(200).send(allBlogs)
 })

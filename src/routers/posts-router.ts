@@ -8,8 +8,8 @@ export const postsRouter = Router({})
 
 postsRouter.get('/', async (req: Request, res: Response) => {
     const allPosts = await postsService.getAllPosts(
-        req.body.pageNumber, req.body.pageSize,
-        req.body.sortBy, req.body.sortDirection
+        +req.params.pageNumber, +req.params.pageSize,
+        req.params.sortBy, req.params.sortDirection
     )
     res.status(200).send(allPosts)
 })
