@@ -34,7 +34,7 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 })
 
 blogsRouter.get('/:blogId/posts', async (req: Request, res: Response) => {
-    const foundPost = blogsService.getPostByBlogId(req.params.id)
+    const foundPost = blogsService.getPostByBlogId(req.body.blogId)
 
     if(!foundPost) {
         return res.sendStatus(404)

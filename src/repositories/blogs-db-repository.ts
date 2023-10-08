@@ -36,8 +36,8 @@ export const blogsRepository = {
         return await clientBlogCollection.findOne({id: id}, {projection: {_id: 0}})
     },
 
-    async getPostByBlogId(id: string) {
-        return await clientPostCollection.find({blogId: id}, {projection: {_id: 0}}).toArray()
+    async getPostByBlogId(blogId: string) {
+        return await clientPostCollection.find({blogId: blogId}, {projection: {_id: 0}}).toArray()
     },
 
     async createBlog(inputData: blogModel) {

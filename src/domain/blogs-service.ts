@@ -8,8 +8,8 @@ export const blogsService = {
         return blogsRepository.getAllBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize)
     },
 
-    async getBlogById(id: string) {
-        return blogsRepository.getBlogById(id)
+    async getBlogById(blogId: string) {
+        return blogsRepository.getBlogById(blogId)
     },
 
     async getPostByBlogId(id: string) {
