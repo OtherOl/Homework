@@ -3,5 +3,5 @@ export type paginationModel = {
     "page": number,
     "pageSize": number,
     "totalCount": number,
-    "foundBlog": string
+    "foundBlog": string[]
 }

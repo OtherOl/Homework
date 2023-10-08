@@ -11,13 +11,14 @@ export const blogsRepository = {
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
         const countBlogs: number = await clientBlogCollection.find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}}).count()
         const foundBlog: any = await clientBlogCollection.find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}})
+            .sort(sortQuery).skip(pageNumber - 1).limit(pageSize).toArray()
 
         const objects: paginationModel[] = [{
-            pagesCount: Math.ceil(pageSize / countBlogs),
+            pagesCount: Math.ceil(countBlogs / pageSize),
             page: pageNumber,
             pageSize: pageSize,
             totalCount: countBlogs,
-            foundBlog: foundBlog
+            foundBlog: foundBlog,
         }]
         const blogs: blogModel[] = []
 
@@ -28,23 +29,12 @@ export const blogsRepository = {
         //     .limit(pageSize).toArray()
         return objects.map(object => {
 
-            const blog = blogs.find(a => a.name === foundBlog.name)
-
             return {
                 pagesCount: object.pagesCount,
                 page: object.page,
                 pageSize: pageSize,
                 totalCount: countBlogs,
-                items: [
-                    {
-                        id: blog?.id,
-                        name: blog?.name,
-                        description: blog?.description,
-                        websiteUrl: blog?.websiteUrl,
-                        createdAt: blog?.createdAt,
-                        isMembership: blog?.isMembership
-                    }
-                ]
+                items: [foundBlog]
             }
         })
     },
