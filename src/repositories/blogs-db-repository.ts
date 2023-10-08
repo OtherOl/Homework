@@ -17,7 +17,7 @@ export const blogsRepository = {
             page: pageNumber,
             pageSize: pageSize,
             totalCount: countBlogs,
-            foundBlog: foundBlog,
+            items: foundBlog,
         }
 
         return objects
@@ -32,23 +32,15 @@ export const blogsRepository = {
         const foundPosts: any =  await clientPostCollection.find({blogId: blogId}, {projection: {_id: 0}})
             .sort(sortQuery).skip(pageNumber - 1).limit(pageSize).toArray()
 
-        const objects: paginationModel[] = [{
+        const objects: paginationModel = {
             pagesCount: Math.ceil(countPosts / pageSize),
             page: pageNumber,
             pageSize: pageSize,
             totalCount: countPosts,
-            foundBlog: foundPosts
-        }]
+            items: foundPosts
+        }
 
-        return objects.map(object => {
-            return {
-                pagesCount: object.pagesCount,
-                page: object.page,
-                pageSize: pageSize,
-                totalCount: countPosts,
-                items: foundPosts
-            }
-        })
+        return objects
     },
 
     async getBlogById(id: string) {

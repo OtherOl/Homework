@@ -17,18 +17,8 @@ export const postsRepository = {
             page: pageNumber,
             pageSize: pageSize,
             totalCount: countPosts,
-            foundBlog: foundPost,
+            items: foundPost,
         }
-
-        // return objects.map(object => {
-        //     return {
-        //         pagesCount: object.pagesCount,
-        //         page: object.page,
-        //         pageSize: pageSize,
-        //         totalCount: countPosts,
-        //         items: foundPost
-        //     }
-        // })
 
         return objects
     },
