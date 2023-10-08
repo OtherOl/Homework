@@ -20,10 +20,6 @@ export const blogsRepository = {
             foundBlog: foundBlog,
         }]
 
-        // return await clientBlogCollection
-        //     .find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}})
-        //     .sort(sortQuery).skip(pageNumber - 1)
-        //     .limit(pageSize).toArray()
         return objects.map(object => {
 
             return {
@@ -41,7 +37,7 @@ export const blogsRepository = {
     },
 
     async getPostByBlogId(id: string) {
-        return await clientPostCollection.find({blogId: id}).toArray()
+        return await clientPostCollection.find({blogId: id}, {projection: {_id: 0}}).toArray()
     },
 
     async createBlog(inputData: blogModel) {
