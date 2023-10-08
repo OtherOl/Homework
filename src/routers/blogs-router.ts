@@ -25,8 +25,8 @@ blogsRouter.post('/', authorisationMiddleware, bodyBlogValidation.name, bodyBlog
 
 blogsRouter.get('/:blogId/posts', async (req: Request, res: Response) => {
     const foundPost = blogsService.getPostByBlogId(
-        req.params.id, req.body.sortBy,
-        req.body.sortDirection, req.body.pageNumber,
+        req.params.blogId, req.body.sortBy,
+        req.body.sortDrection, req.body.pageNumber,
         req.body.pageSize
     )
 

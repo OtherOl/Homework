@@ -8,9 +8,9 @@ export const blogsService = {
         return blogsRepository.getAllBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize)
     },
 
-    async getPostByBlogId(id: string, sortBy: string, sortDirection: string,
+    async getPostByBlogId(blogId: string, sortBy: string, sortDirection: string,
                           pageNumber: number, pageSize: number) {
-        return blogsRepository.getPostByBlogId(id, sortBy, sortDirection, pageNumber, pageSize)
+        return blogsRepository.getPostByBlogId(blogId, sortBy, sortDirection, pageNumber, pageSize)
     },
 
     async getBlogById(id: string) {
