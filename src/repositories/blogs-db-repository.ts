@@ -10,12 +10,13 @@ export const blogsRepository = {
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
         const filter = {name: RegExp(searchNameTerm, "i")}
+        console.log(sortBy, sortDirection, searchNameTerm)
 
         const countBlogs: number = await clientBlogCollection.countDocuments(filter)
         const foundBlog: blogModel[] = await clientBlogCollection
             .find(filter, {projection: {_id: 0}})
             .sort(sortQuery)
-            .skip(pageNumber - 1)
+            .skip((pageNumber - 1)*pageSize)
             .limit(pageSize)
             .toArray()
 

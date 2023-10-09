@@ -17,7 +17,7 @@ const authorisation_middleware_1 = require("../middlewares/authorisation-middlew
 const posts_service_1 = require("../domain/posts-service");
 exports.postsRouter = (0, express_1.Router)({});
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const allPosts = yield posts_service_1.postsService.getAllPosts(+req.params.pageNumber, +req.params.pageSize, req.params.sortBy, req.params.sortDirection);
+    const allPosts = yield posts_service_1.postsService.getAllPosts(req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10);
     res.status(200).send(allPosts);
 }));
 exports.postsRouter.post('/', authorisation_middleware_1.authorisationMiddleware, body_post_validation_1.bodyPostValidation.blogId, body_post_validation_1.bodyPostValidation.title, body_post_validation_1.bodyPostValidation.shortDescription, body_post_validation_1.bodyPostValidation.content, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {

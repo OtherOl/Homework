@@ -12,14 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
 exports.postsRepository = {
-    getAllPosts(pageNumber = 1, pageSize = 10, sortBy = "createdAT", sortDirection = "desc") {
+    getAllPosts(sortBy = "createdAt", sortDirection = "desc", pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             let sortQuery = {};
             sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
-            const countPosts = yield DB_Mongo_1.clientPostCollection.find({}, { projection: { _id: 0 } }).count();
-            const foundPost = yield DB_Mongo_1.clientPostCollection.find({}, { projection: { _id: 0 } })
-                .sort(sortQuery).skip(pageNumber - 1)
-                .limit(pageSize).toArray();
+            const countPosts = yield DB_Mongo_1.clientPostCollection.countDocuments();
+            const foundPost = yield DB_Mongo_1.clientPostCollection
+                .find({}, { projection: { _id: 0 } })
+                .sort(sortQuery)
+                .skip(pageNumber - 1)
+                .limit(pageSize)
+                .toArray();
             const objects = {
                 pagesCount: Math.ceil(countPosts / pageSize),
                 page: pageNumber,

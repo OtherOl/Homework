@@ -12,17 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
 exports.blogsRepository = {
-    getAllBlogs(searchNameTerm, sortBy = "createdAt", sortDirection = "desc", pageNumber = 1, pageSize = 10) {
+    getAllBlogs(searchNameTerm, sortBy = "createdAt", sortDirection = "desc", pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             let sortQuery = {};
             sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
-            //ctrl+alt+l
             const filter = { name: RegExp(searchNameTerm, "i") };
+            console.log(sortBy, sortDirection, searchNameTerm);
             const countBlogs = yield DB_Mongo_1.clientBlogCollection.countDocuments(filter);
             const foundBlog = yield DB_Mongo_1.clientBlogCollection
-                .find({ name: RegExp(searchNameTerm, "i") }, { projection: { _id: 0 } })
+                .find(filter, { projection: { _id: 0 } })
                 .sort(sortQuery)
-                .skip(pageNumber - 1)
+                .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)
                 .toArray();
             const objects = {

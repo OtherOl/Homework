@@ -13,9 +13,9 @@ exports.postsService = void 0;
 const crypto_1 = require("crypto");
 const posts_db_repository_1 = require("../repositories/posts-db-repository");
 exports.postsService = {
-    getAllPosts(pageNumber, pageSize, sortBy, sortDirection) {
+    getAllPosts(sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield posts_db_repository_1.postsRepository.getAllPosts(pageNumber, pageSize, sortBy, sortDirection);
+            return yield posts_db_repository_1.postsRepository.getAllPosts(sortBy, sortDirection, pageNumber, pageSize);
         });
     },
     getPostById(id) {
