@@ -64,7 +64,7 @@ export const blogsRepository = {
         const isExists = await clientBlogCollection.findOne({id: inputData.blogId})
 
         if(!isExists) {
-            throw new Error("Blog doesn't exists")
+            return false
         } else {
             const result = await clientPostCollection.insertOne({...inputData})
             return inputData

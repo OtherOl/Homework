@@ -14,7 +14,7 @@ const express_validator_1 = require("express-validator");
 const DB_Mongo_1 = require("../data/DB-Mongo");
 exports.bodyPostValidation = {
     blogId: (0, express_validator_1.body)('blogId').custom((value) => __awaiter(void 0, void 0, void 0, function* () {
-        const blogExists = yield DB_Mongo_1.client.db('blogs_posts').collection('blogs').findOne({ id: value });
+        const blogExists = yield DB_Mongo_1.clientBlogCollection.findOne({ id: value });
         if (!blogExists) {
             throw new Error("Blog doesn't exists");
         }

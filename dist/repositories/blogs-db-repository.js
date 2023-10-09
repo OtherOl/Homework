@@ -61,6 +61,18 @@ exports.blogsRepository = {
             return yield DB_Mongo_1.clientBlogCollection.findOne({ id: id }, { projection: { _id: 0 } });
         });
     },
+    createPostByBlogId(inputData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const isExists = yield DB_Mongo_1.clientBlogCollection.findOne({ id: inputData.blogId });
+            if (!isExists) {
+                return false;
+            }
+            else {
+                const result = yield DB_Mongo_1.clientPostCollection.insertOne(Object.assign({}, inputData));
+                return inputData;
+            }
+        });
+    },
     createBlog(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield DB_Mongo_1.clientBlogCollection.insertOne(Object.assign({}, inputData));

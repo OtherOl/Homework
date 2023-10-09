@@ -15,6 +15,7 @@ const body_blog_validation_1 = require("../middlewares/body-blog-validation");
 const blogs_service_1 = require("../domain/blogs-service");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 const authorisation_middleware_1 = require("../middlewares/authorisation-middleware");
+const body_post_validation_1 = require("../middlewares/body-post-validation");
 exports.blogsRouter = (0, express_1.Router)({});
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const allBlogs = yield blogs_service_1.blogsService.getAllBlogs(req.query.searchNameTerm, req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10);
@@ -28,10 +29,19 @@ exports.blogsRouter.post('/', authorisation_middleware_1.authorisationMiddleware
 exports.blogsRouter.get('/:blogId/posts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const foundPost = yield blogs_service_1.blogsService.getPostByBlogId(req.params.blogId, req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10);
     if (!foundPost) {
-        return res.sendStatus(404);
+        res.sendStatus(404);
     }
     else {
-        return res.status(200).send(foundPost);
+        res.status(200).send(foundPost);
+    }
+}));
+exports.blogsRouter.post('/:blogId/posts', authorisation_middleware_1.authorisationMiddleware, body_post_validation_1.bodyPostValidation.title, body_post_validation_1.bodyPostValidation.shortDescription, body_post_validation_1.bodyPostValidation.content, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const newPost = yield blogs_service_1.blogsService.createPostByBlogId(req.params.blogId, req.body.title, req.body.shortDescription, req.body.content);
+    if (newPost === false) {
+        res.sendStatus(404);
+    }
+    else {
+        res.status(201).send(newPost);
     }
 }));
 exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {

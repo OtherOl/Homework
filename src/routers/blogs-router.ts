@@ -55,7 +55,11 @@ blogsRouter.post('/:blogId/posts', authorisationMiddleware, bodyPostValidation.t
             req.body.content
         )
 
-        res.status(201).send(newPost)
+        if(newPost === false) {
+            res.sendStatus(404)
+        } else {
+            res.status(201).send(newPost)
+        }
     })
 
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
