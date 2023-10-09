@@ -1,7 +1,7 @@
 import {blogModel} from "../models/blog-model";
 import {clientBlogCollection, clientPostCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
-import {postModel} from "../models/post-model";
+import {PostDbModel, PostViewModel} from "../models/post-model";
 
 export const blogsRepository = {
     async getAllBlogs(searchNameTerm: string, sortBy: string = "createdAt", sortDirection: string = "desc",
@@ -39,14 +39,14 @@ export const blogsRepository = {
 
         const isExists = await clientBlogCollection.findOne({id: blogId})
         const countPosts: number = await clientPostCollection.countDocuments(filter)
-        const foundPosts: postModel[] = await clientPostCollection
+        const foundPosts: PostDbModel[] = await clientPostCollection
             .find(filter, {projection: {_id: 0}})
             .sort(sortQuery)
             .skip((pageNumber - 1)*pageSize)
             .limit(pageSize)
             .toArray()
 
-        const objects: paginationModel<postModel> = {
+        const objects: paginationModel<PostViewModel> = {
             pagesCount: Math.ceil(countPosts / pageSize),
             page: pageNumber,
             pageSize: pageSize,
@@ -65,7 +65,7 @@ export const blogsRepository = {
         return await clientBlogCollection.findOne({id: id}, {projection: {_id: 0}})
     },
 
-    async createPostByBlogId(inputData: postModel) {
+    async createPostByBlogId(inputData: PostDbModel) {
         const isExists = await clientBlogCollection.findOne({id: inputData.blogId})
 
         if(!isExists) {

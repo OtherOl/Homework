@@ -4,6 +4,7 @@ import {blogsService} from "../domain/blogs-service";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {authorisationMiddleware} from "../middlewares/authorisation-middleware";
 import {bodyPostValidation} from "../middlewares/body-post-validation";
+import {postsService} from "../domain/posts-service";
 
 export const blogsRouter = Router({})
 
@@ -48,14 +49,12 @@ blogsRouter.get('/:blogId/posts', async (req: Request<{ blogId: string }, {}, {}
 
 blogsRouter.post('/:blogId/posts', authorisationMiddleware, bodyPostValidation.title, bodyPostValidation.shortDescription,
     bodyPostValidation.content, inputValidationMiddleware, async (req: Request, res: Response) => {
-        const newPost = await blogsService.createPostByBlogId(
-            req.params.blogId,
-            req.body.title,
-            req.body.shortDescription,
-            req.body.content
-        )
+    const blogId = req.params.blogId
+        const {title, shortDescription, content} = req.body
 
-        if(newPost === false) {
+        const newPost = await postsService.createPost({blogId, content, title, shortDescription})
+
+        if(!newPost) {
             res.sendStatus(404)
         } else {
             res.status(201).send(newPost)

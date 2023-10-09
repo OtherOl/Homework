@@ -40,19 +40,13 @@ exports.postsRepository = {
     },
     createPost(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield DB_Mongo_1.clientPostCollection.insertOne(Object.assign({}, inputData));
-            return inputData;
+            return DB_Mongo_1.clientPostCollection.insertOne(Object.assign({}, inputData));
         });
     },
     updatePost(id, inputData) {
         return __awaiter(this, void 0, void 0, function* () {
             const isUpdated = yield DB_Mongo_1.clientPostCollection.updateOne({ id: id }, {
-                $set: {
-                    title: inputData.title,
-                    shortDescription: inputData.shortDescription,
-                    content: inputData.content,
-                    blogId: inputData.blogId
-                }
+                $set: Object.assign({}, inputData)
             });
             return isUpdated.matchedCount === 1;
         });

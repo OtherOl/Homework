@@ -23,20 +23,6 @@ exports.blogsService = {
             return yield blogs_db_repository_1.blogsRepository.getPostByBlogId(blogId, sortBy, sortDirection, pageNumber, pageSize);
         });
     },
-    createPostByBlogId(blogId, title, shortDescription, content) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const newPost = {
-                id: (0, crypto_1.randomUUID)(),
-                title: title,
-                shortDescription: shortDescription,
-                content: content,
-                blogId: blogId,
-                blogName: title,
-                createdAt: new Date().toISOString()
-            };
-            return yield blogs_db_repository_1.blogsRepository.createPostByBlogId(newPost);
-        });
-    },
     getBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield blogs_db_repository_1.blogsRepository.getBlogById(id);

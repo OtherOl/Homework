@@ -3,7 +3,7 @@ import {blogsRouter} from "./routers/blogs-router";
 import {postsRouter} from "./routers/posts-router";
 import {client, runDb} from "./data/DB-Mongo";
 import {blogModel} from "./models/blog-model";
-import {postModel} from "./models/post-model";
+import {PostDbModel,} from "./models/post-model";
 
 export const app = express()
 const port = process.env.PORT || 3000
@@ -15,7 +15,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.delete('/testing/all-data', async (req: Request, res: Response) => {
     const resultBlog = await client.db('blogs_posts').collection<blogModel>('blogs').deleteMany({})
-    const resultPost = await client.db('blogs_posts').collection<postModel>('posts').deleteMany({})
+    const resultPost = await client.db('blogs_posts').collection<PostDbModel>('posts').deleteMany({})
 
     res.sendStatus(204)
 })

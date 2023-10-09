@@ -27,7 +27,7 @@ postsRouter.post('/', authorisationMiddleware, bodyPostValidation.blogId, bodyPo
     bodyPostValidation.content, inputValidationMiddleware, async (req: Request, res: Response) => {
     const {title, shortDescription, content, blogId} = req.body
 
-    const newPost = await postsService.createPost(req.body)
+    const newPost = await postsService.createPost({blogId, content, title, shortDescription})
     res.status(201).send(newPost)
 })
 

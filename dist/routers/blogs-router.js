@@ -16,6 +16,7 @@ const blogs_service_1 = require("../domain/blogs-service");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 const authorisation_middleware_1 = require("../middlewares/authorisation-middleware");
 const body_post_validation_1 = require("../middlewares/body-post-validation");
+const posts_service_1 = require("../domain/posts-service");
 exports.blogsRouter = (0, express_1.Router)({});
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const allBlogs = yield blogs_service_1.blogsService.getAllBlogs(req.query.searchNameTerm, req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10);
@@ -36,8 +37,10 @@ exports.blogsRouter.get('/:blogId/posts', (req, res) => __awaiter(void 0, void 0
     }
 }));
 exports.blogsRouter.post('/:blogId/posts', authorisation_middleware_1.authorisationMiddleware, body_post_validation_1.bodyPostValidation.title, body_post_validation_1.bodyPostValidation.shortDescription, body_post_validation_1.bodyPostValidation.content, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const newPost = yield blogs_service_1.blogsService.createPostByBlogId(req.params.blogId, req.body.title, req.body.shortDescription, req.body.content);
-    if (newPost === false) {
+    const blogId = req.params.blogId;
+    const { title, shortDescription, content } = req.body;
+    const newPost = yield posts_service_1.postsService.createPost({ blogId, content, title, shortDescription });
+    if (!newPost) {
         res.sendStatus(404);
     }
     else {

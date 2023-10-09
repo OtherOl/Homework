@@ -12,6 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsService = void 0;
 const crypto_1 = require("crypto");
 const posts_db_repository_1 = require("../repositories/posts-db-repository");
+const blogs_db_repository_1 = require("../repositories/blogs-db-repository");
+const mongodb_1 = require("mongodb");
 exports.postsService = {
     getAllPosts(sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -25,16 +27,29 @@ exports.postsService = {
     },
     createPost(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
+            const blog = yield blogs_db_repository_1.blogsRepository.getBlogById(inputData.blogId);
+            if (!blog)
+                return null;
             const newPost = {
+                _id: new mongodb_1.ObjectId(),
                 id: (0, crypto_1.randomUUID)(),
                 title: inputData.title,
                 shortDescription: inputData.shortDescription,
                 content: inputData.content,
-                blogId: inputData.blogId,
-                blogName: inputData.title,
+                blogId: blog.id,
+                blogName: blog.name,
                 createdAt: new Date().toISOString()
             };
-            return yield posts_db_repository_1.postsRepository.createPost(newPost);
+            yield posts_db_repository_1.postsRepository.createPost(newPost);
+            return {
+                id: newPost.id,
+                title: newPost.title,
+                shortDescription: newPost.shortDescription,
+                content: newPost.content,
+                blogId: newPost.blogId,
+                blogName: newPost.blogName,
+                createdAt: newPost.createdAt
+            };
         });
     },
     updatePost(id, inputData) {
