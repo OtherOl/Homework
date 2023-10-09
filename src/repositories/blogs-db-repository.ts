@@ -3,8 +3,8 @@ import {clientBlogCollection, clientPostCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
 
 export const blogsRepository = {
-    async getAllBlogs(searchNameTerm: string, sortBy: string = "createdAt", sortDirection: string = "desc",
-                      pageNumber: number = 1, pageSize: number = 10) {
+    async getAllBlogs(searchNameTerm: string, sortBy = "createdAt", sortDirection = "desc",
+                      pageNumber = 1, pageSize = 10) {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 

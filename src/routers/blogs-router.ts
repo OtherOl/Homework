@@ -18,7 +18,7 @@ blogsRouter.get('/', async (req: Request<{}, {}, {}, generic>, res: Response) =>
     const allBlogs = await blogsService.getAllBlogs(
         req.query.searchNameTerm, req.query.sortBy,
         req.query.sortDirection, +req.query.pageNumber,
-        +req.query.pageSize,
+        +req.query.pageSize
     )
     res.status(200).send(allBlogs)
 })
