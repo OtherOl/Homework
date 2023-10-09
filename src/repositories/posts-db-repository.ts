@@ -8,8 +8,6 @@ export const postsRepository = {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
 
-        console.log(sortBy, sortDirection)
-
         const countPosts: number = await clientPostCollection.countDocuments()
         const foundPost: postModel[] = await clientPostCollection
             .find({}, {projection: {_id: 0}})

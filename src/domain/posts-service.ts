@@ -18,7 +18,7 @@ export const postsService = {
             shortDescription: inputData.shortDescription,
             content: inputData.content,
             blogId: inputData.blogId,
-            blogName: `blog.${inputData.title}`,
+            blogName: inputData.title,
             createdAt: new Date().toISOString()
         }
 
