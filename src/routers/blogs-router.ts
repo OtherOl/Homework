@@ -46,7 +46,7 @@ blogsRouter.get('/:blogId/posts', async (req: Request<{ blogId: string }, {}, {}
     }
 })
 
-blogsRouter.post('/:blogId/posts', authorisationMiddleware, bodyPostValidation.blogId, bodyPostValidation.title, bodyPostValidation.shortDescription,
+blogsRouter.post('/:blogId/posts', authorisationMiddleware, bodyPostValidation.title, bodyPostValidation.shortDescription,
     bodyPostValidation.content, inputValidationMiddleware, async (req: Request, res: Response) => {
         const newPost = await blogsService.createPostByBlogId(
             req.params.blogId,

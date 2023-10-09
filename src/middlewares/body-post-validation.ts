@@ -1,6 +1,5 @@
 import {body} from "express-validator";
-import {client, clientBlogCollection} from "../data/DB-Mongo";
-import {blogModel} from "../models/blog-model";
+import {clientBlogCollection} from "../data/DB-Mongo";
 
 export const bodyPostValidation = {
     blogId:body('blogId').custom(async (value) => {
