@@ -37,6 +37,7 @@ export const blogsRepository = {
 
         const filter = {blogId: blogId}
 
+        const isExists = await clientBlogCollection.findOne({id: blogId})
         const countPosts: number = await clientPostCollection.countDocuments(filter)
         const foundPosts: postModel[] = await clientPostCollection
             .find(filter, {projection: {_id: 0}})
@@ -53,17 +54,15 @@ export const blogsRepository = {
             items: foundPosts
         }
 
-        return objects
+        if(!isExists) {
+            return false
+        } else {
+            return objects
+        }
     },
 
     async getBlogById(id: string) {
-        const isExists = await clientBlogCollection.findOne({id: id}, {projection: {_id: 0}})
-
-        if(!isExists){
-            return false
-        } else{
-            return isExists
-        }
+        return await clientBlogCollection.findOne({id: id}, {projection: {_id: 0}})
     },
 
     async createPostByBlogId(inputData: postModel) {

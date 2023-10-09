@@ -39,7 +39,7 @@ blogsRouter.get('/:blogId/posts', async (req: Request<{ blogId: string }, {}, {}
         req.query.pageSize ? +req.query.pageSize : 10
     )
 
-    if (!foundPost) {
+    if (foundPost === false) {
         res.sendStatus(404)
     } else {
         res.status(200).send(foundPost)

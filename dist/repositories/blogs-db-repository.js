@@ -39,6 +39,7 @@ exports.blogsRepository = {
             let sortQuery = {};
             sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
             const filter = { blogId: blogId };
+            const isExists = yield DB_Mongo_1.clientBlogCollection.findOne({ id: blogId });
             const countPosts = yield DB_Mongo_1.clientPostCollection.countDocuments(filter);
             const foundPosts = yield DB_Mongo_1.clientPostCollection
                 .find(filter, { projection: { _id: 0 } })
@@ -53,7 +54,12 @@ exports.blogsRepository = {
                 totalCount: countPosts,
                 items: foundPosts
             };
-            return objects;
+            if (!isExists) {
+                return false;
+            }
+            else {
+                return objects;
+            }
         });
     },
     getBlogById(id) {
