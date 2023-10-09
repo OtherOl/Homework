@@ -47,9 +47,9 @@ blogsRouter.get('/:blogId/posts', async (req: Request<{blogId: string}, {}, {}, 
     )
 
     if (!foundPost) {
-        return res.sendStatus(404)
+        res.sendStatus(404)
     } else {
-        return res.status(200).send(foundPost)
+        res.status(200).send(foundPost)
     }
 })
 
