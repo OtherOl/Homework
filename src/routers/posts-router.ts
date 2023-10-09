@@ -15,8 +15,9 @@ interface generic {
 }
 
 postsRouter.get('/', async (req: Request<{}, {}, {}, generic>, res: Response) => {
-    const allPosts = await postsService.getAllPosts(req.query.sortBy,
-        req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1,
+    const allPosts = await postsService.getAllPosts(
+        req.query.sortBy, req.query.sortDirection,
+        req.query.pageNumber ? +req.query.pageNumber : 1,
         req.query.pageSize ? +req.query.pageSize : 10
     )
     res.status(200).send(allPosts)

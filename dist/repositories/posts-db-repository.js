@@ -16,11 +16,12 @@ exports.postsRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             let sortQuery = {};
             sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
+            console.log(sortBy, sortDirection);
             const countPosts = yield DB_Mongo_1.clientPostCollection.countDocuments();
             const foundPost = yield DB_Mongo_1.clientPostCollection
                 .find({}, { projection: { _id: 0 } })
                 .sort(sortQuery)
-                .skip(pageNumber - 1)
+                .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)
                 .toArray();
             const objects = {

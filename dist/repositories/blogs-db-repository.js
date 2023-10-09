@@ -17,7 +17,6 @@ exports.blogsRepository = {
             let sortQuery = {};
             sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
             const filter = { name: RegExp(searchNameTerm, "i") };
-            console.log(sortBy, sortDirection, searchNameTerm);
             const countBlogs = yield DB_Mongo_1.clientBlogCollection.countDocuments(filter);
             const foundBlog = yield DB_Mongo_1.clientBlogCollection
                 .find(filter, { projection: { _id: 0 } })
