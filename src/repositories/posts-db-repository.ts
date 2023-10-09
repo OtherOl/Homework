@@ -12,7 +12,7 @@ export const postsRepository = {
         const foundPost: postModel[] = await clientPostCollection
             .find({}, {projection: {_id: 0}})
             .sort(sortQuery)
-            .skip(pageNumber - 1)
+            .skip((pageNumber - 1)*pageSize)
             .limit(pageSize)
             .toArray()
 
