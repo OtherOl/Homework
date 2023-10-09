@@ -1,6 +1,7 @@
 import {blogModel} from "../models/blog-model";
 import {clientBlogCollection, clientPostCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
+import {postModel} from "../models/post-model";
 
 export const blogsRepository = {
     async getAllBlogs(searchNameTerm: string, sortBy: string = "createdAt", sortDirection: string = "desc",
@@ -8,11 +9,18 @@ export const blogsRepository = {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
-        const countBlogs: number = await clientBlogCollection.find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}}).count()
-        const foundBlog: any[] = await clientBlogCollection.find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}})
-            .sort(sortQuery).skip(pageNumber - 1).limit(pageSize).toArray()
+        //ctrl+alt+l
 
-        const objects: paginationModel = {
+        const filter = {name: RegExp(searchNameTerm, "i")}
+        const countBlogs: number = await clientBlogCollection.countDocuments(filter)
+        const foundBlog: blogModel[] = await clientBlogCollection
+            .find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}})
+            .sort(sortQuery)
+            .skip(pageNumber - 1)
+            .limit(pageSize)
+            .toArray()
+
+        const objects: paginationModel<blogModel> = {
             pagesCount: Math.ceil(countBlogs / pageSize),
             page: pageNumber,
             pageSize: pageSize,
@@ -29,10 +37,10 @@ export const blogsRepository = {
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
         const countPosts: number = await clientPostCollection.countDocuments({blogId: blogId})
-        const foundPosts: any = await clientPostCollection.find({blogId: blogId}, {projection: {_id: 0}})
+        const foundPosts: postModel[] = await clientPostCollection.find({blogId: blogId}, {projection: {_id: 0}})
             .sort(sortQuery).skip(pageNumber - 1).limit(pageSize).toArray()
 
-        const objects: paginationModel = {
+        const objects: paginationModel<postModel> = {
             pagesCount: Math.ceil(countPosts / pageSize),
             page: pageNumber,
             pageSize: pageSize,

@@ -6,7 +6,7 @@ import {authorisationMiddleware} from "../middlewares/authorisation-middleware";
 
 export const blogsRouter = Router({})
 
-type generic = {
+interface generic {
     searchNameTerm: string,
     sortBy: string,
     sortDirection: string,
@@ -17,8 +17,8 @@ type generic = {
 blogsRouter.get('/', async (req: Request<{}, {}, {}, generic>, res: Response) => {
     const allBlogs = await blogsService.getAllBlogs(
         req.query.searchNameTerm, req.query.sortBy,
-        req.query.sortDirection, +req.query.pageNumber,
-        +req.query.pageSize
+        req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1,
+        req.query.pageSize ? +req.query.pageSize : 10
     )
     res.status(200).send(allBlogs)
 })

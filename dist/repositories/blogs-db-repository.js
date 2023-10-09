@@ -10,46 +10,74 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRepository = void 0;
-const crypto_1 = require("crypto");
 const DB_Mongo_1 = require("../data/DB-Mongo");
 exports.blogsRepository = {
-    getAllBlogs() {
+    getAllBlogs(searchNameTerm, sortBy = "createdAt", sortDirection = "desc", pageNumber = 1, pageSize = 10) {
         return __awaiter(this, void 0, void 0, function* () {
-            return DB_Mongo_1.client.db('blogs_posts').collection('blogs').find({}, { projection: { _id: 0 } }).toArray();
+            let sortQuery = {};
+            sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
+            //ctrl+alt+l
+            const filter = { name: RegExp(searchNameTerm, "i") };
+            const countBlogs = yield DB_Mongo_1.clientBlogCollection.countDocuments(filter);
+            const foundBlog = yield DB_Mongo_1.clientBlogCollection
+                .find({ name: RegExp(searchNameTerm, "i") }, { projection: { _id: 0 } })
+                .sort(sortQuery)
+                .skip(pageNumber - 1)
+                .limit(pageSize)
+                .toArray();
+            const objects = {
+                pagesCount: Math.ceil(countBlogs / pageSize),
+                page: pageNumber,
+                pageSize: pageSize,
+                totalCount: countBlogs,
+                items: foundBlog,
+            };
+            return objects;
+        });
+    },
+    getPostByBlogId(blogId, sortBy = "createdAt", sortDirection = "desc", pageNumber = 1, pageSize = 10) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let sortQuery = {};
+            sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
+            const countPosts = yield DB_Mongo_1.clientPostCollection.countDocuments({ blogId: blogId });
+            const foundPosts = yield DB_Mongo_1.clientPostCollection.find({ blogId: blogId }, { projection: { _id: 0 } })
+                .sort(sortQuery).skip(pageNumber - 1).limit(pageSize).toArray();
+            const objects = {
+                pagesCount: Math.ceil(countPosts / pageSize),
+                page: pageNumber,
+                pageSize: pageSize,
+                totalCount: countPosts,
+                items: foundPosts
+            };
+            return objects;
         });
     },
     getBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return DB_Mongo_1.client.db('blogs_posts').collection('blogs').findOne({ id: id }, { projection: { _id: 0 } });
+            return yield DB_Mongo_1.clientBlogCollection.findOne({ id: id }, { projection: { _id: 0 } });
         });
     },
     createBlog(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newBlog = {
-                id: (0, crypto_1.randomUUID)(),
-                name: inputData.name,
-                description: inputData.description,
-                websiteUrl: inputData.websiteUrl,
-                createdAt: new Date().toISOString(),
-                isMembership: false
-            };
-            const result = yield DB_Mongo_1.client.db('blogs_posts').collection('blogs').insertOne(newBlog);
-            return newBlog;
+            const result = yield DB_Mongo_1.clientBlogCollection.insertOne(Object.assign({}, inputData));
+            return inputData;
         });
     },
     updateBlog(id, inputData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const foundBlog = yield DB_Mongo_1.client.db('blogs_posts').collection('blogs').updateOne({ id: id }, { $set: {
+            const foundBlog = yield DB_Mongo_1.clientBlogCollection.updateOne({ id: id }, {
+                $set: {
                     name: inputData.name,
                     description: inputData.description,
                     websiteUrl: inputData.websiteUrl
-                } });
+                }
+            });
             return foundBlog.matchedCount === 1;
         });
     },
     deleteBlog(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const deleteBlog = yield DB_Mongo_1.client.db('blogs_posts').collection('blogs').deleteOne({ id: id });
+            const deleteBlog = yield DB_Mongo_1.clientBlogCollection.deleteOne({ id: id });
             return deleteBlog.deletedCount === 1;
         });
     }

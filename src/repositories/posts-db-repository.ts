@@ -12,7 +12,7 @@ export const postsRepository = {
             .sort(sortQuery).skip(pageNumber - 1)
             .limit(pageSize).toArray()
 
-        const objects: paginationModel = {
+        const objects: paginationModel<postModel> = {
             pagesCount: Math.ceil(countPosts / pageSize),
             page: pageNumber,
             pageSize: pageSize,
