@@ -3,6 +3,7 @@ import {bodyBlogValidation} from "../middlewares/body-blog-validation";
 import {blogsService} from "../domain/blogs-service";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {authorisationMiddleware} from "../middlewares/authorisation-middleware";
+import {bodyPostValidation} from "../middlewares/body-post-validation";
 
 export const blogsRouter = Router({})
 
@@ -14,18 +15,10 @@ interface generic {
     pageSize: number
 }
 
-interface genericId {
-    blogId: string,
-    sortBy: string,
-    sortDirection: string,
-    pageNumber: number,
-    pageSize: number
-}
-
 blogsRouter.get('/', async (req: Request<{}, {}, {}, generic>, res: Response) => {
     const allBlogs = await blogsService.getAllBlogs(
         req.query.searchNameTerm, req.query.sortBy,
-        req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber: 1,
+        req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1,
         req.query.pageSize ? +req.query.pageSize : 10
     )
     res.status(200).send(allBlogs)
@@ -39,10 +32,10 @@ blogsRouter.post('/', authorisationMiddleware, bodyBlogValidation.name, bodyBlog
         res.status(201).send(newBlog)
     })
 
-blogsRouter.get('/:blogId/posts', async (req: Request<{blogId: string}, {}, {}, genericId>, res: Response) => {
+blogsRouter.get('/:blogId/posts', async (req: Request<{ blogId: string }, {}, {}, generic>, res: Response) => {
     const foundPost = await blogsService.getPostByBlogId(
         req.params.blogId, req.query.sortBy,
-        req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber: 1,
+        req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1,
         req.query.pageSize ? +req.query.pageSize : 10
     )
 
@@ -52,6 +45,18 @@ blogsRouter.get('/:blogId/posts', async (req: Request<{blogId: string}, {}, {}, 
         res.status(200).send(foundPost)
     }
 })
+
+blogsRouter.post('/:blogId/posts', authorisationMiddleware, bodyPostValidation.blogId, bodyPostValidation.title, bodyPostValidation.shortDescription,
+    bodyPostValidation.content, inputValidationMiddleware, async (req: Request, res: Response) => {
+        const newPost = await blogsService.createPostByBlogId(
+            req.params.blogId,
+            req.body.title,
+            req.body.shortDescription,
+            req.body.content
+        )
+
+        res.status(201).send(newPost)
+    })
 
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
     let findBlog = await blogsService.getBlogById(req.params.id)
