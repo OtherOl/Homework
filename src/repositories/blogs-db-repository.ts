@@ -57,7 +57,13 @@ export const blogsRepository = {
     },
 
     async getBlogById(id: string) {
-        return await clientBlogCollection.findOne({id: id}, {projection: {_id: 0}})
+        const isExists = await clientBlogCollection.findOne({id: id}, {projection: {_id: 0}})
+
+        if(!isExists){
+            return false
+        } else{
+            return isExists
+        }
     },
 
     async createPostByBlogId(inputData: postModel) {
