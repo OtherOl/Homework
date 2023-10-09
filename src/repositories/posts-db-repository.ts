@@ -3,14 +3,18 @@ import {clientPostCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
 
 export const postsRepository = {
-    async getAllPosts(pageNumber: number = 1, pageSize: number = 10, sortBy: string = "createdAT", sortDirection: string = "desc") {
+    async getAllPosts(sortBy: string = "createdAt", sortDirection: string = "desc",
+                      pageNumber: number, pageSize: number) {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
 
-        const countPosts: number = await clientPostCollection.find({}, {projection: {_id: 0}}).count()
-        const foundPost: any[] = await clientPostCollection.find({}, {projection: {_id: 0}})
-            .sort(sortQuery).skip(pageNumber - 1)
-            .limit(pageSize).toArray()
+        const countPosts: number = await clientPostCollection.countDocuments()
+        const foundPost: postModel[] = await clientPostCollection
+            .find({}, {projection: {_id: 0}})
+            .sort(sortQuery)
+            .skip(pageNumber - 1)
+            .limit(pageSize)
+            .toArray()
 
         const objects: paginationModel<postModel> = {
             pagesCount: Math.ceil(countPosts / pageSize),

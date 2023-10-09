@@ -5,13 +5,12 @@ import {postModel} from "../models/post-model";
 
 export const blogsRepository = {
     async getAllBlogs(searchNameTerm: string, sortBy: string = "createdAt", sortDirection: string = "desc",
-                      pageNumber: number = 1, pageSize: number = 10) {
+                      pageNumber: number, pageSize: number) {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
-        //ctrl+alt+l
-
         const filter = {name: RegExp(searchNameTerm, "i")}
+
         const countBlogs: number = await clientBlogCollection.countDocuments(filter)
         const foundBlog: blogModel[] = await clientBlogCollection
             .find({name: RegExp(searchNameTerm, "i")}, {projection: {_id: 0}})

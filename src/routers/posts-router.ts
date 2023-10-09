@@ -6,10 +6,18 @@ import {postsService} from "../domain/posts-service";
 
 export const postsRouter = Router({})
 
-postsRouter.get('/', async (req: Request, res: Response) => {
-    const allPosts = await postsService.getAllPosts(
-        +req.params.pageNumber, +req.params.pageSize,
-        req.params.sortBy, req.params.sortDirection
+interface generic {
+    searchNameTerm: string,
+    sortBy: string,
+    sortDirection: string,
+    pageNumber: number,
+    pageSize: number
+}
+
+postsRouter.get('/', async (req: Request<{}, {}, {}, generic>, res: Response) => {
+    const allPosts = await postsService.getAllPosts(req.query.sortBy,
+        req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1,
+        req.query.pageSize ? +req.query.pageSize : 10
     )
     res.status(200).send(allPosts)
 })
