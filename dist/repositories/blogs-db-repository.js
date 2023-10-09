@@ -34,13 +34,18 @@ exports.blogsRepository = {
             return objects;
         });
     },
-    getPostByBlogId(blogId, sortBy = "createdAt", sortDirection = "desc", pageNumber = 1, pageSize = 10) {
+    getPostByBlogId(blogId, sortBy = "createdAt", sortDirection = "desc", pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             let sortQuery = {};
             sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
-            const countPosts = yield DB_Mongo_1.clientPostCollection.countDocuments({ blogId: blogId });
-            const foundPosts = yield DB_Mongo_1.clientPostCollection.find({ blogId: blogId }, { projection: { _id: 0 } })
-                .sort(sortQuery).skip(pageNumber - 1).limit(pageSize).toArray();
+            const filter = { blogId: blogId };
+            const countPosts = yield DB_Mongo_1.clientPostCollection.countDocuments(filter);
+            const foundPosts = yield DB_Mongo_1.clientPostCollection
+                .find(filter, { projection: { _id: 0 } })
+                .sort(sortQuery)
+                .skip((pageNumber - 1) * pageSize)
+                .limit(pageSize)
+                .toArray();
             const objects = {
                 pagesCount: Math.ceil(countPosts / pageSize),
                 page: pageNumber,

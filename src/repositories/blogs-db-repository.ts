@@ -31,13 +31,19 @@ export const blogsRepository = {
     },
 
     async getPostByBlogId(blogId: string, sortBy: string = "createdAt", sortDirection: string = "desc",
-                          pageNumber: number = 1, pageSize: number = 10) {
+                          pageNumber: number, pageSize: number) {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
-        const countPosts: number = await clientPostCollection.countDocuments({blogId: blogId})
-        const foundPosts: postModel[] = await clientPostCollection.find({blogId: blogId}, {projection: {_id: 0}})
-            .sort(sortQuery).skip(pageNumber - 1).limit(pageSize).toArray()
+        const filter = {blogId: blogId}
+
+        const countPosts: number = await clientPostCollection.countDocuments(filter)
+        const foundPosts: postModel[] = await clientPostCollection
+            .find(filter, {projection: {_id: 0}})
+            .sort(sortQuery)
+            .skip((pageNumber - 1)*pageSize)
+            .limit(pageSize)
+            .toArray()
 
         const objects: paginationModel<postModel> = {
             pagesCount: Math.ceil(countPosts / pageSize),

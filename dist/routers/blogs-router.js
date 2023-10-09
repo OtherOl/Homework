@@ -26,7 +26,7 @@ exports.blogsRouter.post('/', authorisation_middleware_1.authorisationMiddleware
     res.status(201).send(newBlog);
 }));
 exports.blogsRouter.get('/:blogId/posts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const foundPost = yield blogs_service_1.blogsService.getPostByBlogId(req.params.blogId, req.body.sortBy, req.body.sortDrection, req.body.pageNumber, req.body.pageSize);
+    const foundPost = yield blogs_service_1.blogsService.getPostByBlogId(req.params.blogId, req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10);
     if (!foundPost) {
         return res.sendStatus(404);
     }

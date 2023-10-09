@@ -14,6 +14,14 @@ interface generic {
     pageSize: number
 }
 
+interface genericId {
+    blogId: string,
+    sortBy: string,
+    sortDirection: string,
+    pageNumber: number,
+    pageSize: number
+}
+
 blogsRouter.get('/', async (req: Request<{}, {}, {}, generic>, res: Response) => {
     const allBlogs = await blogsService.getAllBlogs(
         req.query.searchNameTerm, req.query.sortBy,
@@ -31,11 +39,11 @@ blogsRouter.post('/', authorisationMiddleware, bodyBlogValidation.name, bodyBlog
         res.status(201).send(newBlog)
     })
 
-blogsRouter.get('/:blogId/posts', async (req: Request, res: Response) => {
+blogsRouter.get('/:blogId/posts', async (req: Request<{blogId: string}, {}, {}, genericId>, res: Response) => {
     const foundPost = await blogsService.getPostByBlogId(
-        req.params.blogId, req.body.sortBy,
-        req.body.sortDrection, req.body.pageNumber,
-        req.body.pageSize
+        req.params.blogId, req.query.sortBy,
+        req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber: 1,
+        req.query.pageSize ? +req.query.pageSize : 10
     )
 
     if (!foundPost) {

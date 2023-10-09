@@ -31,7 +31,7 @@ exports.postsService = {
                 shortDescription: inputData.shortDescription,
                 content: inputData.content,
                 blogId: inputData.blogId,
-                blogName: `blog.${inputData.title}`,
+                blogName: inputData.title,
                 createdAt: new Date().toISOString()
             };
             return yield posts_db_repository_1.postsRepository.createPost(newPost);
