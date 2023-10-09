@@ -15,7 +15,7 @@ export const blogsRepository = {
         const foundBlog: blogModel[] = await clientBlogCollection
             .find(filter, {projection: {_id: 0}})
             .sort(sortQuery)
-            .skip((pageNumber - 1)*pageSize)
+            .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
             .toArray()
 
@@ -41,7 +41,7 @@ export const blogsRepository = {
         const foundPosts: postModel[] = await clientPostCollection
             .find(filter, {projection: {_id: 0}})
             .sort(sortQuery)
-            .skip((pageNumber - 1)*pageSize)
+            .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
             .toArray()
 
@@ -61,14 +61,8 @@ export const blogsRepository = {
     },
 
     async createPostByBlogId(inputData: postModel) {
-        const isExists = await clientBlogCollection.findOne({id: inputData.blogId})
-
-        if(!isExists) {
-            return false
-        } else {
-            const result = await clientPostCollection.insertOne({...inputData})
-            return inputData
-        }
+        const result = clientPostCollection.insertOne({...inputData})
+        return inputData
     },
 
     async createBlog(inputData: blogModel) {
