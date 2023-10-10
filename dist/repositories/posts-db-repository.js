@@ -40,7 +40,7 @@ exports.postsRepository = {
     },
     createPost(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
-            return DB_Mongo_1.clientPostCollection.insertOne(Object.assign({}, inputData));
+            return yield DB_Mongo_1.clientPostCollection.insertOne(Object.assign({}, inputData));
         });
     },
     updatePost(id, inputData) {

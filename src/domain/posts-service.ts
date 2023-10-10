@@ -50,11 +50,16 @@ export const postsService = {
         }
     },
 
-    async updatePost(id: string, inputData: UpdatePostModel) {
+    async updatePost(
+        id: string,
+        inputData: UpdatePostModel
+    ) {
         return await postsRepository.updatePost(id, inputData)
     },
 
-    async deletePost(id: string) {
+    async deletePost(
+        id: string
+    ) {
         return await postsRepository.deletePost(id)
     }
 }

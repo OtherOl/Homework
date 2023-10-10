@@ -1,9 +1,10 @@
 import express, {Request, Response} from "express";
 import {blogsRouter} from "./routers/blogs-router";
 import {postsRouter} from "./routers/posts-router";
-import {client, runDb} from "./data/DB-Mongo";
+import {client, clientBlogCollection, clientPostCollection, clientUserCollection, runDb} from "./data/DB-Mongo";
 import {blogModel} from "./models/blog-model";
 import {PostDbModel,} from "./models/post-model";
+import {usersRouter} from "./routers/users-router";
 
 export const app = express()
 const port = process.env.PORT || 3000
@@ -14,14 +15,16 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.delete('/testing/all-data', async (req: Request, res: Response) => {
-    const resultBlog = await client.db('blogs_posts').collection<blogModel>('blogs').deleteMany({})
-    const resultPost = await client.db('blogs_posts').collection<PostDbModel>('posts').deleteMany({})
+    const resultBlog = await clientBlogCollection.deleteMany({})
+    const resultPost = await clientPostCollection.deleteMany({})
+    const resultUser = await clientUserCollection.deleteMany({})
 
     res.sendStatus(204)
 })
 app.use(express.json())
 app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)
+app.use('/users', usersRouter)
 
 const startApp = async () => {
     await runDb()

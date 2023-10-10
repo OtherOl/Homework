@@ -24,7 +24,7 @@ exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
 }));
 exports.blogsRouter.post('/', authorisation_middleware_1.authorisationMiddleware, body_blog_validation_1.bodyBlogValidation.name, body_blog_validation_1.bodyBlogValidation.description, body_blog_validation_1.bodyBlogValidation.websiteUrl, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, description, websiteUrl } = req.body;
-    const newBlog = yield blogs_service_1.blogsService.createBlog(req.body);
+    const newBlog = yield blogs_service_1.blogsService.createBlog({ name, description, websiteUrl });
     res.status(201).send(newBlog);
 }));
 exports.blogsRouter.get('/:blogId/posts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {

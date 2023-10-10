@@ -8,15 +8,7 @@ import {postsService} from "../domain/posts-service";
 
 export const blogsRouter = Router({})
 
-interface generic {
-    searchNameTerm: string,
-    sortBy: string,
-    sortDirection: string,
-    pageNumber: number,
-    pageSize: number
-}
-
-blogsRouter.get('/', async (req: Request<{}, {}, {}, generic>, res: Response) => {
+blogsRouter.get('/', async (req: Request<{}, {}, {}, blogGeneric>, res: Response) => {
     const allBlogs = await blogsService.getAllBlogs(
         req.query.searchNameTerm, req.query.sortBy,
         req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1,
@@ -36,7 +28,7 @@ blogsRouter.post('/',
         res.status(201).send(newBlog)
     })
 
-blogsRouter.get('/:blogId/posts', async (req: Request<{ blogId: string }, {}, {}, generic>, res: Response) => {
+blogsRouter.get('/:blogId/posts', async (req: Request<{ blogId: string }, {}, {}, blogGeneric>, res: Response) => {
     const foundPost = await blogsService.getPostByBlogId(
         req.params.blogId, req.query.sortBy,
         req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1,
