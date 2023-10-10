@@ -6,3 +6,9 @@ export type blogModel = {
     createdAt: string,
     isMembership: boolean
 }
+
+export type createBlogModel = {
+    name: string,
+    description: string,
+    websiteUrl: string,
+}
