@@ -76,7 +76,8 @@ export const blogsRepository = {
     },
 
     async createBlog(inputData: blogModel) {
-        return  await clientBlogCollection.insertOne({...inputData})
+        const result = await clientBlogCollection.insertOne({...inputData})
+        return inputData
     },
 
     async updateBlog(id: string, inputData: createBlogModel) {
