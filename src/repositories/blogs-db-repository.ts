@@ -1,4 +1,4 @@
-import {blogModel} from "../models/blog-model";
+import {blogModel, createBlogModel} from "../models/blog-model";
 import {clientBlogCollection, clientPostCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
 import {PostDbModel, PostViewModel} from "../models/post-model";
@@ -80,7 +80,7 @@ export const blogsRepository = {
         return inputData
     },
 
-    async updateBlog(id: string, inputData: blogModel) {
+    async updateBlog(id: string, inputData: createBlogModel) {
         const foundBlog = await clientBlogCollection.updateOne({id: id}, {
             $set: {
                 name: inputData.name,
