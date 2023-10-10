@@ -32,7 +32,7 @@ export const postsRepository = {
     },
 
     async createPost(inputData: PostDbModel) {
-        return  clientPostCollection.insertOne({...inputData})
+        return await clientPostCollection.insertOne({...inputData})
     },
 
     async updatePost(id: string, inputData: UpdatePostModel) {
