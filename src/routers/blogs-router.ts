@@ -47,8 +47,11 @@ blogsRouter.get('/:blogId/posts', async (req: Request<{ blogId: string }, {}, {}
     }
 })
 
-blogsRouter.post('/:blogId/posts', authorisationMiddleware, bodyPostValidation.title, bodyPostValidation.shortDescription,
-    bodyPostValidation.content, inputValidationMiddleware, async (req: Request, res: Response) => {
+blogsRouter.post('/:blogId/posts',
+    authorisationMiddleware, bodyPostValidation.title,
+    bodyPostValidation.shortDescription,
+    bodyPostValidation.content, inputValidationMiddleware,
+    async (req: Request, res: Response) => {
     const blogId = req.params.blogId
         const {title, shortDescription, content} = req.body
 
@@ -71,7 +74,10 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
     }
 })
 
-blogsRouter.put('/:id', authorisationMiddleware, bodyBlogValidation.name, bodyBlogValidation.description, bodyBlogValidation.websiteUrl, inputValidationMiddleware,
+blogsRouter.put('/:id',
+    authorisationMiddleware, bodyBlogValidation.name,
+    bodyBlogValidation.description, bodyBlogValidation.websiteUrl,
+    inputValidationMiddleware,
     async (req: Request, res: Response) => {
         const {name, description, websiteUrl} = req.body
 

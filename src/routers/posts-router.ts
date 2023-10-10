@@ -23,8 +23,11 @@ postsRouter.get('/', async (req: Request<{}, {}, {}, generic>, res: Response) =>
     res.status(200).send(allPosts)
 })
 
-postsRouter.post('/', authorisationMiddleware, bodyPostValidation.blogId, bodyPostValidation.title, bodyPostValidation.shortDescription,
-    bodyPostValidation.content, inputValidationMiddleware, async (req: Request, res: Response) => {
+postsRouter.post('/',
+    authorisationMiddleware, bodyPostValidation.blogId,
+    bodyPostValidation.title, bodyPostValidation.shortDescription,
+    bodyPostValidation.content, inputValidationMiddleware,
+    async (req: Request, res: Response) => {
     const {title, shortDescription, content, blogId} = req.body
 
     const newPost = await postsService.createPost({blogId, content, title, shortDescription})
@@ -40,8 +43,11 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
     }
 })
 
-postsRouter.put('/:id', authorisationMiddleware, bodyPostValidation.title, bodyPostValidation.shortDescription, bodyPostValidation.content,
-    bodyPostValidation.blogId, inputValidationMiddleware, async (req: Request, res: Response) => {
+postsRouter.put('/:id',
+    authorisationMiddleware, bodyPostValidation.title,
+    bodyPostValidation.shortDescription, bodyPostValidation.content,
+    bodyPostValidation.blogId, inputValidationMiddleware,
+    async (req: Request, res: Response) => {
     const {title, shortDescription, content, blogId} = req.body
 
     const updatedPost = await postsService.updatePost(req.params.id, req.body)

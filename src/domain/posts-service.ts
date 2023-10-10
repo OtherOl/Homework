@@ -5,8 +5,18 @@ import {blogsRepository} from "../repositories/blogs-db-repository";
 import {ObjectId} from "mongodb";
 
 export const postsService = {
-    async getAllPosts(sortBy: string, sortDirection: string, pageNumber: number, pageSize: number) {
-        return await postsRepository.getAllPosts(sortBy, sortDirection, pageNumber, pageSize)
+    async getAllPosts(
+        sortBy: string,
+        sortDirection: string,
+        pageNumber: number,
+        pageSize: number
+    ) {
+        return await postsRepository.getAllPosts(
+            sortBy,
+            sortDirection,
+            pageNumber,
+            pageSize
+        )
     },
 
     async getPostById(id: string) {

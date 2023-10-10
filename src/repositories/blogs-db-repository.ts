@@ -4,8 +4,13 @@ import {paginationModel} from "../models/pagination-model";
 import {PostDbModel, PostViewModel} from "../models/post-model";
 
 export const blogsRepository = {
-    async getAllBlogs(searchNameTerm: string, sortBy: string = "createdAt", sortDirection: string = "desc",
-                      pageNumber: number, pageSize: number) {
+    async getAllBlogs(
+        searchNameTerm: string,
+        sortBy: string = "createdAt",
+        sortDirection: string = "desc",
+        pageNumber: number,
+        pageSize: number
+    ) {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
@@ -30,8 +35,13 @@ export const blogsRepository = {
         return objects
     },
 
-    async getPostByBlogId(blogId: string, sortBy: string = "createdAt", sortDirection: string = "desc",
-                          pageNumber: number, pageSize: number) {
+    async getPostByBlogId(
+        blogId: string,
+        sortBy: string = "createdAt",
+        sortDirection: string = "desc",
+        pageNumber: number,
+        pageSize: number
+    ) {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
@@ -63,17 +73,6 @@ export const blogsRepository = {
 
     async getBlogById(id: string) {
         return await clientBlogCollection.findOne({id: id}, {projection: {_id: 0}})
-    },
-
-    async createPostByBlogId(inputData: PostDbModel) {
-        const isExists = await clientBlogCollection.findOne({id: inputData.blogId})
-
-        if(!isExists) {
-            return false
-        } else {
-            const result = await clientPostCollection.insertOne({...inputData})
-            return inputData
-        }
     },
 
     async createBlog(inputData: blogModel) {

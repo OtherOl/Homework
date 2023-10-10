@@ -1,17 +1,37 @@
 import {randomUUID} from "crypto";
 import {blogModel} from "../models/blog-model";
 import {blogsRepository} from "../repositories/blogs-db-repository";
-import {ObjectId} from "mongodb";
 
 export const blogsService = {
-    async getAllBlogs(searchNameTerm: string, sortBy: string, sortDirection: string,
-                      pageNumber: number, pageSize: number) {
-        return await blogsRepository.getAllBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize)
+    async getAllBlogs(
+        searchNameTerm: string,
+        sortBy: string,
+        sortDirection: string,
+        pageNumber: number,
+        pageSize: number
+    ) {
+        return await blogsRepository.getAllBlogs(searchNameTerm,
+            sortBy,
+            sortDirection,
+            pageNumber,
+            pageSize
+        )
     },
 
-    async getPostByBlogId(blogId: string, sortBy: string, sortDirection: string,
-                          pageNumber: number, pageSize: number) {
-        return await blogsRepository.getPostByBlogId(blogId, sortBy, sortDirection, pageNumber, pageSize)
+    async getPostByBlogId(
+        blogId: string,
+        sortBy: string,
+        sortDirection: string,
+        pageNumber: number,
+        pageSize: number
+    ) {
+        return await blogsRepository.getPostByBlogId(
+            blogId,
+            sortBy,
+            sortDirection,
+            pageNumber,
+            pageSize
+        )
     },
 
 
