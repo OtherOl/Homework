@@ -52,12 +52,12 @@ blogsRouter.post('/:blogId/posts',
     bodyPostValidation.shortDescription,
     bodyPostValidation.content, inputValidationMiddleware,
     async (req: Request, res: Response) => {
-    const blogId = req.params.blogId
+        const blogId = req.params.blogId
         const {title, shortDescription, content} = req.body
 
         const newPost = await postsService.createPost({blogId, content, title, shortDescription})
 
-        if(!newPost) {
+        if (!newPost) {
             res.sendStatus(404)
         } else {
             res.status(201).send(newPost)

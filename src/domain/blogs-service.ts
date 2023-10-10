@@ -10,7 +10,8 @@ export const blogsService = {
         pageNumber: number,
         pageSize: number
     ) {
-        return await blogsRepository.getAllBlogs(searchNameTerm,
+        return await blogsRepository.getAllBlogs(
+            searchNameTerm,
             sortBy,
             sortDirection,
             pageNumber,
