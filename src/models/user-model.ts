@@ -2,11 +2,16 @@ export type userModel = {
     id: string,
     login: string,
     email: string,
+    passwordHash: string;
     createdAt: string
 }
 
 export type createUserModel = {
+    id: string,
     login: string,
-    password: string,
-    email: string
+    email: string,
+    passwordHash: string;
+    passwordSalt: string,
+    createdAt: string
 }
+

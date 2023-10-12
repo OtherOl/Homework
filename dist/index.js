@@ -18,6 +18,7 @@ const blogs_router_1 = require("./routers/blogs-router");
 const posts_router_1 = require("./routers/posts-router");
 const DB_Mongo_1 = require("./data/DB-Mongo");
 const users_router_1 = require("./routers/users-router");
+const auth_router_1 = require("./routers/auth-router");
 exports.app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
 exports.app.use(express_1.default.json());
@@ -34,6 +35,7 @@ exports.app.use(express_1.default.json());
 exports.app.use('/blogs', blogs_router_1.blogsRouter);
 exports.app.use('/posts', posts_router_1.postsRouter);
 exports.app.use('/users', users_router_1.usersRouter);
+exports.app.use('/auth', auth_router_1.authRouter);
 const startApp = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, DB_Mongo_1.runDb)();
     exports.app.listen(port, () => {

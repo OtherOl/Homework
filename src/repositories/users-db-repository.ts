@@ -1,9 +1,9 @@
 import {clientUserCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
-import {userModel} from "../models/user-model";
+import {createUserModel, userModel} from "../models/user-model";
 
 export const usersRepository = {
-    async getAllUsers (
+    async getAllUsers(
         sortBy: string = "createdAt",
         sortDirection: string = "desc",
         pageNumber: number,
@@ -12,11 +12,14 @@ export const usersRepository = {
         searchEmailTerm: string
     ) {
         let sortQuery: any = {}
-        sortQuery[sortBy] = sortDirection === "asc"? 1 : -1
+        sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
         const filter = {
-            login: RegExp(searchLoginTerm, "i"),
-            email: RegExp(searchEmailTerm, "i")
+            $or:
+                [
+                    {login: RegExp(searchLoginTerm, "i")},
+                    {email: RegExp(searchEmailTerm, "i")}
+                ]
         }
 
         const countUsers: number = await clientUserCollection.countDocuments()
@@ -39,7 +42,7 @@ export const usersRepository = {
     },
 
     async createUser(
-      inputData: userModel
+        inputData: createUserModel
     ) {
         const result = await clientUserCollection.insertOne({...inputData})
 
@@ -52,5 +55,15 @@ export const usersRepository = {
         const deletedUser = await clientUserCollection.deleteOne({id: id})
 
         return deletedUser.deletedCount === 1
-    }
+    },
+
+    async findByLoginOrEmail(
+        loginOrEmail: string
+    ) {
+        return await clientUserCollection.findOne({
+            $or: [{login: RegExp(loginOrEmail, "i")},
+                {email: RegExp(loginOrEmail, "i")}]
+        })
+
+    },
 }
