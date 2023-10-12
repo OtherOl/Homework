@@ -1,6 +1,6 @@
 import {clientUserCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
-import {createUserModel, userModel, userViewModel} from "../models/user-model";
+import {createUserModel, userViewModel} from "../models/user-model";
 
 export const usersRepository = {
     async getAllUsers(
@@ -24,7 +24,7 @@ export const usersRepository = {
 
         const countUsers: number = await clientUserCollection.countDocuments()
         const foundUsers: userViewModel[] = await clientUserCollection
-            .find(filter, {projection: {_id: 0}})
+            .find(filter, {projection: {_id: 0, passwordHash: 0, passwordSalt: 0}})
             .sort(sortQuery)
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
@@ -46,7 +46,12 @@ export const usersRepository = {
     ) {
         const result = await clientUserCollection.insertOne({...inputData})
 
-        return inputData
+        return {
+            id: inputData.id,
+            login: inputData.login,
+            email: inputData.email,
+            createdAt: inputData.createdAt
+        }
     },
 
     async deleteUser(

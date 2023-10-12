@@ -22,6 +22,7 @@ usersRouter.get('/', async (req: Request<{}, {}, {}, genericUser>, res: Response
 usersRouter.post('/',
     bodyUserValidation.login, bodyUserValidation.password,
     bodyUserValidation.email, inputValidationMiddleware,
+    authorisationMiddleware,
     async (req: Request, res: Response) => {
         const createdBlog = await usersService.createUser(
             req.body.login,
@@ -32,7 +33,7 @@ usersRouter.post('/',
         res.status(201).send(createdBlog)
     })
 
-usersRouter.delete('/:id', async (req: Request, res: Response) => {
+usersRouter.delete('/:id', authorisationMiddleware, async (req: Request, res: Response) => {
     const deletedUser = await usersService.deleteUser(req.params.id)
 
     if (!deletedUser) {
