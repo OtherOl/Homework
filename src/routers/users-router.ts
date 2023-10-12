@@ -20,9 +20,9 @@ usersRouter.get('/', async (req: Request<{}, {}, {}, genericUser>, res: Response
 })
 
 usersRouter.post('/',
+    authorisationMiddleware,
     bodyUserValidation.login, bodyUserValidation.password,
     bodyUserValidation.email, inputValidationMiddleware,
-    authorisationMiddleware,
     async (req: Request, res: Response) => {
         const createdBlog = await usersService.createUser(
             req.body.login,
