@@ -22,7 +22,7 @@ export const usersRepository = {
                 ]
         }
 
-        const countUsers: number = await clientUserCollection.countDocuments()
+        const countUsers: number = await clientUserCollection.countDocuments(filter)
         const foundUsers: userViewModel[] = await clientUserCollection
             .find(filter, {projection: {_id: 0, passwordHash: 0, passwordSalt: 0}})
             .sort(sortQuery)
