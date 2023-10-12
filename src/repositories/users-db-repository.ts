@@ -1,6 +1,6 @@
 import {clientUserCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
-import {createUserModel, userModel} from "../models/user-model";
+import {createUserModel, userModel, userViewModel} from "../models/user-model";
 
 export const usersRepository = {
     async getAllUsers(
@@ -23,14 +23,14 @@ export const usersRepository = {
         }
 
         const countUsers: number = await clientUserCollection.countDocuments()
-        const foundUsers: userModel[] = await clientUserCollection
+        const foundUsers: userViewModel[] = await clientUserCollection
             .find(filter, {projection: {_id: 0}})
             .sort(sortQuery)
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
             .toArray()
 
-        const objects: paginationModel<userModel> = {
+        const objects: paginationModel<userViewModel> = {
             pagesCount: Math.ceil(countUsers / pageSize),
             page: pageNumber,
             pageSize: pageSize,
@@ -61,8 +61,11 @@ export const usersRepository = {
         loginOrEmail: string
     ) {
         return await clientUserCollection.findOne({
-            $or: [{login: RegExp(loginOrEmail, "i")},
-                {email: RegExp(loginOrEmail, "i")}]
+            $or:
+                [
+                    {login: RegExp(loginOrEmail, "i")},
+                    {email: RegExp(loginOrEmail, "i")}
+                ]
         })
 
     },

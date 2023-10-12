@@ -1,7 +1,7 @@
 import {usersRepository} from "../repositories/users-db-repository";
 import {randomUUID} from "crypto";
 import bcrypt from 'bcrypt'
-import {userModel} from "../models/user-model";
+import {userViewModel} from "../models/user-model";
 import {paginationModel} from "../models/pagination-model";
 
 export const usersService = {
@@ -12,7 +12,7 @@ export const usersService = {
         pageSize: number,
         searchLoginTerm: string,
         searchEmailTerm: string
-    ): Promise<paginationModel<userModel>> {
+    ): Promise<paginationModel<userViewModel>> {
         return await usersRepository.getAllUsers(
             sortBy,
             sortDirection,

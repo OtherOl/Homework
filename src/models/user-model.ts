@@ -14,4 +14,10 @@ export type createUserModel = {
     passwordSalt: string,
     createdAt: string
 }
+export type userViewModel = {
+    id: string,
+    login: string,
+    email: string,
+    createdAt: string
+}
 
