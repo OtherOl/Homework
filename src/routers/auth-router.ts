@@ -5,10 +5,7 @@ import {inputValidationMiddleware} from "../middlewares/input-validation-middlew
 
 export const authRouter = Router({})
 
-authRouter.post('/login',
-    bodyUserValidation.login, bodyUserValidation.password,
-    inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+authRouter.post('/login', async (req: Request, res: Response) => {
     const login = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
 
     if(!login) {
