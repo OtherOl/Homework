@@ -68,8 +68,8 @@ export const usersRepository = {
         return await clientUserCollection.findOne({
             $or:
                 [
-                    {login: RegExp(loginOrEmail, "i")},
-                    {email: RegExp(loginOrEmail, "i")}
+                    {login: loginOrEmail},
+                    {email: loginOrEmail}
                 ]
         })
 
