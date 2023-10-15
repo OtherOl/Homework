@@ -66,7 +66,7 @@ export const usersService = {
         const passwordHash = await this._generateHash(password, foundUser.passwordHash)
 
         if (foundUser.passwordHash !== passwordHash) {
-            return false
+            throw new Error("Invalid password")
         } else {
             return foundUser
         }
