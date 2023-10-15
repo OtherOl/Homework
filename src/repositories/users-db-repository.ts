@@ -1,6 +1,7 @@
 import {clientUserCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
-import {createUserModel, userViewModel} from "../models/user-model";
+import {createUserModel, userModel, userViewModel} from "../models/user-model";
+import {WithId} from "mongodb";
 
 export const usersRepository = {
     async getAllUsers(
@@ -65,13 +66,13 @@ export const usersRepository = {
     async findByLoginOrEmail(
         loginOrEmail: string
     ) {
-        return await clientUserCollection.findOne({
+        const foundUser: userModel | null = await clientUserCollection.findOne({
             $or:
                 [
                     {login: loginOrEmail},
                     {email: loginOrEmail}
                 ]
         })
-
+        return foundUser
     },
 }

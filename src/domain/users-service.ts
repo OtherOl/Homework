@@ -65,8 +65,10 @@ export const usersService = {
 
         const passwordHash = await this._generateHash(password, foundUser.passwordHash)
 
-        return foundUser.passwordHash === passwordHash;
-
-
+        if (foundUser.passwordHash !== passwordHash) {
+            return false
+        } else {
+            return foundUser
+        }
     },
 }
