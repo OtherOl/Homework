@@ -74,4 +74,10 @@ export const usersRepository = {
         })
         return foundUser
     },
+
+    async findUserById(
+        userId: string
+    ) {
+        return await clientUserCollection.findOne({id: userId})
+    }
 }
