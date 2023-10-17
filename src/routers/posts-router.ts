@@ -7,15 +7,7 @@ import {authMiddleware} from "../middlewares/auth-middleware";
 
 export const postsRouter = Router({})
 
-interface generic {
-    searchNameTerm: string,
-    sortBy: string,
-    sortDirection: string,
-    pageNumber: number,
-    pageSize: number
-}
-
-postsRouter.get('/', async (req: Request<{}, {}, {}, generic>, res: Response) => {
+postsRouter.get('/', async (req: Request<{}, {}, {}, blogGeneric>, res: Response) => {
     const allPosts = await postsService.getAllPosts(
         req.query.sortBy, req.query.sortDirection,
         req.query.pageNumber ? +req.query.pageNumber : 1,
@@ -61,7 +53,9 @@ postsRouter.put('/:id',
 
     })
 
-postsRouter.delete('/:id', authorisationMiddleware, async (req: Request, res: Response) => {
+postsRouter.delete('/:id',
+    authorisationMiddleware,
+    async (req: Request, res: Response) => {
     const successDel = await postsService.deletePost(req.params.id)
 
     if (!successDel) {
@@ -77,11 +71,24 @@ postsRouter.post('/:id/comments',
     async (req: Request, res: Response) => {
         const comment = await postsService.createComment(req.params.id, req.body.content, req.user!.id)
 
-        console.log(comment)
-
         if (!comment) {
             res.sendStatus(404)
         } else {
             res.status(201).send(comment)
         }
     })
+
+postsRouter.get('/:id/comments', async (req: Request<{id: string}, {}, {}, commentGeneric>, res: Response) => {
+    const comment = await postsService.getCommentById(
+        req.params.id,
+        req.query.pageNumber? +req.query.pageNumber: 1,
+        req.query.pageSize? +req.query.pageSize: 10,
+        req.query.sortBy, req.query.sortDirection
+    )
+
+    if(!comment) {
+        res.sendStatus(404)
+    } else {
+        res.status(200).send(comment)
+    }
+})

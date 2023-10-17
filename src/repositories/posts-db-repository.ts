@@ -1,12 +1,15 @@
 import {PostDbModel, PostViewModel, UpdatePostModel} from "../models/post-model";
-import {clientPostCollection, clientUserCollection} from "../data/DB-Mongo";
+import {clientCommentCollection, clientPostCollection, clientUserCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
-import {userModel} from "../models/user-model";
-import {ObjectId} from "mongodb";
+import {commentDbModel} from "../models/comments-model";
 
 export const postsRepository = {
-    async getAllPosts(sortBy: string = "createdAt", sortDirection: string = "desc",
-                      pageNumber: number, pageSize: number): Promise< paginationModel<PostViewModel>> {
+    async getAllPosts(
+        sortBy: string = "createdAt",
+        sortDirection: string = "desc",
+        pageNumber: number,
+        pageSize: number
+    ): Promise<paginationModel<PostViewModel>> {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
 
@@ -14,7 +17,7 @@ export const postsRepository = {
         const foundPost: PostDbModel[] = await clientPostCollection
             .find({}, {projection: {_id: 0}})
             .sort(sortQuery)
-            .skip((pageNumber - 1)*pageSize)
+            .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
             .toArray()
 
@@ -37,7 +40,10 @@ export const postsRepository = {
         return await clientPostCollection.insertOne({...inputData})
     },
 
-    async updatePost(id: string, inputData: UpdatePostModel) {
+    async updatePost(
+        id: string,
+        inputData: UpdatePostModel
+    ) {
         const isUpdated = await clientPostCollection.updateOne({id: id}, {
             $set: {...inputData}
         })
@@ -60,10 +66,10 @@ export const postsRepository = {
 
         const foundUser = await clientUserCollection.findOne({id: userId})
 
-        if(!foundPost) {
+        if (!foundPost) {
             return false
         } else {
-            return {
+            const comment: commentDbModel = {
                 id: foundPost.id,
                 content: content,
                 commentatorInfo: {
@@ -72,6 +78,44 @@ export const postsRepository = {
                 },
                 createdAt: new Date().toISOString()
             }
+            await clientCommentCollection.insertOne({...comment})
+
+            return comment;
         }
-    }
+    },
+
+    async getCommentById(
+        id: string,
+        pageNumber: number,
+        pageSize: number,
+        sortBy: string = "createdAt",
+        sortDirection: string = "desc"
+    ) {
+        let sortQuery: any = {}
+        sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
+
+        const filter = {id: id}
+        const isExists = await clientCommentCollection.findOne(filter)
+        const count: number = await clientCommentCollection.countDocuments(filter)
+        const comment: commentDbModel[] = await clientCommentCollection
+            .find(filter, {projection: {_id: 0}})
+            .sort(sortQuery)
+            .skip((pageNumber - 1) * pageSize)
+            .limit(pageSize)
+            .toArray()
+
+        const objects: paginationModel<commentDbModel> = {
+            pagesCount: Math.ceil(count / pageSize),
+            page: pageNumber,
+            pageSize: pageSize,
+            totalCount: count,
+            items: comment
+        }
+
+        if (!isExists) {
+            return false
+        } else {
+            return objects
+        }
+    },
 }

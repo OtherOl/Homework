@@ -67,4 +67,9 @@ exports.postsService = {
             return yield posts_db_repository_1.postsRepository.createComment(id, content, userId);
         });
     },
+    getCommentById(id, pageNumber, pageSize, sortBy, sortDirection) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield posts_db_repository_1.postsRepository.getCommentById(id, pageNumber, pageSize, sortBy, sortDirection);
+        });
+    },
 };

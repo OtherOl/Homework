@@ -65,7 +65,7 @@ exports.postsRepository = {
                 return false;
             }
             else {
-                return {
+                const comment = {
                     id: foundPost.id,
                     content: content,
                     commentatorInfo: {
@@ -74,7 +74,37 @@ exports.postsRepository = {
                     },
                     createdAt: new Date().toISOString()
                 };
+                yield DB_Mongo_1.clientCommentCollection.insertOne(Object.assign({}, comment));
+                return comment;
             }
         });
-    }
+    },
+    getCommentById(id, pageNumber, pageSize, sortBy = "createdAt", sortDirection = "desc") {
+        return __awaiter(this, void 0, void 0, function* () {
+            let sortQuery = {};
+            sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
+            const filter = { id: id };
+            const isExists = yield DB_Mongo_1.clientCommentCollection.findOne(filter);
+            const count = yield DB_Mongo_1.clientCommentCollection.countDocuments(filter);
+            const comment = yield DB_Mongo_1.clientCommentCollection
+                .find(filter, { projection: { _id: 0 } })
+                .sort(sortQuery)
+                .skip((pageNumber - 1) * pageSize)
+                .limit(pageSize)
+                .toArray();
+            const objects = {
+                pagesCount: Math.ceil(count / pageSize),
+                page: pageNumber,
+                pageSize: pageSize,
+                totalCount: count,
+                items: comment
+            };
+            if (!isExists) {
+                return false;
+            }
+            else {
+                return objects;
+            }
+        });
+    },
 };

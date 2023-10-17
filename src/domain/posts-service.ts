@@ -3,8 +3,6 @@ import {randomUUID} from "crypto";
 import {postsRepository} from "../repositories/posts-db-repository";
 import {blogsRepository} from "../repositories/blogs-db-repository";
 import {ObjectId} from "mongodb";
-import {userModel} from "../models/user-model";
-import {commentDbModel} from "../models/comments-model";
 
 export const postsService = {
     async getAllPosts(
@@ -71,5 +69,21 @@ export const postsService = {
         userId: string
     ) {
         return await postsRepository.createComment(id, content, userId)
+    },
+
+    async getCommentById(
+        id: string,
+        pageNumber: number,
+        pageSize: number,
+        sortBy: string,
+        sortDirection: string
+    ) {
+        return await postsRepository.getCommentById(
+            id,
+            pageNumber,
+            pageSize,
+            sortBy,
+            sortDirection
+        )
     },
 }
