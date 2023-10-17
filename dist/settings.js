@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-//export const app = express()
-//app.use(express.json())
-//app.use('/blogs', blogsRouter)
-//app.use('/posts', postsRouter)
+exports.settings = void 0;
+exports.settings = {
+    JWT_SECRET: process.env.JWT_SECRET || "123"
+};

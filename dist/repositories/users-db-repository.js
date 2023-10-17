@@ -58,12 +58,18 @@ exports.usersRepository = {
     },
     findByLoginOrEmail(loginOrEmail) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DB_Mongo_1.clientUserCollection.findOne({
+            const foundUser = yield DB_Mongo_1.clientUserCollection.findOne({
                 $or: [
-                    { login: RegExp(loginOrEmail, "i") },
-                    { email: RegExp(loginOrEmail, "i") }
+                    { login: loginOrEmail },
+                    { email: loginOrEmail }
                 ]
             });
+            return foundUser;
         });
     },
+    findUserById(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield DB_Mongo_1.clientUserCollection.findOne({ id: userId });
+        });
+    }
 };

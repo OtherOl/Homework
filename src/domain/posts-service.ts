@@ -3,6 +3,7 @@ import {randomUUID} from "crypto";
 import {postsRepository} from "../repositories/posts-db-repository";
 import {blogsRepository} from "../repositories/blogs-db-repository";
 import {ObjectId} from "mongodb";
+import {userModel} from "../models/user-model";
 
 export const postsService = {
     async getAllPosts(
@@ -61,5 +62,13 @@ export const postsService = {
         id: string
     ) {
         return await postsRepository.deletePost(id)
-    }
+    },
+
+    async createComment(
+        id: string,
+        content: string,
+        userId: string
+    ) {
+        return await postsRepository.createComment(id, content, userId)
+    },
 }

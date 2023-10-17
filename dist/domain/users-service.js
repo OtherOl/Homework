@@ -53,7 +53,17 @@ exports.usersService = {
             if (!foundUser)
                 return false;
             const passwordHash = yield this._generateHash(password, foundUser.passwordHash);
-            return foundUser.passwordHash === passwordHash;
+            if (foundUser.passwordHash !== passwordHash) {
+                return false;
+            }
+            else {
+                return foundUser;
+            }
+        });
+    },
+    findUserById(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield users_db_repository_1.usersRepository.findUserById(userId);
         });
     },
 };

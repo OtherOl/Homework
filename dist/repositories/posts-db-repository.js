@@ -56,5 +56,25 @@ exports.postsRepository = {
             const deleteBlog = yield DB_Mongo_1.clientPostCollection.deleteOne({ id: id });
             return deleteBlog.deletedCount === 1;
         });
+    },
+    createComment(id, content, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const foundPost = yield DB_Mongo_1.clientPostCollection.findOne({ id: id });
+            const foundUser = yield DB_Mongo_1.clientUserCollection.findOne({ id: userId });
+            if (!foundPost) {
+                return false;
+            }
+            else {
+                return {
+                    id: foundPost.id,
+                    content: content,
+                    commentatorInfo: {
+                        userId: foundUser.id,
+                        userLogin: foundUser.login
+                    },
+                    createdAt: new Date().toISOString()
+                };
+            }
+        });
     }
 };

@@ -24,5 +24,6 @@ exports.bodyPostValidation = {
     })),
     title: (0, express_validator_1.body)('title').isString().notEmpty().trim().isLength({ min: 1, max: 30 }),
     shortDescription: (0, express_validator_1.body)('shortDescription').isString().notEmpty().trim().isLength({ min: 1, max: 100 }),
-    content: (0, express_validator_1.body)('content').isString().notEmpty().trim().isLength({ min: 1, max: 1000 })
+    content: (0, express_validator_1.body)('content').isString().notEmpty().trim().isLength({ min: 1, max: 1000 }),
+    comment: (0, express_validator_1.body)('content').isString().notEmpty().trim().isLength({ min: 20, max: 300 })
 };

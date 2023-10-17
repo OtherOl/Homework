@@ -1,6 +1,8 @@
 import {PostDbModel, PostViewModel, UpdatePostModel} from "../models/post-model";
-import {clientPostCollection} from "../data/DB-Mongo";
+import {clientPostCollection, clientUserCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
+import {userModel} from "../models/user-model";
+import {ObjectId} from "mongodb";
 
 export const postsRepository = {
     async getAllPosts(sortBy: string = "createdAt", sortDirection: string = "desc",
@@ -47,5 +49,29 @@ export const postsRepository = {
         const deleteBlog = await clientPostCollection.deleteOne({id: id})
 
         return deleteBlog.deletedCount === 1
+    },
+
+    async createComment(
+        id: string,
+        content: string,
+        userId: string
+    ) {
+        const foundPost = await clientPostCollection.findOne({id: id})
+
+        const foundUser = await clientUserCollection.findOne({id: userId})
+
+        if(!foundPost) {
+            return false
+        } else {
+            return {
+                id: foundPost.id,
+                content: content,
+                commentatorInfo: {
+                    userId: foundUser!.id,
+                    userLogin: foundUser!.login
+                },
+                createdAt: new Date().toISOString()
+            }
+        }
     }
 }

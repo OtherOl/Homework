@@ -1,7 +1,7 @@
 import {userModel} from "../models/user-model";
 
 declare global {
-    namespace Express {
+    declare namespace Express {
         export interface Request {
             user: userModel | null
         }

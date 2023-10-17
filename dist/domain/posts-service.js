@@ -61,5 +61,10 @@ exports.postsService = {
         return __awaiter(this, void 0, void 0, function* () {
             return yield posts_db_repository_1.postsRepository.deletePost(id);
         });
-    }
+    },
+    createComment(id, content, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield posts_db_repository_1.postsRepository.createComment(id, content, userId);
+        });
+    },
 };

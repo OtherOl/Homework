@@ -13,5 +13,6 @@ export const bodyPostValidation = {
     }),
     title:body('title').isString().notEmpty().trim().isLength({min: 1, max: 30}),
     shortDescription:body('shortDescription').isString().notEmpty().trim().isLength({min: 1, max: 100}),
-    content:body('content').isString().notEmpty().trim().isLength({min: 1, max: 1000})
+    content:body('content').isString().notEmpty().trim().isLength({min: 1, max: 1000}),
+    comment:body('content').isString().notEmpty().trim().isLength({min: 20, max: 300})
 }
