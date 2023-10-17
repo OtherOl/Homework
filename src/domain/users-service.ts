@@ -75,6 +75,7 @@ export const usersService = {
     async findUserById(
         userId: any
     ) {
+
         return await usersRepository.findUserById(userId)
     },
 }

@@ -4,6 +4,7 @@ import {postsRepository} from "../repositories/posts-db-repository";
 import {blogsRepository} from "../repositories/blogs-db-repository";
 import {ObjectId} from "mongodb";
 import {userModel} from "../models/user-model";
+import {commentDbModel} from "../models/comments-model";
 
 export const postsService = {
     async getAllPosts(

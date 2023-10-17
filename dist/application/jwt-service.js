@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.jwtService = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const settings_1 = require("../settings");
-const mongodb_1 = require("mongodb");
 exports.jwtService = {
     createJWT(user) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -28,27 +27,14 @@ exports.jwtService = {
     getUserIdByToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log(token);
                 const result = jsonwebtoken_1.default.verify(token, settings_1.settings.JWT_SECRET);
-                return new mongodb_1.ObjectId(result.userId);
-            }
-            catch (error) {
-                return null;
-            }
-        });
-    },
-    getUserByToken(token) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const user = jsonwebtoken_1.default.sign(token, settings_1.settings.JWT_SECRET);
-                return {
-                    email: user.email,
-                    login: user.login,
-                    userId: user.id
-                };
+                // console.log(result)
+                return result.userId;
             }
             catch (error) {
                 return false;
             }
         });
-    },
+    }
 };

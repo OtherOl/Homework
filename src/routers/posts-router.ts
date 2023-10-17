@@ -75,7 +75,9 @@ postsRouter.post('/:id/comments',
     authMiddleware,
     bodyPostValidation.comment, inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        const comment = await postsService.createComment(req.params.id, req.body.content, req.user!.id);
+        const comment = await postsService.createComment(req.params.id, req.body.content, req.user!.id)
+
+        console.log(comment)
 
         if (!comment) {
             res.sendStatus(404)

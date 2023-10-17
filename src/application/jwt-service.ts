@@ -17,25 +17,13 @@ export const jwtService = {
         token: string
     ) {
         try {
+            console.log(token)
             const result: any = jwt.verify(token, settings.JWT_SECRET)
-            return new ObjectId(result.userId)
-        } catch (error) {
-            return null
-        }
-    },
 
-    async getUserByToken(
-        token: string
-    ) {
-        try {
-            const user: any = jwt.sign(token, settings.JWT_SECRET)
-            return {
-                email: user.email,
-                login: user.login,
-                userId: user.id
-            }
+            // console.log(result)
+            return result.userId
         } catch (error) {
             return false
         }
-    },
+    }
 }

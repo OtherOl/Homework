@@ -56,6 +56,7 @@ exports.postsRouter.delete('/:id', authorisation_middleware_1.authorisationMiddl
 }));
 exports.postsRouter.post('/:id/comments', auth_middleware_1.authMiddleware, body_post_validation_1.bodyPostValidation.comment, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const comment = yield posts_service_1.postsService.createComment(req.params.id, req.body.content, req.user.id);
+    console.log(comment);
     if (!comment) {
         res.sendStatus(404);
     }

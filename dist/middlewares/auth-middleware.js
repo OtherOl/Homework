@@ -13,6 +13,7 @@ exports.authMiddleware = void 0;
 const jwt_service_1 = require("../application/jwt-service");
 const users_service_1 = require("../domain/users-service");
 const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.headers.authorization);
     if (!req.headers.authorization) {
         return res.sendStatus(401);
     }
@@ -21,6 +22,7 @@ const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     if (userId) {
         req.user = yield users_service_1.usersService.findUserById(userId);
         next();
+        return;
     }
     res.sendStatus(401);
 });
