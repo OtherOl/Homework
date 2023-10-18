@@ -20,11 +20,11 @@ exports.authRouter = (0, express_1.Router)({});
 exports.authRouter.post('/login', body_auth_validation_1.bodyAuthValidation.loginOrEmail, body_auth_validation_1.bodyAuthValidation.password, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
     if (!user) {
-        return res.sendStatus(401);
+        res.sendStatus(401);
     }
     else {
         const token = yield jwt_service_1.jwtService.createJWT(user);
-        return res.status(200).send(token);
+        res.status(200).send(token);
     }
 }));
 exports.authRouter.get('/me', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
