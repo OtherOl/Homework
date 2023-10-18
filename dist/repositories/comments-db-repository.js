@@ -14,13 +14,31 @@ const DB_Mongo_1 = require("../data/DB-Mongo");
 exports.commentsRepository = {
     getCommentById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const comment = yield DB_Mongo_1.clientCommentCollection.findOne({ id: id });
+            const comment = yield DB_Mongo_1.clientCommentCollection.findOne({ id: id }, { projection: { _id: 0 } });
             if (!comment) {
                 return false;
             }
             else {
                 return comment;
             }
+        });
+    },
+    updateComment(commentId, content, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const comment = DB_Mongo_1.clientCommentCollection.findOne({ id: commentId });
+            if (!comment) {
+                return false;
+            }
+            else {
+                yield DB_Mongo_1.clientCommentCollection.updateOne({ id: commentId }, { $set: { content: content } });
+                return comment;
+            }
+        });
+    },
+    deleteCommentById(commentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const comment = yield DB_Mongo_1.clientCommentCollection.deleteOne({ id: commentId });
+            return comment.deletedCount === 1;
         });
     }
 };

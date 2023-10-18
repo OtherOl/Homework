@@ -17,4 +17,14 @@ exports.commentsService = {
             return yield comments_db_repository_1.commentsRepository.getCommentById(id);
         });
     },
+    updateComment(commentId, content, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield comments_db_repository_1.commentsRepository.updateComment(commentId, content, userId);
+        });
+    },
+    deleteCommentById(commentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield comments_db_repository_1.commentsRepository.deleteCommentById(commentId);
+        });
+    },
 };

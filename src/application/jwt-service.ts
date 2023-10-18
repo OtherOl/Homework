@@ -17,10 +17,8 @@ export const jwtService = {
         token: string
     ) {
         try {
-            console.log(token)
             const result: any = jwt.verify(token, settings.JWT_SECRET)
 
-            // console.log(result)
             return result.userId
         } catch (error) {
             return false
