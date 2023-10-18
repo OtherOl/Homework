@@ -18,7 +18,7 @@ export const commentsRepository = {
         commentId: string,
         content: string,
     ) {
-        const comment: Promise<commentDbModel | null> =  clientCommentCollection.findOne({id: commentId})
+        const comment: commentDbModel | null = await clientCommentCollection.findOne({id: commentId})
 
         if (!comment) {
             return false
@@ -31,7 +31,7 @@ export const commentsRepository = {
     async deleteCommentById(
         commentId: string
     ) {
-        const comment: Promise<commentDbModel | null> =  clientCommentCollection.findOne({id: commentId})
+        const comment: commentDbModel | null = await clientCommentCollection.findOne({id: commentId})
 
         if (!comment) {
             return false
