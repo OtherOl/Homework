@@ -56,14 +56,14 @@ postsRouter.put('/:id',
 postsRouter.delete('/:id',
     authorisationMiddleware,
     async (req: Request, res: Response) => {
-    const successDel = await postsService.deletePost(req.params.id)
+        const successDel = await postsService.deletePost(req.params.id)
 
-    if (!successDel) {
-        res.sendStatus(404)
-    } else {
-        res.sendStatus(204)
-    }
-})
+        if (!successDel) {
+            res.sendStatus(404)
+        } else {
+            res.sendStatus(204)
+        }
+    })
 
 postsRouter.post('/:id/comments',
     authMiddleware,
@@ -78,15 +78,15 @@ postsRouter.post('/:id/comments',
         }
     })
 
-postsRouter.get('/:id/comments', async (req: Request<{id: string}, {}, {}, commentGeneric>, res: Response) => {
+postsRouter.get('/:id/comments', async (req: Request<{ id: string }, {}, {}, commentGeneric>, res: Response) => {
     const comment = await postsService.getCommentById(
         req.params.id,
-        req.query.pageNumber? +req.query.pageNumber: 1,
-        req.query.pageSize? +req.query.pageSize: 10,
+        req.query.pageNumber ? +req.query.pageNumber : 1,
+        req.query.pageSize ? +req.query.pageSize : 10,
         req.query.sortBy, req.query.sortDirection
     )
 
-    if(!comment) {
+    if (!comment) {
         res.sendStatus(404)
     } else {
         res.status(200).send(comment)

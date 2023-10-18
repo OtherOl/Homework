@@ -21,10 +21,10 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.delete('/testing/all-data', async (req: Request, res: Response) => {
-    const resultBlog = await clientBlogCollection.deleteMany({})
-    const resultPost = await clientPostCollection.deleteMany({})
-    const resultUser = await clientUserCollection.deleteMany({})
-    const resultComment = await clientCommentCollection.deleteMany({})
+    await clientBlogCollection.deleteMany({})
+    await clientPostCollection.deleteMany({})
+    await clientUserCollection.deleteMany({})
+    await clientCommentCollection.deleteMany({})
 
     res.sendStatus(204)
 })

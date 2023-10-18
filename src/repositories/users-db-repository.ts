@@ -44,7 +44,7 @@ export const usersRepository = {
     async createUser(
         inputData: createUserModel
     ) {
-        const result = await clientUserCollection.insertOne({...inputData})
+        await clientUserCollection.insertOne({...inputData})
 
         return {
             id: inputData.id,

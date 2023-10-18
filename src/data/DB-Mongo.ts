@@ -4,11 +4,12 @@ import {PostDbModel,} from "../models/post-model";
 import {blogModel} from "../models/blog-model";
 import {userModel} from "../models/user-model";
 import {commentDbModel} from "../models/comments-model";
+
 dotenv.config()
 
 const mongoUri = process.env.MONGO_URL
 console.log(process.env.MONGO_URL)
-if(!mongoUri) {
+if (!mongoUri) {
     throw new Error('URL doesnt found')
 }
 

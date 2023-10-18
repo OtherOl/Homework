@@ -24,11 +24,11 @@ authRouter.post('/login',
 authRouter.get('/me',
     authMiddleware,
     async (req: Request, res: Response) => {
-    const user = req.user;
+        const user = req.user;
 
-    return {
-        email: user!.email,
-        login: user!.login,
-        userId: user!.id
-    }
-})
+        return {
+            email: user!.email,
+            login: user!.login,
+            userId: user!.id
+        }
+    })
