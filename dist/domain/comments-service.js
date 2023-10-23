@@ -17,9 +17,9 @@ exports.commentsService = {
             return yield comments_db_repository_1.commentsRepository.getCommentById(id);
         });
     },
-    updateComment(commentId, content, userId) {
+    updateComment(commentId, content) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield comments_db_repository_1.commentsRepository.updateComment(commentId, content, userId);
+            return yield comments_db_repository_1.commentsRepository.updateComment(commentId, content);
         });
     },
     deleteCommentById(commentId) {

@@ -23,9 +23,9 @@ exports.commentsRepository = {
             }
         });
     },
-    updateComment(commentId, content, userId) {
+    updateComment(commentId, content) {
         return __awaiter(this, void 0, void 0, function* () {
-            const comment = DB_Mongo_1.clientCommentCollection.findOne({ id: commentId });
+            const comment = yield DB_Mongo_1.clientCommentCollection.findOne({ id: commentId });
             if (!comment) {
                 return false;
             }
@@ -37,8 +37,14 @@ exports.commentsRepository = {
     },
     deleteCommentById(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const comment = yield DB_Mongo_1.clientCommentCollection.deleteOne({ id: commentId });
-            return comment.deletedCount === 1;
+            const comment = yield DB_Mongo_1.clientCommentCollection.findOne({ id: commentId });
+            if (!comment) {
+                return false;
+            }
+            else {
+                yield DB_Mongo_1.clientCommentCollection.deleteOne({ id: commentId });
+                return comment;
+            }
         });
     }
 };

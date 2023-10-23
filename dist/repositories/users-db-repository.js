@@ -41,7 +41,7 @@ exports.usersRepository = {
     },
     createUser(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield DB_Mongo_1.clientUserCollection.insertOne(Object.assign({}, inputData));
+            yield DB_Mongo_1.clientUserCollection.insertOne(Object.assign({}, inputData));
             return {
                 id: inputData.id,
                 login: inputData.login,

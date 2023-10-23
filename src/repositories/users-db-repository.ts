@@ -1,6 +1,6 @@
 import {clientUserCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
-import {createUserModel, userModel, userViewModel} from "../models/user-model";
+import {createNewUserModel, userModel, userViewModel} from "../models/user-model";
 
 export const usersRepository = {
     async getAllUsers(
@@ -42,7 +42,7 @@ export const usersRepository = {
     },
 
     async createUser(
-        inputData: createUserModel
+        inputData: createNewUserModel
     ) {
         await clientUserCollection.insertOne({...inputData})
 

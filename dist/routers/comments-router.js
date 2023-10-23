@@ -29,7 +29,7 @@ exports.commentsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 
 exports.commentsRouter.put('/:id', auth_middleware_1.authMiddleware, body_post_validation_1.bodyPostValidation.comment, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.headers.authorization.split(" ")[1];
     const userId = yield jwt_service_1.jwtService.getUserIdByToken(token);
-    const updatedComment = yield comments_service_1.commentsService.updateComment(req.params.id, req.body.content, userId);
+    const updatedComment = yield comments_service_1.commentsService.updateComment(req.params.id, req.body.content);
     if (!updatedComment) {
         res.sendStatus(404);
     }
@@ -41,9 +41,14 @@ exports.commentsRouter.put('/:id', auth_middleware_1.authMiddleware, body_post_v
     }
 }));
 exports.commentsRouter.delete('/:commentId', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = req.headers.authorization.split(" ")[1];
+    const userId = yield jwt_service_1.jwtService.getUserIdByToken(token);
     const comment = yield comments_service_1.commentsService.deleteCommentById(req.params.commentId);
     if (!comment) {
         res.sendStatus(404);
+    }
+    else if (comment.commentatorInfo.userId !== userId) {
+        res.sendStatus(403);
     }
     else {
         res.sendStatus(204);
