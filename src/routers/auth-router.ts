@@ -4,6 +4,7 @@ import {jwtService} from "../application/jwt-service";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {bodyAuthValidation} from "../middlewares/body-auth-validation";
 import {authMiddleware} from "../middlewares/auth-middleware";
+import {bodyUserValidation} from "../middlewares/body-user-validation";
 
 export const authRouter = Router({})
 
@@ -22,8 +23,8 @@ authRouter.post('/login',
     })
 
 authRouter.post('/registration',
-    bodyAuthValidation.loginOrEmail, bodyAuthValidation.password,
-    inputValidationMiddleware,
+    bodyUserValidation.login, bodyUserValidation.email,
+    bodyUserValidation.password, inputValidationMiddleware,
     async (req: Request, res: Response) => {
     const newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password)
     res.sendStatus(204)
