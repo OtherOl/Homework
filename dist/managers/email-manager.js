@@ -31,7 +31,6 @@ exports.emailManager = {
                 html: "<h1>Thanks for your registration</h1>" +
                     `<p style="font-size: 18px;">To finish registration please enter cofirmation code: <strong>${user.emailConfirmation.confirmationCode}</strong></p>`, // html body
             });
-            return info;
         });
     },
     resendConfirmation(user) {
@@ -53,7 +52,6 @@ exports.emailManager = {
                     "Confirm registration"</a>
                 </p>`,
             });
-            return info;
         });
     }
 };

@@ -46,7 +46,10 @@ exports.usersService = {
             };
             const isExists = yield users_db_repository_1.usersRepository.findByLoginOrEmail(email);
             if (isExists !== null)
-                return false;
+                return "email exists";
+            const isExistsLogin = yield users_db_repository_1.usersRepository.findByLoginOrEmail(login);
+            if (isExistsLogin !== null)
+                return "login exists";
             yield email_manager_1.emailManager.sendEmailConfirmationCode(newUser);
             return yield users_db_repository_1.usersRepository.createUser(newUser);
         });
@@ -100,9 +103,9 @@ exports.usersService = {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield users_db_repository_1.usersRepository.findByLoginOrEmail(email);
             if (user === null)
-                return false;
+                return "User doesn't exists";
             if (user.isConfirmed)
-                return false;
+                return "User already confirmed";
             yield email_manager_1.emailManager.resendConfirmation(user);
             return true;
         });

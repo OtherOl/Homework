@@ -46,6 +46,8 @@ authRouter.post('/registration',
                 ]
             })
         }
+
+        res.sendStatus(204)
     })
 
 authRouter.post('/registration-confirmation', async (req: Request, res: Response) => {

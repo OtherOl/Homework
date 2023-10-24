@@ -30,17 +30,39 @@ exports.authRouter.post('/login', body_auth_validation_1.bodyAuthValidation.logi
 }));
 exports.authRouter.post('/registration', body_user_validation_1.bodyUserValidation.login, body_user_validation_1.bodyUserValidation.email, body_user_validation_1.bodyUserValidation.password, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const newUser = yield users_service_1.usersService.createUser(req.body.login, req.body.email, req.body.password);
-    if (newUser === false) {
-        res.sendStatus(400);
+    if (newUser === "email exists") {
+        res.status(400).send({
+            errorsMessages: [
+                {
+                    message: "User with current email already exists",
+                    field: "email"
+                }
+            ]
+        });
     }
-    else {
-        res.sendStatus(204);
+    else if (newUser === "login exists") {
+        res.status(400).send({
+            errorsMessages: [
+                {
+                    message: "User with current login already exists",
+                    field: "login"
+                }
+            ]
+        });
     }
+    res.sendStatus(204);
 }));
 exports.authRouter.post('/registration-confirmation', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const confirmedUser = yield users_service_1.usersService.confirmEmail(req.body.code);
     if (!confirmedUser) {
-        res.sendStatus(400);
+        res.status(400).send({
+            errorsMessages: [
+                {
+                    message: "Incorrect code",
+                    field: "code"
+                }
+            ]
+        });
     }
     else {
         res.sendStatus(204);
@@ -48,12 +70,27 @@ exports.authRouter.post('/registration-confirmation', (req, res) => __awaiter(vo
 }));
 exports.authRouter.post('/registration-email-resending', body_user_validation_1.bodyUserValidation.email, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const confirmedUser = yield users_service_1.usersService.resendConfirmation(req.body.email);
-    if (!confirmedUser) {
-        res.sendStatus(400);
+    if (confirmedUser === "User doesn't exists") {
+        res.status(400).send({
+            errorsMessages: [
+                {
+                    message: "User with current email doesn't exists",
+                    field: "email"
+                }
+            ]
+        });
     }
-    else {
-        res.sendStatus(204);
+    else if (confirmedUser === "User already confirmed") {
+        res.status(400).send({
+            errorsMessages: [
+                {
+                    message: "User with current email already confirmed",
+                    field: "email"
+                }
+            ]
+        });
     }
+    res.sendStatus(204);
 }));
 exports.authRouter.get('/me', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
