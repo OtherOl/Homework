@@ -106,7 +106,8 @@ exports.usersService = {
                 return "User doesn't exists";
             if (user.isConfirmed)
                 return "User already confirmed";
-            yield email_manager_1.emailManager.resendConfirmation(user);
+            const newCode = yield users_db_repository_1.usersRepository.updateCode(user.id);
+            yield email_manager_1.emailManager.resendConfirmation(newCode);
             return true;
         });
     }

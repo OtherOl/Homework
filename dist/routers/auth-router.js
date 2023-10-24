@@ -31,7 +31,7 @@ exports.authRouter.post('/login', body_auth_validation_1.bodyAuthValidation.logi
 exports.authRouter.post('/registration', body_user_validation_1.bodyUserValidation.login, body_user_validation_1.bodyUserValidation.email, body_user_validation_1.bodyUserValidation.password, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const newUser = yield users_service_1.usersService.createUser(req.body.login, req.body.email, req.body.password);
     if (newUser === "email exists") {
-        res.status(400).send({
+        return res.status(400).send({
             errorsMessages: [
                 {
                     message: "User with current email already exists",
@@ -41,7 +41,7 @@ exports.authRouter.post('/registration', body_user_validation_1.bodyUserValidati
         });
     }
     else if (newUser === "login exists") {
-        res.status(400).send({
+        return res.status(400).send({
             errorsMessages: [
                 {
                     message: "User with current login already exists",
@@ -55,7 +55,7 @@ exports.authRouter.post('/registration', body_user_validation_1.bodyUserValidati
 exports.authRouter.post('/registration-confirmation', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const confirmedUser = yield users_service_1.usersService.confirmEmail(req.body.code);
     if (!confirmedUser) {
-        res.status(400).send({
+        return res.status(400).send({
             errorsMessages: [
                 {
                     message: "Incorrect code",
@@ -71,7 +71,7 @@ exports.authRouter.post('/registration-confirmation', (req, res) => __awaiter(vo
 exports.authRouter.post('/registration-email-resending', body_user_validation_1.bodyUserValidation.email, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const confirmedUser = yield users_service_1.usersService.resendConfirmation(req.body.email);
     if (confirmedUser === "User doesn't exists") {
-        res.status(400).send({
+        return res.status(400).send({
             errorsMessages: [
                 {
                     message: "User with current email doesn't exists",
@@ -81,7 +81,7 @@ exports.authRouter.post('/registration-email-resending', body_user_validation_1.
         });
     }
     else if (confirmedUser === "User already confirmed") {
-        res.status(400).send({
+        return res.status(400).send({
             errorsMessages: [
                 {
                     message: "User with current email already confirmed",

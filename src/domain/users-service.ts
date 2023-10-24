@@ -115,7 +115,8 @@ export const usersService = {
         if(user === null) return "User doesn't exists"
         if(user.isConfirmed) return "User already confirmed"
 
-        await emailManager.resendConfirmation(user)
+        const newCode = await usersRepository.updateCode(user.id)
+        await emailManager.resendConfirmation(newCode!)
         return true
     }
 }

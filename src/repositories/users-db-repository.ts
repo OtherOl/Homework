@@ -99,6 +99,6 @@ export const usersRepository = {
     async updateCode(
         id: string
     ) {
-        return await clientUserCollection.updateOne({id: id}, {$set: {"emailConfirmation.confirmationCode": uuidv4()}})
+        return await clientUserCollection.findOneAndUpdate({id: id}, {$set: {"emailConfirmation.confirmationCode": uuidv4()}})
     }
 }

@@ -13,7 +13,7 @@ export const emailManager = {
             }
         })
 
-        let info = await transporter.sendMail({
+        await transporter.sendMail({
             from: 'OtherOl BackEnd<dmitrybackenddev@gmail.com>',
             to: user.email,
             subject: "Confirmation code",
@@ -35,7 +35,7 @@ export const emailManager = {
             }
         })
 
-        let info = await transporter.sendMail({
+        await transporter.sendMail({
             from: 'OtherOl BackEnd<dmitrybackenddev@gmail.com>',
             to: user.email,
             subject: "Resending confirmation code",

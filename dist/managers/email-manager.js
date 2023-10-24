@@ -24,12 +24,14 @@ exports.emailManager = {
                     pass: 'tzcjafbdsjqrpmwl'
                 }
             });
-            let info = yield transporter.sendMail({
+            yield transporter.sendMail({
                 from: 'OtherOl BackEnd<dmitrybackenddev@gmail.com>',
                 to: user.email,
                 subject: "Confirmation code",
                 html: "<h1>Thanks for your registration</h1>" +
-                    `<p style="font-size: 18px;">To finish registration please enter cofirmation code: <strong>${user.emailConfirmation.confirmationCode}</strong></p>`, // html body
+                    `<p style="font-size: 18px;">To finish registration please enter cofirmation code:
+                    <a href='https://somesite.com/confirm-email?code=${user.emailConfirmation.confirmationCode}'>
+                    "Confirm registration"</a></p>`,
             });
         });
     },
@@ -42,7 +44,7 @@ exports.emailManager = {
                     pass: 'tzcjafbdsjqrpmwl'
                 }
             });
-            let info = yield transporter.sendMail({
+            yield transporter.sendMail({
                 from: 'OtherOl BackEnd<dmitrybackenddev@gmail.com>',
                 to: user.email,
                 subject: "Resending confirmation code",
