@@ -27,7 +27,7 @@ authRouter.post('/registration',
     bodyUserValidation.password, inputValidationMiddleware,
     async (req: Request, res: Response) => {
         const newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password);
-        if (newUser === false) {
+        if (newUser === "email exists") {
             res.status(400).send({
                 errorsMessages: [
                     {
@@ -36,8 +36,15 @@ authRouter.post('/registration',
                     }
                 ]
             })
-        } else {
-            res.sendStatus(204)
+        } else if(newUser === "login exists") {
+            res.status(400).send({
+                errorsMessages: [
+                    {
+                        message: "User with current login already exists",
+                        field: "login"
+                    }
+                ]
+            })
         }
     })
 

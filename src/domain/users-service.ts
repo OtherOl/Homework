@@ -50,7 +50,9 @@ export const usersService = {
             isConfirmed: false
         }
         const isExists = await usersRepository.findByLoginOrEmail(email);
-        if(isExists !== null) return false
+        if(isExists !== null) return "email exists"
+        const isExistsLogin = await usersRepository.findByLoginOrEmail(login);
+        if(isExistsLogin !== null) return "login exists"
 
         await emailManager.sendEmailConfirmationCode(newUser)
         return await usersRepository.createUser(newUser)
