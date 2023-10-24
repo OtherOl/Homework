@@ -28,7 +28,7 @@ authRouter.post('/registration',
     async (req: Request, res: Response) => {
         const newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password);
         if (newUser === "email exists") {
-            res.status(400).send({
+            return res.status(400).send({
                 errorsMessages: [
                     {
                         message: "User with current email already exists",
@@ -37,7 +37,7 @@ authRouter.post('/registration',
                 ]
             })
         } else if(newUser === "login exists") {
-            res.status(400).send({
+            return res.status(400).send({
                 errorsMessages: [
                     {
                         message: "User with current login already exists",
@@ -54,7 +54,7 @@ authRouter.post('/registration-confirmation', async (req: Request, res: Response
     const confirmedUser = await usersService.confirmEmail(req.body.code)
 
     if (!confirmedUser) {
-        res.status(400).send({
+        return res.status(400).send({
             errorsMessages: [
                 {
                     message: "Incorrect code",
@@ -73,7 +73,7 @@ authRouter.post('/registration-email-resending',
     const confirmedUser = await usersService.resendConfirmation(req.body.email);
 
     if(confirmedUser === "User doesn't exists") {
-        res.status(400).send({
+        return res.status(400).send({
             errorsMessages: [
                 {
                     message: "User with current email doesn't exists",
@@ -82,7 +82,7 @@ authRouter.post('/registration-email-resending',
             ]
         })
     } else if(confirmedUser === "User already confirmed") {
-        res.status(400).send({
+        return res.status(400).send({
             errorsMessages: [
                 {
                     message: "User with current email already confirmed",
