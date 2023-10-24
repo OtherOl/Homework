@@ -28,7 +28,14 @@ authRouter.post('/registration',
     async (req: Request, res: Response) => {
         const newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password);
         if (newUser === false) {
-            res.sendStatus(400)
+            res.status(400).send({
+                errorsMessages: [
+                    {
+                        message: "User with current email already exists",
+                        field: "email"
+                    }
+                ]
+            })
         } else {
             res.sendStatus(204)
         }
@@ -38,7 +45,14 @@ authRouter.post('/registration-confirmation', async (req: Request, res: Response
     const confirmedUser = await usersService.confirmEmail(req.body.code)
 
     if (!confirmedUser) {
-        res.sendStatus(400)
+        res.status(400).send({
+            errorsMessages: [
+                {
+                    message: "Incorrect code",
+                    field: "code"
+                }
+            ]
+        })
     } else {
         res.sendStatus(204)
     }
@@ -49,11 +63,27 @@ authRouter.post('/registration-email-resending',
     async (req: Request, res: Response) => {
     const confirmedUser = await usersService.resendConfirmation(req.body.email);
 
-    if(!confirmedUser) {
-        res.sendStatus(400)
-    } else {
-        res.sendStatus(204)
+    if(confirmedUser === "User doesn't exists") {
+        res.status(400).send({
+            errorsMessages: [
+                {
+                    message: "User with current email doesn't exists",
+                    field: "email"
+                }
+            ]
+        })
+    } else if(confirmedUser === "User already confirmed") {
+        res.status(400).send({
+            errorsMessages: [
+                {
+                    message: "User with current email already confirmed",
+                    field: "email"
+                }
+            ]
+        })
     }
+
+    res.sendStatus(204)
 })
 
 authRouter.get('/me',

@@ -110,8 +110,8 @@ export const usersService = {
     ) {
         const user = await usersRepository.findByLoginOrEmail(email)
 
-        if(user === null) return false
-        if(user.isConfirmed) return false
+        if(user === null) return "User doesn't exists"
+        if(user.isConfirmed) return "User already confirmed"
 
         await emailManager.resendConfirmation(user)
         return true
