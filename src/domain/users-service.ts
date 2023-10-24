@@ -5,6 +5,7 @@ import {userViewModel} from "../models/user-model";
 import {paginationModel} from "../models/pagination-model";
 import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
+import {emailManager} from "../managers/email-manager";
 
 export const usersService = {
     async getAllUsers(
@@ -27,8 +28,8 @@ export const usersService = {
 
     async createUser(
         login: string,
-        password: string,
-        email: string
+        email: string,
+        password: string
     ) {
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this._generateHash(password, passwordSalt)
@@ -48,8 +49,11 @@ export const usersService = {
             },
             isConfirmed: false
         }
-        // there should be emailsManager.sendEmail
-        return usersRepository.createUser(newUser)
+        const isExists = await usersRepository.findByLoginOrEmail(email);
+        if(isExists !== null) return false
+
+        await usersRepository.createUser(newUser)
+        return await emailManager.sendEmailConfirmationCode(newUser)
     },
 
     async _generateHash(
@@ -86,4 +90,10 @@ export const usersService = {
     ) {
         return await usersRepository.findUserById(userId)
     },
+
+    async confirmEmail(
+        code: string
+    ) {
+
+    }
 }

@@ -79,5 +79,11 @@ export const usersRepository = {
         userId: string
     ) {
         return await clientUserCollection.findOne({id: userId})
+    },
+
+    async findUserByConfirmationCode(
+        code: string
+    ) {
+        const user = await clientUserCollection.findOne({})
     }
 }

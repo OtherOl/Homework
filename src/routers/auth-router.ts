@@ -5,6 +5,7 @@ import {inputValidationMiddleware} from "../middlewares/input-validation-middlew
 import {bodyAuthValidation} from "../middlewares/body-auth-validation";
 import {authMiddleware} from "../middlewares/auth-middleware";
 import {bodyUserValidation} from "../middlewares/body-user-validation";
+import {usersRepository} from "../repositories/users-db-repository";
 
 export const authRouter = Router({})
 
@@ -26,8 +27,16 @@ authRouter.post('/registration',
     bodyUserValidation.login, bodyUserValidation.email,
     bodyUserValidation.password, inputValidationMiddleware,
     async (req: Request, res: Response) => {
-    const newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password)
-    res.sendStatus(204)
+    const newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password);
+    if(newUser === false) {
+        res.sendStatus(400)
+    } else {
+        res.sendStatus(204)
+    }
+})
+
+authRouter.post('/registration-confirmation', async (req: Request, res: Response) => {
+    const confirmedUser = await usersService.confirmEmail(req.body.code)
 })
 
 authRouter.get('/me',

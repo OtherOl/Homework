@@ -16,13 +16,16 @@ exports.usersService = void 0;
 const users_db_repository_1 = require("../repositories/users-db-repository");
 const crypto_1 = require("crypto");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const uuid_1 = require("uuid");
+const add_1 = __importDefault(require("date-fns/add"));
+const email_manager_1 = require("../managers/email-manager");
 exports.usersService = {
     getAllUsers(sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield users_db_repository_1.usersRepository.getAllUsers(sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm);
         });
     },
-    createUser(login, password, email) {
+    createUser(login, email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordSalt = yield bcrypt_1.default.genSalt(10);
             const passwordHash = yield this._generateHash(password, passwordSalt);
@@ -32,9 +35,20 @@ exports.usersService = {
                 email,
                 passwordHash,
                 passwordSalt,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                emailConfirmation: {
+                    confirmationCode: (0, uuid_1.v4)(),
+                    expirationDate: (0, add_1.default)(new Date(), {
+                        minutes: 3
+                    })
+                },
+                isConfirmed: false
             };
-            return users_db_repository_1.usersRepository.createUser(newUser);
+            const isExists = yield users_db_repository_1.usersRepository.findByLoginOrEmail(email);
+            if (isExists !== null)
+                return false;
+            yield users_db_repository_1.usersRepository.createUser(newUser);
+            return yield email_manager_1.emailManager.sendEmailConfirmationCode(newUser);
         });
     },
     _generateHash(password, salt) {
