@@ -1,6 +1,7 @@
 import {clientUserCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
 import {createNewUserModel, userViewModel} from "../models/user-model";
+import {v4 as uuidv4} from "uuid";
 
 export const usersRepository = {
     async getAllUsers(
@@ -93,5 +94,11 @@ export const usersRepository = {
         const user = await clientUserCollection.updateOne({id: id}, {$set: {isConfirmed: true}})
 
         return user.modifiedCount === 1
+    },
+
+    async updateCode(
+        id: string
+    ) {
+        return await clientUserCollection.updateOne({id: id}, {$set: {"emailConfirmation.confirmationCode": uuidv4()}})
     }
 }

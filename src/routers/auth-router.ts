@@ -36,7 +36,7 @@ authRouter.post('/registration',
                     }
                 ]
             })
-        } else if(newUser === "login exists") {
+        } else if (newUser === "login exists") {
             return res.status(400).send({
                 errorsMessages: [
                     {
@@ -70,30 +70,30 @@ authRouter.post('/registration-confirmation', async (req: Request, res: Response
 authRouter.post('/registration-email-resending',
     bodyUserValidation.email, inputValidationMiddleware,
     async (req: Request, res: Response) => {
-    const confirmedUser = await usersService.resendConfirmation(req.body.email);
+        const confirmedUser = await usersService.resendConfirmation(req.body.email);
 
-    if(confirmedUser === "User doesn't exists") {
-        return res.status(400).send({
-            errorsMessages: [
-                {
-                    message: "User with current email doesn't exists",
-                    field: "email"
-                }
-            ]
-        })
-    } else if(confirmedUser === "User already confirmed") {
-        return res.status(400).send({
-            errorsMessages: [
-                {
-                    message: "User with current email already confirmed",
-                    field: "email"
-                }
-            ]
-        })
-    }
+        if (confirmedUser === "User doesn't exists") {
+            return res.status(400).send({
+                errorsMessages: [
+                    {
+                        message: "User with current email doesn't exists",
+                        field: "email"
+                    }
+                ]
+            })
+        } else if (confirmedUser === "User already confirmed") {
+            return res.status(400).send({
+                errorsMessages: [
+                    {
+                        message: "User with current email already confirmed",
+                        field: "email"
+                    }
+                ]
+            })
+        }
 
-    res.sendStatus(204)
-})
+        res.sendStatus(204)
+    })
 
 authRouter.get('/me',
     authMiddleware,
