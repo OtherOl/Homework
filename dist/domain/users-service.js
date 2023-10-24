@@ -80,4 +80,18 @@ exports.usersService = {
             return yield users_db_repository_1.usersRepository.findUserById(userId);
         });
     },
+    confirmEmail(code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield users_db_repository_1.usersRepository.findUserByConfirmationCode(code);
+            if (user === null)
+                return false;
+            if (user.isConfirmed)
+                return false;
+            if (user.emailConfirmation.confirmationCode !== code)
+                return false;
+            if (user.emailConfirmation.expirationDate < new Date())
+                return false;
+            return yield users_db_repository_1.usersRepository.updateConfirmation(user.id);
+        });
+    }
 };

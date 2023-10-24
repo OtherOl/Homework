@@ -37,6 +37,15 @@ exports.authRouter.post('/registration', body_user_validation_1.bodyUserValidati
         res.sendStatus(204);
     }
 }));
+exports.authRouter.post('/registration-confirmation', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const confirmedUser = yield users_service_1.usersService.confirmEmail(req.body.code);
+    if (!confirmedUser) {
+        res.sendStatus(400);
+    }
+    else {
+        res.sendStatus(204);
+    }
+}));
 exports.authRouter.get('/me', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     return {

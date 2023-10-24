@@ -24,7 +24,7 @@ exports.usersRepository = {
             };
             const countUsers = yield DB_Mongo_1.clientUserCollection.countDocuments(filter);
             const foundUsers = yield DB_Mongo_1.clientUserCollection
-                .find(filter, { projection: { _id: 0, passwordHash: 0, passwordSalt: 0 } })
+                .find(filter, { projection: { _id: 0, passwordHash: 0, passwordSalt: 0, emailConfirmation: 0 } })
                 .sort(sortQuery)
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)
@@ -70,6 +70,17 @@ exports.usersRepository = {
     findUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield DB_Mongo_1.clientUserCollection.findOne({ id: userId });
+        });
+    },
+    findUserByConfirmationCode(code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield DB_Mongo_1.clientUserCollection.findOne({ "emailConfirmation.confirmationCode": code });
+        });
+    },
+    updateConfirmation(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield DB_Mongo_1.clientUserCollection.updateOne({ id: id }, { $set: { isConfirmed: true } });
+            return user.modifiedCount === 1;
         });
     }
 };

@@ -24,7 +24,7 @@ export const usersRepository = {
 
         const countUsers: number = await clientUserCollection.countDocuments(filter)
         const foundUsers: userViewModel[] = await clientUserCollection
-            .find(filter, {projection: {_id: 0, passwordHash: 0, passwordSalt: 0}})
+            .find(filter, {projection: {_id: 0, passwordHash: 0, passwordSalt: 0, emailConfirmation: 0}})
             .sort(sortQuery)
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
@@ -84,6 +84,14 @@ export const usersRepository = {
     async findUserByConfirmationCode(
         code: string
     ) {
-        const user = await clientUserCollection.findOne({})
+        return await clientUserCollection.findOne({"emailConfirmation.confirmationCode": code})
+    },
+
+    async updateConfirmation(
+        id: string
+    ) {
+        const user = await clientUserCollection.updateOne({id: id}, {$set: {isConfirmed: true}})
+
+        return user.modifiedCount === 1
     }
 }

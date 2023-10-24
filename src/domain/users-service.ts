@@ -94,6 +94,13 @@ export const usersService = {
     async confirmEmail(
         code: string
     ) {
+        const user = await usersRepository.findUserByConfirmationCode(code)
 
+        if(user === null) return false
+        if(user.isConfirmed) return false
+        if(user.emailConfirmation.confirmationCode !== code) return false
+        if(user.emailConfirmation.expirationDate < new Date()) return false
+
+        return await usersRepository.updateConfirmation(user.id)
     }
 }
