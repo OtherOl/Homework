@@ -20,7 +20,7 @@ export const emailManager = {
             html: "<h1>Thanks for your registration</h1>" +
                 `<p style="font-size: 18px;">To finish registration please enter cofirmation code:
                     <a href='https://somesite.com/confirm-email?code=${user.emailConfirmation.confirmationCode}'>
-                    "Confirm registration"</a></p>`, // html body
+                    "Confirm registration"</a></p>`,
         })
     },
 
