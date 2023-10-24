@@ -6,6 +6,7 @@ import {paginationModel} from "../models/pagination-model";
 import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
 import {emailManager} from "../managers/email-manager";
+import {emailAdapter} from "../adapters/email-adapter";
 
 export const usersService = {
     async getAllUsers(
@@ -115,9 +116,12 @@ export const usersService = {
         if(user === null) return "User doesn't exists"
         if(user.isConfirmed) return "User already confirmed"
 
-        const newUser = await usersRepository.updateCode(user.id)
+        const confirmationCode = uuidv4()
 
-        const resend = await emailManager.resendConfirmation(newUser!)
+        await usersRepository.changeConfirmationCode(user.id, confirmationCode)
+
+        await emailAdapter.resendEmailConfirmationCode(email, confirmationCode)
+
         return true
     }
 }

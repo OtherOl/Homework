@@ -25,7 +25,8 @@ export const emailManager = {
     },
 
     async resendConfirmation(
-        user: createNewUserModel
+        user: createNewUserModel,
+        code: string
     ) {
         let transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -41,7 +42,7 @@ export const emailManager = {
             subject: "Resending confirmation code",
             html: "<h1>Thanks for your registration</h1>" +
                 `<p style="font-size: 18px;">To finish registration please enter cofirmation code: 
-                    <a href='https://somesite.com/confirm-email?code=${user.emailConfirmation.confirmationCode}'>
+                    <a href='https://somesite.com/confirm-email?code=${code}'>
                     "Confirm registration"</a>
                 </p>`,
         })
