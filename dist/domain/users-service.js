@@ -47,8 +47,8 @@ exports.usersService = {
             const isExists = yield users_db_repository_1.usersRepository.findByLoginOrEmail(email);
             if (isExists !== null)
                 return false;
-            yield users_db_repository_1.usersRepository.createUser(newUser);
-            return yield email_manager_1.emailManager.sendEmailConfirmationCode(newUser);
+            yield email_manager_1.emailManager.sendEmailConfirmationCode(newUser);
+            return yield users_db_repository_1.usersRepository.createUser(newUser);
         });
     },
     _generateHash(password, salt) {
@@ -65,6 +65,8 @@ exports.usersService = {
         return __awaiter(this, void 0, void 0, function* () {
             const foundUser = yield users_db_repository_1.usersRepository.findByLoginOrEmail(loginOrEmail);
             if (!foundUser)
+                return false;
+            if (!foundUser.isConfirmed)
                 return false;
             const passwordHash = yield this._generateHash(password, foundUser.passwordHash);
             if (foundUser.passwordHash !== passwordHash) {
@@ -92,6 +94,17 @@ exports.usersService = {
             if (user.emailConfirmation.expirationDate < new Date())
                 return false;
             return yield users_db_repository_1.usersRepository.updateConfirmation(user.id);
+        });
+    },
+    resendConfirmation(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield users_db_repository_1.usersRepository.findByLoginOrEmail(email);
+            if (user === null)
+                return false;
+            if (user.isConfirmed)
+                return false;
+            yield email_manager_1.emailManager.resendConfirmation(user);
+            return true;
         });
     }
 };

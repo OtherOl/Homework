@@ -33,5 +33,27 @@ exports.emailManager = {
             });
             return info;
         });
+    },
+    resendConfirmation(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let transporter = nodemailer_1.default.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: 'dmitrybackenddev@gmail.com',
+                    pass: 'tzcjafbdsjqrpmwl'
+                }
+            });
+            let info = yield transporter.sendMail({
+                from: 'OtherOl BackEnd<dmitrybackenddev@gmail.com>',
+                to: user.email,
+                subject: "Resending confirmation code",
+                html: "<h1>Thanks for your registration</h1>" +
+                    `<p style="font-size: 18px;">To finish registration please enter cofirmation code: 
+                    <a href='https://somesite.com/confirm-email?code=${user.emailConfirmation.confirmationCode}'>
+                    "Confirm registration"</a>
+                </p>`,
+            });
+            return info;
+        });
     }
 };

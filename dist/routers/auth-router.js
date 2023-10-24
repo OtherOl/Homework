@@ -46,11 +46,21 @@ exports.authRouter.post('/registration-confirmation', (req, res) => __awaiter(vo
         res.sendStatus(204);
     }
 }));
+exports.authRouter.post('/registration-email-resending', body_user_validation_1.bodyUserValidation.email, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const confirmedUser = yield users_service_1.usersService.resendConfirmation(req.body.email);
+    if (!confirmedUser) {
+        res.sendStatus(400);
+    }
+    else {
+        res.sendStatus(204);
+    }
+}));
 exports.authRouter.get('/me', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
-    return {
+    let currUser = {
         email: user.email,
         login: user.login,
         userId: user.id
     };
+    res.status(200).send(currUser);
 }));

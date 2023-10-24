@@ -52,8 +52,8 @@ export const usersService = {
         const isExists = await usersRepository.findByLoginOrEmail(email);
         if(isExists !== null) return false
 
-        await usersRepository.createUser(newUser)
-        return await emailManager.sendEmailConfirmationCode(newUser)
+        await emailManager.sendEmailConfirmationCode(newUser)
+        return await usersRepository.createUser(newUser)
     },
 
     async _generateHash(
@@ -75,6 +75,7 @@ export const usersService = {
     ) {
         const foundUser = await usersRepository.findByLoginOrEmail(loginOrEmail)
         if (!foundUser) return false
+        if(!foundUser.isConfirmed) return false
 
         const passwordHash = await this._generateHash(password, foundUser.passwordHash)
 
@@ -102,5 +103,17 @@ export const usersService = {
         if(user.emailConfirmation.expirationDate < new Date()) return false
 
         return await usersRepository.updateConfirmation(user.id)
+    },
+
+    async resendConfirmation(
+        email: string
+    ) {
+        const user = await usersRepository.findByLoginOrEmail(email)
+
+        if(user === null) return false
+        if(user.isConfirmed) return false
+
+        await emailManager.resendConfirmation(user)
+        return true
     }
 }

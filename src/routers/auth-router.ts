@@ -26,16 +26,28 @@ authRouter.post('/registration',
     bodyUserValidation.login, bodyUserValidation.email,
     bodyUserValidation.password, inputValidationMiddleware,
     async (req: Request, res: Response) => {
-    const newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password);
-    if(newUser === false) {
+        const newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password);
+        if (newUser === false) {
+            res.sendStatus(400)
+        } else {
+            res.sendStatus(204)
+        }
+    })
+
+authRouter.post('/registration-confirmation', async (req: Request, res: Response) => {
+    const confirmedUser = await usersService.confirmEmail(req.body.code)
+
+    if (!confirmedUser) {
         res.sendStatus(400)
     } else {
         res.sendStatus(204)
     }
 })
 
-authRouter.post('/registration-confirmation', async (req: Request, res: Response) => {
-    const confirmedUser = await usersService.confirmEmail(req.body.code)
+authRouter.post('/registration-email-resending',
+    bodyUserValidation.email, inputValidationMiddleware,
+    async (req: Request, res: Response) => {
+    const confirmedUser = await usersService.resendConfirmation(req.body.email);
 
     if(!confirmedUser) {
         res.sendStatus(400)
@@ -48,10 +60,11 @@ authRouter.get('/me',
     authMiddleware,
     async (req: Request, res: Response) => {
         const user = req.user;
-
-        return {
+        let currUser = {
             email: user!.email,
             login: user!.login,
             userId: user!.id
         }
+
+        res.status(200).send(currUser)
     })
