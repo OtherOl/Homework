@@ -50,6 +50,33 @@ export const usersService = {
             },
             isConfirmed: false
         }
+
+        return await usersRepository.createUser(newUser)
+    },
+
+    async createUserForRegistration(
+        login: string,
+        email: string,
+        password: string
+    ) {
+        const passwordSalt = await bcrypt.genSalt(10)
+        const passwordHash = await this._generateHash(password, passwordSalt)
+
+        const newUser = {
+            id: randomUUID(),
+            login: login,
+            email,
+            passwordHash,
+            passwordSalt,
+            createdAt: new Date().toISOString(),
+            emailConfirmation: {
+                confirmationCode: uuidv4(),
+                expirationDate: add(new Date(), {
+                    minutes: 3
+                })
+            },
+            isConfirmed: false
+        }
         const isExists = await usersRepository.findByLoginOrEmail(email);
         if(isExists !== null) return "email exists"
         const isExistsLogin = await usersRepository.findByLoginOrEmail(login);
