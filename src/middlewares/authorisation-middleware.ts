@@ -16,7 +16,7 @@ export const authorisationMiddleware = (req: Request, res: Response, next: NextF
     const credentials = Buffer.from(base64Credentials, 'base64').toString('utf-8')
     const [username, password] = credentials.split(':')
 
-    if (username === 'super admin' && password === 'qwerty') {
+    if (username === 'admin' && password === 'qwerty') {
         next()
     } else {
         return res.status(401).send('Invalid credentials')
