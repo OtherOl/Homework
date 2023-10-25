@@ -48,7 +48,7 @@ export const usersService = {
                     minutes: 3
                 })
             },
-            isConfirmed: false
+            isConfirmed: true
         }
 
         return await usersRepository.createUser(newUser)
