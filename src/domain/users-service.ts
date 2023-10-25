@@ -116,23 +116,6 @@ export const usersService = {
         }
     },
 
-    async checkCredentialsForRegistration(
-        loginOrEmail: string,
-        password: string
-    ) {
-        const foundUser = await usersRepository.findByLoginOrEmail(loginOrEmail)
-        if (!foundUser) return false
-        if(!foundUser.isConfirmed) return false
-
-        const passwordHash = await this._generateHash(password, foundUser.passwordHash)
-
-        if (foundUser.passwordHash !== passwordHash) {
-            return false
-        } else {
-            return foundUser
-        }
-    },
-
     async findUserById(
         userId: any
     ) {
