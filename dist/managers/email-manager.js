@@ -35,7 +35,7 @@ exports.emailManager = {
             });
         });
     },
-    resendConfirmation(user) {
+    resendConfirmation(user, code) {
         return __awaiter(this, void 0, void 0, function* () {
             let transporter = nodemailer_1.default.createTransport({
                 service: 'gmail',
@@ -50,7 +50,7 @@ exports.emailManager = {
                 subject: "Resending confirmation code",
                 html: "<h1>Thanks for your registration</h1>" +
                     `<p style="font-size: 18px;">To finish registration please enter cofirmation code: 
-                    <a href='https://somesite.com/confirm-email?code=${user.emailConfirmation.confirmationCode}'>
+                    <a href='https://somesite.com/confirm-email?code=${code}'>
                     "Confirm registration"</a>
                 </p>`,
             });

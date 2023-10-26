@@ -19,6 +19,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const uuid_1 = require("uuid");
 const add_1 = __importDefault(require("date-fns/add"));
 const email_manager_1 = require("../managers/email-manager");
+const email_adapter_1 = require("../adapters/email-adapter");
 exports.usersService = {
     getAllUsers(sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -26,6 +27,28 @@ exports.usersService = {
         });
     },
     createUser(login, email, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const passwordSalt = yield bcrypt_1.default.genSalt(10);
+            const passwordHash = yield this._generateHash(password, passwordSalt);
+            const newUser = {
+                id: (0, crypto_1.randomUUID)(),
+                login: login,
+                email,
+                passwordHash,
+                passwordSalt,
+                createdAt: new Date().toISOString(),
+                emailConfirmation: {
+                    confirmationCode: (0, uuid_1.v4)(),
+                    expirationDate: (0, add_1.default)(new Date(), {
+                        minutes: 3
+                    })
+                },
+                isConfirmed: true
+            };
+            return yield users_db_repository_1.usersRepository.createUser(newUser);
+        });
+    },
+    createUserForRegistration(login, email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordSalt = yield bcrypt_1.default.genSalt(10);
             const passwordHash = yield this._generateHash(password, passwordSalt);
@@ -106,8 +129,9 @@ exports.usersService = {
                 return "User doesn't exists";
             if (user.isConfirmed)
                 return "User already confirmed";
-            const newCode = yield users_db_repository_1.usersRepository.updateCode(user.id);
-            yield email_manager_1.emailManager.resendConfirmation(newCode);
+            const confirmationCode = (0, uuid_1.v4)();
+            yield users_db_repository_1.usersRepository.changeConfirmationCode(user.id, confirmationCode);
+            yield email_adapter_1.emailAdapter.resendEmailConfirmationCode(email, confirmationCode);
             return true;
         });
     }

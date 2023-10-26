@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
-const uuid_1 = require("uuid");
 exports.usersRepository = {
     getAllUsers(sortBy = "createdAt", sortDirection = "desc", pageNumber, pageSize, searchLoginTerm, searchEmailTerm) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -43,6 +42,7 @@ exports.usersRepository = {
     createUser(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
             yield DB_Mongo_1.clientUserCollection.insertOne(Object.assign({}, inputData));
+            console.log(inputData);
             return {
                 id: inputData.id,
                 login: inputData.login,
@@ -84,9 +84,10 @@ exports.usersRepository = {
             return user.modifiedCount === 1;
         });
     },
-    updateCode(id) {
+    changeConfirmationCode(id, code) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DB_Mongo_1.clientUserCollection.findOneAndUpdate({ id: id }, { $set: { "emailConfirmation.confirmationCode": (0, uuid_1.v4)() } });
+            let newCode = yield DB_Mongo_1.clientUserCollection.updateOne({ id: id }, { $set: { 'emailConfirmation.confirmationCode': code } });
+            return newCode.modifiedCount === 1;
         });
     }
 };

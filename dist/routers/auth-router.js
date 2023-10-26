@@ -29,7 +29,7 @@ exports.authRouter.post('/login', body_auth_validation_1.bodyAuthValidation.logi
     }
 }));
 exports.authRouter.post('/registration', body_user_validation_1.bodyUserValidation.login, body_user_validation_1.bodyUserValidation.email, body_user_validation_1.bodyUserValidation.password, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const newUser = yield users_service_1.usersService.createUser(req.body.login, req.body.email, req.body.password);
+    const newUser = yield users_service_1.usersService.createUserForRegistration(req.body.login, req.body.email, req.body.password);
     if (newUser === "email exists") {
         return res.status(400).send({
             errorsMessages: [

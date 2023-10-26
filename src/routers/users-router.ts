@@ -26,8 +26,8 @@ usersRouter.post('/',
     async (req: Request, res: Response) => {
         const createdBlog = await usersService.createUser(
             req.body.login,
-            req.body.password,
-            req.body.email
+            req.body.email,
+            req.body.password
         )
 
         res.status(201).send(createdBlog)
