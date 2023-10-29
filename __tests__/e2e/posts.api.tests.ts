@@ -2,8 +2,8 @@
 import request from "supertest"
 import {app} from "../../src";
 import {errContent, errPostDesc, errBlogId} from "../../src/models/posts-errors-model";
-import {postModel} from "../../src/models/post-model";
 import {blogModel} from "../../src/models/blog-model";
+import {PostDbModel} from "../../src/models/post-model";
 
 describe("tests for Posts", () => {
     beforeAll(async () => {
@@ -37,7 +37,7 @@ describe("tests for Posts", () => {
             })
     })
 
-    let createdPosts: postModel
+    let createdPosts: PostDbModel
     let createdBlog: blogModel
 
     it('Post - success', async () => {

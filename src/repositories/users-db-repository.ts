@@ -1,6 +1,6 @@
 import {clientUserCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
-import {createNewUserModel, createUserModel, userViewModel} from "../models/user-model";
+import {createNewUserModel, userViewModel} from "../models/user-model";
 
 export const usersRepository = {
     async getAllUsers(
