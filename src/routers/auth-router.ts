@@ -18,9 +18,29 @@ authRouter.post('/login',
             res.sendStatus(401)
         } else {
             const token = await jwtService.createJWT(user)
+            const refreshToken = await jwtService.createRefreshToken(user)
+            res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true})
             res.status(200).send(token)
         }
     })
+
+authRouter.post('/refresh-token', async (req: Request, res: Response) => {
+    const refreshToken = req.cookies['refreshToken']
+    if(!refreshToken) return res.sendStatus(401)
+
+    const decoded = await jwtService.newRefreshTokens(refreshToken)
+
+    if(!decoded) return res.sendStatus(401)
+
+    res.cookie('refreshToken', decoded[1], {httpOnly: true, secure: true})
+    res.status(200).send({
+        "accessToken": decoded[0]
+    })
+})
+
+authRouter.post('/logout', async (req: Request, res: Response) => {
+    const refreshToken = req.cookies['refreshToken']
+})
 
 authRouter.post('/registration',
     bodyUserValidation.login, bodyUserValidation.email,

@@ -11,6 +11,7 @@ import {
 import {usersRouter} from "./routers/users-router";
 import {authRouter} from "./routers/auth-router";
 import {commentsRouter} from "./routers/comments-router";
+import cookieParser from "cookie-parser";
 
 export const app = express()
 const port = process.env.PORT || 3000
@@ -29,6 +30,7 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
     res.sendStatus(204)
 })
 app.use(express.json())
+app.use(cookieParser())
 app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
