@@ -30,19 +30,16 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
         return res.sendStatus(401)
     }
 
-    const token = await jwtService.createJWT(req.user!)
-    const refToken = await jwtService.createRefreshToken(req.user!)
+    const decoded = await jwtService.newRefreshTokens(refreshToken)
 
-    res.cookie('refreshToken', refToken, {httpOnly: true, secure: true})
-    res.status(200).send({"accessToken": token})
-    // if (!decoded) {
-    //     return res.sendStatus(401)
-    // } else {
-    //     res.cookie('refreshToken', decoded[1], {httpOnly: true, secure: true})
-    //     return res.status(200).send({
-    //         "accessToken":
-    //     })
-    // }
+    if (!decoded) {
+        return res.sendStatus(401)
+    } else {
+        res.cookie('refreshToken', decoded[1], {httpOnly: true, secure: true})
+        return res.status(200).send({
+            "accessToken": decoded[0]
+        })
+    }
 })
 
 authRouter.post('/registration',
