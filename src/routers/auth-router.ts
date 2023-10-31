@@ -26,11 +26,13 @@ authRouter.post('/login',
 
 authRouter.post('/refresh-token', async (req: Request, res: Response) => {
     const refreshToken = req.cookies['refreshToken']
-    if(!refreshToken || refreshToken.expiresIn < new Date()) return res.sendStatus(401)
+    if (!refreshToken || refreshToken.expiresIn < new Date() || typeof refreshToken !== "string") {
+        return res.sendStatus(401)
+    }
 
     const decoded = await jwtService.newRefreshTokens(refreshToken)
 
-    if(!decoded) {
+    if (!decoded) {
         return res.sendStatus(401)
     } else {
         res.cookie('refreshToken', decoded[1], {httpOnly: true, secure: true})
@@ -128,4 +130,8 @@ authRouter.get('/me',
 
 authRouter.post('/logout', async (req: Request, res: Response) => {
     const refreshToken = req.cookies['refreshToken']
+    if (!refreshToken || refreshToken.expiresIn < new Date() || typeof refreshToken !== "string") {
+        return res.sendStatus(401)
+    }
+    res.clearCookie("jwt").sendStatus(204)
 })
