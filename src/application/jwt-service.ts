@@ -36,15 +36,11 @@ export const jwtService = {
     async newRefreshTokens(
         refreshToken: string
     ) {
-        try {
             const result: any = jwt.verify(refreshToken, settings.JWT_SECRET)
 
             const accessToken = jwt.sign({userId: result.id}, settings.JWT_SECRET, {expiresIn: '10s'})
             const refToken = jwt.sign({userId: result.id}, settings.JWT_SECRET, {expiresIn: '20s'})
 
             return [accessToken, refToken]
-        } catch (error) {
-            return false
-        }
     }
 }
