@@ -26,7 +26,7 @@ authRouter.post('/login',
 
 authRouter.post('/refresh-token', async (req: Request, res: Response) => {
     const refreshToken = req.cookies['refreshToken']
-    if(!refreshToken) return res.sendStatus(401)
+    if(!refreshToken || refreshToken.expirationDate < new Date()) return res.sendStatus(401)
 
     const decoded = await jwtService.newRefreshTokens(refreshToken)
 
@@ -36,10 +36,6 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
     res.status(200).send({
         "accessToken": decoded[0]
     })
-})
-
-authRouter.post('/logout', async (req: Request, res: Response) => {
-    const refreshToken = req.cookies['refreshToken']
 })
 
 authRouter.post('/registration',
@@ -127,3 +123,7 @@ authRouter.get('/me',
 
         res.status(200).send(currUser)
     })
+
+authRouter.post('/logout', async (req: Request, res: Response) => {
+    const refreshToken = req.cookies['refreshToken']
+})
