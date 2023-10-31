@@ -133,6 +133,6 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
     if (!refreshToken || refreshToken.expiresIn < new Date() || typeof refreshToken !== "string") {
         return res.sendStatus(401)
     } else {
-        res.clearCookie("jwt").sendStatus(204)
+        return res.clearCookie("jwt").sendStatus(204)
     }
 })
