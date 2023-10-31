@@ -15,31 +15,34 @@ authRouter.post('/login',
         const user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
 
         if (!user) {
-            res.sendStatus(401)
+            return res.sendStatus(401)
         } else {
             const token = await jwtService.createJWT(user)
             const refreshToken = await jwtService.createRefreshToken(user)
             res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true})
-            res.status(200).send(token)
+            return res.status(200).send(token)
         }
     })
 
 authRouter.post('/refresh-token', async (req: Request, res: Response) => {
     const refreshToken = req.cookies['refreshToken']
-    if (!refreshToken || refreshToken.expiresIn < new Date() || typeof refreshToken !== "string") {
+    if (!refreshToken || refreshToken.exp < new Date() || typeof refreshToken !== "string") {
         return res.sendStatus(401)
     }
 
-    const decoded = await jwtService.newRefreshTokens(refreshToken)
+    const token = await jwtService.createJWT(req.user!)
+    const refToken = await jwtService.createRefreshToken(req.user!)
 
-    if (!decoded) {
-        return res.sendStatus(401)
-    } else {
-        res.cookie('refreshToken', decoded[1], {httpOnly: true, secure: true})
-        return res.status(200).send({
-            "accessToken": decoded[0]
-        })
-    }
+    res.cookie('refreshToken', refToken, {httpOnly: true, secure: true})
+    res.status(200).send({"accessToken": token})
+    // if (!decoded) {
+    //     return res.sendStatus(401)
+    // } else {
+    //     res.cookie('refreshToken', decoded[1], {httpOnly: true, secure: true})
+    //     return res.status(200).send({
+    //         "accessToken":
+    //     })
+    // }
 })
 
 authRouter.post('/registration',
