@@ -36,7 +36,7 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
         return res.sendStatus(401)
     } else {
         res.cookie('refreshToken', decoded[1], {httpOnly: true, secure: true})
-        res.status(200).send({
+        return res.status(200).send({
             "accessToken": decoded[0]
         })
     }
@@ -132,6 +132,7 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
     const refreshToken = req.cookies['refreshToken']
     if (!refreshToken || refreshToken.expiresIn < new Date() || typeof refreshToken !== "string") {
         return res.sendStatus(401)
+    } else {
+        res.clearCookie("jwt").sendStatus(204)
     }
-    res.clearCookie("jwt").sendStatus(204)
 })
