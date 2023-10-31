@@ -6,10 +6,7 @@ export const jwtService = {
     async createJWT(
         user: userModel
     ) {
-        const token = jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: "10s"})
-        return {
-            accessToken: token
-        }
+        return jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: "10s"})
     },
 
     async createRefreshToken(
