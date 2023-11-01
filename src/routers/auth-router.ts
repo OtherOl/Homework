@@ -28,7 +28,7 @@ authRouter.post('/login',
 authRouter.post('/refresh-token', async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken
     const result = await jwtService.verifyToken(refreshToken)
-    if (!refreshToken || typeof refreshToken !== "string" || !result || result.exp < new Date()) {
+    if (!refreshToken || typeof refreshToken !== "string" || !result) {
         return res.sendStatus(401)
     }
 
