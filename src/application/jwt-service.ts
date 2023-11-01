@@ -20,7 +20,7 @@ export const jwtService = {
     ) {
         try {
             const result: any = jwt.verify(token, settings.JWT_SECRET)
-            return
+            return result
         } catch (error) {
             return false
         }

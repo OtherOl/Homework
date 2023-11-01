@@ -28,7 +28,7 @@ authRouter.post('/login',
 authRouter.post('/refresh-token', async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken
 
-    if (!refreshToken || refreshToken.expiresIn < new Date() || typeof refreshToken !== "string") {
+    if (!refreshToken || refreshToken.exp < new Date() || typeof refreshToken !== "string") {
         return res.sendStatus(401)
     }
 
@@ -132,7 +132,10 @@ authRouter.get('/me',
 
 authRouter.post('/logout', async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken
-    if (!refreshToken || refreshToken.expiresIn < new Date() || typeof refreshToken !== "string") {
+    const result = await jwtService.verifyToken(refreshToken)
+    console.log(result)
+    console.log(refreshToken)
+    if (!refreshToken || refreshToken.exp < new Date() || typeof refreshToken !== "string" || !result) {
         return res.sendStatus(401)
     } else {
         return res.clearCookie("refreshToken").sendStatus(204)

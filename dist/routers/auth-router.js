@@ -32,7 +32,7 @@ exports.authRouter.post('/login', body_auth_validation_1.bodyAuthValidation.logi
 }));
 exports.authRouter.post('/refresh-token', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken || refreshToken.expiresIn < new Date() || typeof refreshToken !== "string") {
+    if (!refreshToken || refreshToken.exp < new Date() || typeof refreshToken !== "string") {
         return res.sendStatus(401);
     }
     const decoded = yield jwt_service_1.jwtService.newRefreshTokens(refreshToken);
@@ -121,7 +121,10 @@ exports.authRouter.get('/me', auth_middleware_1.authMiddleware, (req, res) => __
 }));
 exports.authRouter.post('/logout', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken || refreshToken.expiresIn < new Date() || typeof refreshToken !== "string") {
+    const result = yield jwt_service_1.jwtService.verifyToken(refreshToken);
+    console.log(result);
+    console.log(refreshToken);
+    if (!refreshToken || refreshToken.exp < new Date() || typeof refreshToken !== "string" || !result) {
         return res.sendStatus(401);
     }
     else {
