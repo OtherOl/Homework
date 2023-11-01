@@ -18,10 +18,23 @@ const settings_1 = require("../settings");
 exports.jwtService = {
     createJWT(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            const token = jsonwebtoken_1.default.sign({ userId: user.id }, settings_1.settings.JWT_SECRET, { expiresIn: "1h" });
-            return {
-                accessToken: token
-            };
+            return jsonwebtoken_1.default.sign({ userId: user.id }, settings_1.settings.JWT_SECRET, { expiresIn: "10s" });
+        });
+    },
+    createRefreshToken(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return jsonwebtoken_1.default.sign({ userId: user.id }, settings_1.settings.JWT_SECRET, { expiresIn: "20s" });
+        });
+    },
+    verifyToken(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = jsonwebtoken_1.default.verify(token, settings_1.settings.JWT_SECRET);
+                return;
+            }
+            catch (error) {
+                return false;
+            }
         });
     },
     getUserIdByToken(token) {
@@ -29,6 +42,19 @@ exports.jwtService = {
             try {
                 const result = jsonwebtoken_1.default.verify(token, settings_1.settings.JWT_SECRET);
                 return result.userId;
+            }
+            catch (error) {
+                return false;
+            }
+        });
+    },
+    newRefreshTokens(refreshToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = jsonwebtoken_1.default.verify(refreshToken, settings_1.settings.JWT_SECRET);
+                const accessToken = jsonwebtoken_1.default.sign({ userId: result.id }, settings_1.settings.JWT_SECRET, { expiresIn: '10s' });
+                const refToken = jsonwebtoken_1.default.sign({ userId: result.id }, settings_1.settings.JWT_SECRET, { expiresIn: '20s' });
+                return [accessToken, refToken];
             }
             catch (error) {
                 return false;

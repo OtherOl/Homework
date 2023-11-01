@@ -21,11 +21,29 @@ exports.authRouter = (0, express_1.Router)({});
 exports.authRouter.post('/login', body_auth_validation_1.bodyAuthValidation.loginOrEmail, body_auth_validation_1.bodyAuthValidation.password, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
     if (!user) {
-        res.sendStatus(401);
+        return res.sendStatus(401);
     }
     else {
         const token = yield jwt_service_1.jwtService.createJWT(user);
-        res.status(200).send(token);
+        const refreshToken = yield jwt_service_1.jwtService.createRefreshToken(user);
+        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
+        return res.status(200).send({ "accessToken": token });
+    }
+}));
+exports.authRouter.post('/refresh-token', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken || refreshToken.expiresIn < new Date() || typeof refreshToken !== "string") {
+        return res.sendStatus(401);
+    }
+    const decoded = yield jwt_service_1.jwtService.newRefreshTokens(refreshToken);
+    if (!decoded) {
+        return res.sendStatus(401);
+    }
+    else {
+        res.cookie('refreshToken', decoded[1], { httpOnly: true, secure: true });
+        return res.status(200).send({
+            "accessToken": decoded[0]
+        });
     }
 }));
 exports.authRouter.post('/registration', body_user_validation_1.bodyUserValidation.login, body_user_validation_1.bodyUserValidation.email, body_user_validation_1.bodyUserValidation.password, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -65,7 +83,7 @@ exports.authRouter.post('/registration-confirmation', (req, res) => __awaiter(vo
         });
     }
     else {
-        res.sendStatus(204);
+        return res.sendStatus(204);
     }
 }));
 exports.authRouter.post('/registration-email-resending', body_user_validation_1.bodyUserValidation.email, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -100,4 +118,13 @@ exports.authRouter.get('/me', auth_middleware_1.authMiddleware, (req, res) => __
         userId: user.id
     };
     res.status(200).send(currUser);
+}));
+exports.authRouter.post('/logout', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken || refreshToken.expiresIn < new Date() || typeof refreshToken !== "string") {
+        return res.sendStatus(401);
+    }
+    else {
+        return res.clearCookie("refreshToken").sendStatus(204);
+    }
 }));

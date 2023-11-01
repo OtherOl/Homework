@@ -15,6 +15,17 @@ export const jwtService = {
         return jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: "20s"})
     },
 
+    async verifyToken(
+        token: string
+    ) {
+        try {
+            const result: any = jwt.verify(token, settings.JWT_SECRET)
+            return
+        } catch (error) {
+            return false
+        }
+    },
+
     async getUserIdByToken(
         token: string
     ) {

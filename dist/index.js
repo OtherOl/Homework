@@ -20,6 +20,7 @@ const DB_Mongo_1 = require("./data/DB-Mongo");
 const users_router_1 = require("./routers/users-router");
 const auth_router_1 = require("./routers/auth-router");
 const comments_router_1 = require("./routers/comments-router");
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 exports.app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
 exports.app.use(express_1.default.json());
@@ -34,6 +35,7 @@ exports.app.delete('/testing/all-data', (req, res) => __awaiter(void 0, void 0, 
     res.sendStatus(204);
 }));
 exports.app.use(express_1.default.json());
+exports.app.use((0, cookie_parser_1.default)());
 exports.app.use('/blogs', blogs_router_1.blogsRouter);
 exports.app.use('/posts', posts_router_1.postsRouter);
 exports.app.use('/users', users_router_1.usersRouter);
