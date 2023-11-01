@@ -33,7 +33,7 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
 
     const decoded = await jwtService.newRefreshTokens(refreshToken)
     blackList.push(refreshToken)
-    if (!decoded) {
+    if (!decoded || decoded[1] in blackList) {
         return res.sendStatus(401)
     } else {
         res.cookie('refreshToken', decoded[1], {httpOnly: true, secure: true})
