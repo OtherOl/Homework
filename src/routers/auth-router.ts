@@ -7,7 +7,7 @@ import {authMiddleware} from "../middlewares/auth-middleware";
 import {bodyUserValidation} from "../middlewares/body-user-validation";
 
 export const authRouter = Router({})
-const blackList: string[] = []
+
 authRouter.post('/login',
     bodyAuthValidation.loginOrEmail, bodyAuthValidation.password,
     inputValidationMiddleware,
@@ -27,13 +27,13 @@ authRouter.post('/login',
 authRouter.post('/refresh-token', async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken
     if (!refreshToken || refreshToken.expiresIn < new Date()
-        || typeof refreshToken !== "string" || refreshToken in blackList) {
+        || typeof refreshToken !== "string") {
         return res.sendStatus(401)
     }
 
     const decoded = await jwtService.newRefreshTokens(refreshToken)
-    blackList.push(refreshToken)
-    if (!decoded || decoded[1] in blackList) {
+
+    if (!decoded) {
         return res.sendStatus(401)
     } else {
         res.cookie('refreshToken', decoded[1], {httpOnly: true, secure: true})
@@ -132,10 +132,9 @@ authRouter.get('/me',
 authRouter.post('/logout', async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken
     if (!refreshToken || refreshToken.expiresIn < new Date()
-        || typeof refreshToken !== "string" || refreshToken in blackList) {
+        || typeof refreshToken !== "string") {
         return res.sendStatus(401)
     } else {
-        blackList.push(refreshToken)
         return res.clearCookie("jwt").sendStatus(204)
     }
 })
