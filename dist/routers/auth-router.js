@@ -118,7 +118,7 @@ exports.authRouter.post('/registration-email-resending', body_user_validation_1.
 }));
 exports.authRouter.get('/me', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
-    let currUser = {
+    const currUser = {
         email: user.email,
         login: user.login,
         userId: user.id

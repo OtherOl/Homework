@@ -128,7 +128,7 @@ authRouter.get('/me',
     authMiddleware,
     async (req: Request, res: Response) => {
         const user = req.user;
-        let currUser = {
+        const currUser = {
             email: user!.email,
             login: user!.login,
             userId: user!.id
