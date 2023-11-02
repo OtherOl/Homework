@@ -17,6 +17,7 @@ const input_validation_middleware_1 = require("../middlewares/input-validation-m
 const body_auth_validation_1 = require("../middlewares/body-auth-validation");
 const auth_middleware_1 = require("../middlewares/auth-middleware");
 const body_user_validation_1 = require("../middlewares/body-user-validation");
+const auth_db_repository_1 = require("../repositories/auth-db-repository");
 exports.authRouter = (0, express_1.Router)({});
 exports.authRouter.post('/login', body_auth_validation_1.bodyAuthValidation.loginOrEmail, body_auth_validation_1.bodyAuthValidation.password, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
@@ -32,17 +33,22 @@ exports.authRouter.post('/login', body_auth_validation_1.bodyAuthValidation.logi
 }));
 exports.authRouter.post('/refresh-token', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken || refreshToken.exp < new Date() || typeof refreshToken !== "string") {
+    const verify = yield jwt_service_1.jwtService.verifyToken(refreshToken);
+    console.log(verify);
+    if (!refreshToken || typeof refreshToken !== "string" || !verify) {
         return res.sendStatus(401);
     }
-    const decoded = yield jwt_service_1.jwtService.newRefreshTokens(refreshToken);
-    if (!decoded) {
+    const accessToken = yield jwt_service_1.jwtService.createJWT(verify);
+    const refToken = yield jwt_service_1.jwtService.createRefreshToken(verify);
+    const newToken = yield auth_db_repository_1.authRepository.findInvalidToken(refToken);
+    if (newToken !== null) {
         return res.sendStatus(401);
     }
     else {
-        res.cookie('refreshToken', decoded[1], { httpOnly: true, secure: true });
+        yield auth_db_repository_1.authRepository.blackList(refreshToken);
+        res.cookie('refreshToken', refToken, { httpOnly: true, secure: true });
         return res.status(200).send({
-            "accessToken": decoded[0]
+            "accessToken": accessToken
         });
     }
 }));
@@ -122,12 +128,11 @@ exports.authRouter.get('/me', auth_middleware_1.authMiddleware, (req, res) => __
 exports.authRouter.post('/logout', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
     const result = yield jwt_service_1.jwtService.verifyToken(refreshToken);
-    console.log(result);
-    console.log(refreshToken);
-    if (!refreshToken || refreshToken.exp < new Date() || typeof refreshToken !== "string" || !result) {
+    if (!refreshToken || typeof refreshToken !== "string" || !result) {
         return res.sendStatus(401);
     }
     else {
+        yield auth_db_repository_1.authRepository.blackList(refreshToken);
         return res.clearCookie("refreshToken").sendStatus(204);
     }
 }));

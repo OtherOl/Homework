@@ -3,7 +3,7 @@ import {jwtService} from "../application/jwt-service";
 import {usersService} from "../domain/users-service";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.headers.authorization) {
+    if (!req.headers.authorization || req.cookies.refreshToken) {
         return res.sendStatus(401)
     }
 

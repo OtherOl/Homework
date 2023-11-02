@@ -4,6 +4,7 @@ import {PostDbModel,} from "../models/post-model";
 import {blogModel} from "../models/blog-model";
 import {createNewUserModel} from "../models/user-model";
 import {commentDbModel} from "../models/comments-model";
+import {tokensModel} from "../models/tokens-model";
 
 dotenv.config()
 
@@ -19,6 +20,7 @@ export const clientPostCollection = client.db('blogs_posts').collection<PostDbMo
 export const clientBlogCollection = client.db('blogs_posts').collection<blogModel>('blogs')
 export const clientUserCollection = client.db('blogs_posts').collection<createNewUserModel>('users')
 export const clientCommentCollection = client.db('blogs_posts').collection<commentDbModel>('comments')
+export const clientAuthCollection = client.db('blogs_posts').collection<tokensModel>('auth')
 
 export async function runDb() {
     try {
