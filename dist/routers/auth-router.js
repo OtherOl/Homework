@@ -34,18 +34,18 @@ exports.authRouter.post('/login', body_auth_validation_1.bodyAuthValidation.logi
 exports.authRouter.post('/refresh-token', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
     const verify = yield jwt_service_1.jwtService.verifyToken(refreshToken);
-    console.log(verify);
-    if (!refreshToken || typeof refreshToken !== "string" || !verify) {
+    const black = yield auth_db_repository_1.authRepository.findInvalidToken(refreshToken);
+    if (!verify || black !== null) {
         return res.sendStatus(401);
     }
     const accessToken = yield jwt_service_1.jwtService.createJWT(verify);
     const refToken = yield jwt_service_1.jwtService.createRefreshToken(verify);
     const newToken = yield auth_db_repository_1.authRepository.findInvalidToken(refToken);
+    yield auth_db_repository_1.authRepository.blackList(refreshToken);
     if (newToken !== null) {
         return res.sendStatus(401);
     }
     else {
-        yield auth_db_repository_1.authRepository.blackList(refreshToken);
         res.cookie('refreshToken', refToken, { httpOnly: true, secure: true });
         return res.status(200).send({
             "accessToken": accessToken
@@ -128,7 +128,8 @@ exports.authRouter.get('/me', auth_middleware_1.authMiddleware, (req, res) => __
 exports.authRouter.post('/logout', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
     const result = yield jwt_service_1.jwtService.verifyToken(refreshToken);
-    if (!refreshToken || typeof refreshToken !== "string" || !result) {
+    const black = yield auth_db_repository_1.authRepository.findInvalidToken(refreshToken);
+    if (!result || black !== null) {
         return res.sendStatus(401);
     }
     else {

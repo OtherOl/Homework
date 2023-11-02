@@ -29,8 +29,9 @@ authRouter.post('/login',
 authRouter.post('/refresh-token', async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken
     const verify = await jwtService.verifyToken(refreshToken)
-    console.log(verify)
-    if (!refreshToken || typeof refreshToken !== "string" || !verify) {
+    const black = await authRepository.findInvalidToken(refreshToken)
+
+    if (!verify || black !== null) {
         return res.sendStatus(401)
     }
 
@@ -38,12 +39,11 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
     const refToken = await jwtService.createRefreshToken(verify)
 
     const newToken = await authRepository.findInvalidToken(refToken)
-
+    await authRepository.blackList(refreshToken)
 
     if (newToken !== null) {
         return res.sendStatus(401)
     } else {
-        await authRepository.blackList(refreshToken)
         res.cookie('refreshToken', refToken, {httpOnly: true, secure: true})
         return res.status(200).send({
             "accessToken": accessToken
@@ -140,8 +140,9 @@ authRouter.get('/me',
 authRouter.post('/logout', async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken
     const result = await jwtService.verifyToken(refreshToken)
+    const black = await authRepository.findInvalidToken(refreshToken)
 
-    if (!refreshToken || typeof refreshToken !== "string" || !result) {
+    if (!result || black !== null) {
         return res.sendStatus(401)
     } else {
         await authRepository.blackList(refreshToken)
