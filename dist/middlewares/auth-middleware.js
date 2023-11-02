@@ -16,9 +16,9 @@ const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     if (!req.headers.authorization) {
         return res.sendStatus(401);
     }
-    const token = req.headers.authorization.split(" ")[1];
-    const userId = yield jwt_service_1.jwtService.getUserIdByToken(token);
-    console.log(token);
+    // const token = req.headers.authorization.split(" ")[1]
+    const refToken = req.cookies.refreshToken;
+    const userId = yield jwt_service_1.jwtService.getUserIdByToken(refToken);
     console.log(userId);
     if (userId) {
         req.user = yield users_service_1.usersService.findUserById(userId);

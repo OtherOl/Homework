@@ -7,9 +7,10 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         return res.sendStatus(401)
     }
 
-    const token = req.headers.authorization.split(" ")[1]
-    const userId = await jwtService.getUserIdByToken(token)
-    console.log(token)
+    // const token = req.headers.authorization.split(" ")[1]
+    const refToken = req.cookies.refreshToken
+    const userId = await jwtService.getUserIdByToken(refToken)
+
     console.log(userId)
 
     if (userId) {
