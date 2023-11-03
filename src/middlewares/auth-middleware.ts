@@ -4,7 +4,6 @@ import {usersService} from "../domain/users-service";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) {
-        console.log('req.headers.authorization: ',req.headers.authorization)
         return res.sendStatus(401)
     }
 
@@ -12,8 +11,6 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
     const userId = await jwtService.getUserIdByToken(token)
 
-    console.log('req.headers.authorization: ',req.headers.authorization)
-    console.log('userId: ',userId)
     if (userId) {
         req.user = await usersService.findUserById(userId)
         next()
