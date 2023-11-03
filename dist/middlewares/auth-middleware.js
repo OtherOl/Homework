@@ -13,10 +13,16 @@ exports.authMiddleware = void 0;
 const jwt_service_1 = require("../application/jwt-service");
 const users_service_1 = require("../domain/users-service");
 const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.headers.authorization) {
+    const accessToken = req.headers.authorization;
+    const refreshToken = req.cookies.refreshToken;
+    // if (!req.headers.authorization) {
+    //     return res.sendStatus(401)
+    // }
+    if (!accessToken || !refreshToken) {
         return res.sendStatus(401);
     }
-    const token = req.headers.authorization.split(" ")[1];
+    // const token = req.headers.authorization.split(" ")[1]
+    const token = accessToken.split(" ")[1];
     const userId = yield jwt_service_1.jwtService.getUserIdByToken(token);
     // console.log(token)
     // console.log(userId)
@@ -25,6 +31,8 @@ const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         next();
         return;
     }
-    res.sendStatus(401);
+    else {
+        return res.sendStatus(401);
+    }
 });
 exports.authMiddleware = authMiddleware;
