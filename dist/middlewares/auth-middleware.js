@@ -22,7 +22,9 @@ const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         return res.sendStatus(401);
     }
     // const token = req.headers.authorization.split(" ")[1]
-    const token = accessToken.split(" ")[1];
+    console.log(refreshToken);
+    const token = refreshToken;
+    console.log(token);
     const userId = yield jwt_service_1.jwtService.getUserIdByToken(token);
     // console.log(token)
     // console.log(userId)
