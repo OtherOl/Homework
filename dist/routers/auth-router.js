@@ -27,26 +27,31 @@ exports.authRouter.post('/login', body_auth_validation_1.bodyAuthValidation.logi
     else {
         const token = yield jwt_service_1.jwtService.createJWT(user);
         const refreshToken = yield jwt_service_1.jwtService.createRefreshToken(user);
+        console.log('refreshToken in LOGIN: ', refreshToken);
         res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
         return res.status(200).send({ "accessToken": token });
     }
 }));
 exports.authRouter.post('/refresh-token', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
+    console.log('refreshToken in REFRESH-TOKEN: ', refreshToken);
     const verify = yield jwt_service_1.jwtService.verifyToken(refreshToken);
     const black = yield auth_db_repository_1.authRepository.findInvalidToken(refreshToken);
     if (!verify || black !== null) {
         return res.sendStatus(401);
     }
-    const accessToken = yield jwt_service_1.jwtService.createJWT(verify);
-    const refToken = yield jwt_service_1.jwtService.createRefreshToken(verify);
-    const newToken = yield auth_db_repository_1.authRepository.findInvalidToken(refToken);
+    const getUser = yield jwt_service_1.jwtService.getUserIdByToken(refreshToken);
+    console.log('USER BY REFRESH-TOKEN:', getUser);
     yield auth_db_repository_1.authRepository.blackList(refreshToken);
+    const accessToken = yield jwt_service_1.jwtService.createJWTF(getUser);
+    const newRefreshToken = yield jwt_service_1.jwtService.createRefreshTokenF(getUser);
+    console.log('NEW CREATED TOKEN: ', newRefreshToken);
+    const newToken = yield auth_db_repository_1.authRepository.findInvalidToken(newRefreshToken);
     if (newToken !== null) {
         return res.sendStatus(401);
     }
     else {
-        res.cookie('refreshToken', refToken, { httpOnly: true, secure: true });
+        res.cookie('refreshToken', newRefreshToken, { httpOnly: true, secure: true });
         return res.status(200).send({
             "accessToken": accessToken
         });

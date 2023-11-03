@@ -20,6 +20,7 @@ authRouter.post('/login',
         } else {
             const token = await jwtService.createJWT(user)
             const refreshToken = await jwtService.createRefreshToken(user)
+            console.log('refreshToken in LOGIN: ', refreshToken)
 
             res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true})
             return res.status(200).send({"accessToken": token})
@@ -28,23 +29,30 @@ authRouter.post('/login',
 
 authRouter.post('/refresh-token', async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken
+    console.log('refreshToken in REFRESH-TOKEN: ', refreshToken)
+
     const verify = await jwtService.verifyToken(refreshToken)
     const black = await authRepository.findInvalidToken(refreshToken)
 
     if (!verify || black !== null) {
         return res.sendStatus(401)
     }
+    const getUser = await jwtService.getUserIdByToken(refreshToken)
+    console.log('USER BY REFRESH-TOKEN:', getUser)
 
-    const accessToken = await jwtService.createJWT(verify)
-    const refToken = await jwtService.createRefreshToken(verify)
-
-    const newToken = await authRepository.findInvalidToken(refToken)
     await authRepository.blackList(refreshToken)
+
+    const accessToken = await jwtService.createJWTF(getUser)
+    const newRefreshToken = await jwtService.createRefreshTokenF(getUser)
+
+    console.log('NEW CREATED TOKEN: ', newRefreshToken)
+
+    const newToken = await authRepository.findInvalidToken(newRefreshToken)
 
     if (newToken !== null) {
         return res.sendStatus(401)
     } else {
-        res.cookie('refreshToken', refToken, {httpOnly: true, secure: true})
+        res.cookie('refreshToken', newRefreshToken, {httpOnly: true, secure: true})
         return res.status(200).send({
             "accessToken": accessToken
         })

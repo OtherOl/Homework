@@ -18,7 +18,8 @@ commentsRouter.get('/:id', async (req: Request, res: Response) => {
 })
 
 commentsRouter.put('/:id',
-    authMiddleware, bodyPostValidation.comment,
+    //authMiddleware,
+    bodyPostValidation.comment,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
         const token = req.headers.authorization!.split(" ")[1]
@@ -40,7 +41,7 @@ commentsRouter.put('/:id',
     })
 
 commentsRouter.delete('/:commentId',
-    authMiddleware,
+    //authMiddleware,
     async (req: Request, res: Response) => {
         const token = req.headers.authorization!.split(" ")[1]
         const userId = await jwtService.getUserIdByToken(token)

@@ -18,18 +18,29 @@ const settings_1 = require("../settings");
 exports.jwtService = {
     createJWT(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            return jsonwebtoken_1.default.sign({ userId: user.id }, settings_1.settings.JWT_SECRET, { expiresIn: "100s" });
+            return jsonwebtoken_1.default.sign({ userId: user.id }, settings_1.settings.JWT_SECRET, { expiresIn: "1000s" });
         });
     },
     createRefreshToken(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            return jsonwebtoken_1.default.sign({ userId: user.id }, settings_1.settings.JWT_SECRET, { expiresIn: "20s" });
+            return jsonwebtoken_1.default.sign({ userId: user.id }, settings_1.settings.JWT_SECRET, { expiresIn: "2000s" });
+        });
+    },
+    createJWTF(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return jsonwebtoken_1.default.sign({ userId: id }, settings_1.settings.JWT_SECRET, { expiresIn: "1000s" });
+        });
+    },
+    createRefreshTokenF(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return jsonwebtoken_1.default.sign({ userId: id }, settings_1.settings.JWT_SECRET, { expiresIn: "2000s" });
         });
     },
     verifyToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = jsonwebtoken_1.default.verify(token, settings_1.settings.JWT_SECRET);
+                console.log('JWT SERVICE: ', result);
                 return result;
             }
             catch (error) {

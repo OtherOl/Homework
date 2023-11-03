@@ -13,18 +13,14 @@ exports.authMiddleware = void 0;
 const jwt_service_1 = require("../application/jwt-service");
 const users_service_1 = require("../domain/users-service");
 const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    // const accessToken = req.headers.authorization
-    // const refreshToken = req.cookies.refreshToken
     if (!req.headers.authorization) {
-        return res.sendStatus(400);
+        console.log('req.headers.authorization: ', req.headers.authorization);
+        return res.sendStatus(401);
     }
-    // if(!accessToken || !refreshToken) {
-    //     return res.sendStatus(401)
-    // }
     const token = req.headers.authorization.split(" ")[1];
     const userId = yield jwt_service_1.jwtService.getUserIdByToken(token);
-    // console.log(token)
-    // console.log(userId)
+    console.log('req.headers.authorization: ', req.headers.authorization);
+    console.log('userId: ', userId);
     if (userId) {
         req.user = yield users_service_1.usersService.findUserById(userId);
         next();

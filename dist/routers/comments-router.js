@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.commentsRouter = void 0;
 const express_1 = require("express");
 const comments_service_1 = require("../domain/comments-service");
-const auth_middleware_1 = require("../middlewares/auth-middleware");
 const body_post_validation_1 = require("../middlewares/body-post-validation");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 const jwt_service_1 = require("../application/jwt-service");
@@ -26,7 +25,9 @@ exports.commentsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 
         res.status(200).send(comment);
     }
 }));
-exports.commentsRouter.put('/:id', auth_middleware_1.authMiddleware, body_post_validation_1.bodyPostValidation.comment, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.commentsRouter.put('/:id', 
+//authMiddleware,
+body_post_validation_1.bodyPostValidation.comment, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.headers.authorization.split(" ")[1];
     const userId = yield jwt_service_1.jwtService.getUserIdByToken(token);
     const updatedComment = yield comments_service_1.commentsService.updateComment(req.params.id, req.body.content);
@@ -40,7 +41,9 @@ exports.commentsRouter.put('/:id', auth_middleware_1.authMiddleware, body_post_v
         res.sendStatus(204);
     }
 }));
-exports.commentsRouter.delete('/:commentId', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.commentsRouter.delete('/:commentId', 
+//authMiddleware,
+(req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.headers.authorization.split(" ")[1];
     const userId = yield jwt_service_1.jwtService.getUserIdByToken(token);
     const comment = yield comments_service_1.commentsService.deleteCommentById(req.params.commentId);
