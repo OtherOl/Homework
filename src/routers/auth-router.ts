@@ -29,8 +29,6 @@ authRouter.post('/login',
 
 authRouter.post('/refresh-token', async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken
-    console.log('refreshToken in REFRESH-TOKEN: ', refreshToken)
-
     const verify = await jwtService.verifyToken(refreshToken)
     const black = await authRepository.findInvalidToken(refreshToken)
 
@@ -38,15 +36,9 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
         return res.sendStatus(401)
     }
     const getUser = await jwtService.getUserIdByToken(refreshToken)
-    console.log('USER BY REFRESH-TOKEN:', getUser)
-
     await authRepository.blackList(refreshToken)
-
     const accessToken = await jwtService.createJWTF(getUser)
     const newRefreshToken = await jwtService.createRefreshTokenF(getUser)
-
-    console.log('NEW CREATED TOKEN: ', newRefreshToken)
-
     const newToken = await authRepository.findInvalidToken(newRefreshToken)
 
     if (newToken !== null) {

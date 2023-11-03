@@ -6,25 +6,25 @@ export const jwtService = {
     async createJWT(
         user: userModel
     ) {
-        return jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: "1000s"})
+        return jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: "10s"})
     },
 
     async createRefreshToken(
         user: userModel
     ) {
-        return jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: "2000s"})
+        return jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: "20s"})
     },
 
     async createJWTF(
         id: string
     ) {
-        return jwt.sign({userId: id}, settings.JWT_SECRET, {expiresIn: "1000s"})
+        return jwt.sign({userId: id}, settings.JWT_SECRET, {expiresIn: "10s"})
     },
 
     async createRefreshTokenF(
         id: string
     ) {
-        return jwt.sign({userId: id}, settings.JWT_SECRET, {expiresIn: "2000s"})
+        return jwt.sign({userId: id}, settings.JWT_SECRET, {expiresIn: "20s"})
     },
 
     async verifyToken(
