@@ -24,7 +24,7 @@ exports.jwtService = {
     },
     createRefreshToken(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return jsonwebtoken_1.default.sign({ userId: id, deviceId: (0, crypto_1.randomUUID)() }, settings_1.settings.JWT_SECRET, { expiresIn: "20s" });
+            return jsonwebtoken_1.default.sign({ userId: id, deviceId: (0, crypto_1.randomUUID)() }, settings_1.settings.JWT_SECRET, { expiresIn: "200s" });
         });
     },
     verifyToken(token) {

@@ -7,6 +7,7 @@ import {authMiddleware} from "../middlewares/auth-middleware";
 import {bodyUserValidation} from "../middlewares/body-user-validation";
 import {authRepository} from "../repositories/auth-db-repository";
 import {devicesService} from "../domain/devices-service";
+import {devicesRepository} from "../repositories/devices-db-repositoty";
 
 export const authRouter = Router({})
 
@@ -42,10 +43,11 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
     const accessToken = await jwtService.createJWT(getUser)
     const newRefreshToken = await jwtService.createRefreshToken(getUser)
     const newToken = await authRepository.findInvalidToken(newRefreshToken)
-
+    const verifiedToken = await jwtService.verifyToken(refreshToken)
     if (newToken !== null) {
         return res.sendStatus(401)
     } else {
+        await devicesRepository.updateSession(verify.deviceId, verifiedToken.deviceId)
         res.cookie('refreshToken', newRefreshToken, {httpOnly: true, secure: true})
         return res.status(200).send({
             "accessToken": accessToken
