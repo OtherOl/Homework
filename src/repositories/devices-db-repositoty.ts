@@ -31,6 +31,6 @@ export const devicesRepository = {
         id: string,
         newId: string
     ) {
-        return await clientSecurityCollection.updateOne({deviceId: id}, {$set: {deviceId: newId}})
+        return await clientSecurityCollection.findOneAndUpdate({deviceId: id}, {$set: {deviceId: newId}})
     },
 }
