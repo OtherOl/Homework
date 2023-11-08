@@ -6,6 +6,7 @@ import {bodyAuthValidation} from "../middlewares/body-auth-validation";
 import {authMiddleware} from "../middlewares/auth-middleware";
 import {bodyUserValidation} from "../middlewares/body-user-validation";
 import {authRepository} from "../repositories/auth-db-repository";
+import {devicesService} from "../domain/devices-service";
 
 export const authRouter = Router({})
 
@@ -18,9 +19,9 @@ authRouter.post('/login',
         if (!user) {
             return res.sendStatus(401)
         } else {
-            const token = await jwtService.createJWT(user)
-            const refreshToken = await jwtService.createRefreshToken(user)
-            console.log('refreshToken in LOGIN: ', refreshToken)
+            const token = await jwtService.createJWT(user.id)
+            const refreshToken = await jwtService.createRefreshToken(user.id)
+            await devicesService.createSession(req.ip, req.headers['user-agent'], refreshToken)
 
             res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true})
             return res.status(200).send({"accessToken": token})
@@ -37,8 +38,9 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
     }
     const getUser = await jwtService.getUserIdByToken(refreshToken)
     await authRepository.blackList(refreshToken)
-    const accessToken = await jwtService.createJWTF(getUser)
-    const newRefreshToken = await jwtService.createRefreshTokenF(getUser)
+
+    const accessToken = await jwtService.createJWT(getUser)
+    const newRefreshToken = await jwtService.createRefreshToken(getUser)
     const newToken = await authRepository.findInvalidToken(newRefreshToken)
 
     if (newToken !== null) {

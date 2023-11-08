@@ -15,6 +15,7 @@ const body_post_validation_1 = require("../middlewares/body-post-validation");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 const authorisation_middleware_1 = require("../middlewares/authorisation-middleware");
 const posts_service_1 = require("../domain/posts-service");
+const auth_middleware_1 = require("../middlewares/auth-middleware");
 exports.postsRouter = (0, express_1.Router)({});
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const allPosts = yield posts_service_1.postsService.getAllPosts(req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10);
@@ -53,9 +54,7 @@ exports.postsRouter.delete('/:id', authorisation_middleware_1.authorisationMiddl
         res.sendStatus(204);
     }
 }));
-exports.postsRouter.post('/:id/comments', 
-//authMiddleware,
-body_post_validation_1.bodyPostValidation.comment, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.post('/:id/comments', auth_middleware_1.authMiddleware, body_post_validation_1.bodyPostValidation.comment, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const comment = yield posts_service_1.postsService.createComment(req.params.id, req.body.content, req.user.id);
     if (!comment) {
         res.sendStatus(404);

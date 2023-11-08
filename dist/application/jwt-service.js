@@ -15,32 +15,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.jwtService = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const settings_1 = require("../settings");
+const crypto_1 = require("crypto");
 exports.jwtService = {
-    createJWT(user) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return jsonwebtoken_1.default.sign({ userId: user.id }, settings_1.settings.JWT_SECRET, { expiresIn: "10s" });
-        });
-    },
-    createRefreshToken(user) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return jsonwebtoken_1.default.sign({ userId: user.id }, settings_1.settings.JWT_SECRET, { expiresIn: "20s" });
-        });
-    },
-    createJWTF(id) {
+    createJWT(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return jsonwebtoken_1.default.sign({ userId: id }, settings_1.settings.JWT_SECRET, { expiresIn: "10s" });
         });
     },
-    createRefreshTokenF(id) {
+    createRefreshToken(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return jsonwebtoken_1.default.sign({ userId: id }, settings_1.settings.JWT_SECRET, { expiresIn: "20s" });
+            return jsonwebtoken_1.default.sign({ userId: id, deviceId: (0, crypto_1.randomUUID)() }, settings_1.settings.JWT_SECRET, { expiresIn: "20s" });
         });
     },
     verifyToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = jsonwebtoken_1.default.verify(token, settings_1.settings.JWT_SECRET);
-                console.log('JWT SERVICE: ', result);
                 return result;
             }
             catch (error) {

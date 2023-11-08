@@ -21,9 +21,11 @@ const users_router_1 = require("./routers/users-router");
 const auth_router_1 = require("./routers/auth-router");
 const comments_router_1 = require("./routers/comments-router");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const security_router_1 = require("./routers/security-router");
 exports.app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
 exports.app.use(express_1.default.json());
+exports.app.set('trust proxy', true);
 exports.app.get('/', (req, res) => {
     res.send('Hello, at this moment we will create our future!');
 });
@@ -33,6 +35,7 @@ exports.app.delete('/testing/all-data', (req, res) => __awaiter(void 0, void 0, 
     yield DB_Mongo_1.clientUserCollection.deleteMany({});
     yield DB_Mongo_1.clientCommentCollection.deleteMany({});
     yield DB_Mongo_1.clientAuthCollection.deleteMany({});
+    yield DB_Mongo_1.clientSecurityCollection.deleteMany({});
     res.sendStatus(204);
 }));
 exports.app.use(express_1.default.json());
@@ -42,6 +45,7 @@ exports.app.use('/posts', posts_router_1.postsRouter);
 exports.app.use('/users', users_router_1.usersRouter);
 exports.app.use('/auth', auth_router_1.authRouter);
 exports.app.use('/comments', comments_router_1.commentsRouter);
+exports.app.use('/security', security_router_1.securityRouter);
 const startApp = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, DB_Mongo_1.runDb)();
     exports.app.listen(port, () => {
