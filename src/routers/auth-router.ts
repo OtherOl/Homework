@@ -15,8 +15,9 @@ import {attemptsMiddleware} from "../middlewares/attempts-middleware";
 export const authRouter = Router({})
 
 authRouter.post('/login',
+    attemptsMiddleware,
     bodyAuthValidation.loginOrEmail, bodyAuthValidation.password,
-    inputValidationMiddleware, attemptsMiddleware,
+    inputValidationMiddleware,
     async (req: Request, res: Response) => {
         const user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
         await attemptsRepository.addAttempt(req.ip, req.baseUrl)
@@ -58,9 +59,9 @@ authRouter.post('/refresh-token',
     })
 
 authRouter.post('/registration',
+    attemptsMiddleware,
     bodyUserValidation.login, bodyUserValidation.email,
     bodyUserValidation.password, inputValidationMiddleware,
-    attemptsMiddleware,
     async (req: Request, res: Response) => {
         const newUser = await usersService.createUserForRegistration(req.body.login, req.body.email, req.body.password);
         if (newUser === "email exists") {
@@ -106,8 +107,8 @@ authRouter.post('/registration-confirmation',
 })
 
 authRouter.post('/registration-email-resending',
-    bodyUserValidation.email, inputValidationMiddleware,
     attemptsMiddleware,
+    bodyUserValidation.email, inputValidationMiddleware,
     async (req: Request, res: Response) => {
         const confirmedUser = await usersService.resendConfirmation(req.body.email);
 
