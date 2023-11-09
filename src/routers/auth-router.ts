@@ -64,6 +64,7 @@ authRouter.post('/registration',
     bodyUserValidation.password, inputValidationMiddleware,
     async (req: Request, res: Response) => {
         const newUser = await usersService.createUserForRegistration(req.body.login, req.body.email, req.body.password);
+
         if (newUser === "email exists") {
             return res.status(400).send({
                 errorsMessages: [
