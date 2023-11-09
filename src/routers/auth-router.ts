@@ -35,11 +35,7 @@ authRouter.post('/refresh-token',
     async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken
     const verify = await jwtService.verifyToken(refreshToken)
-    // const black = await authRepository.findInvalidToken(refreshToken)
-    //
-    // if (!verify || black !== null) {
-    //     return res.sendStatus(401)
-    // }
+
     const getUser = await jwtService.getUserIdByToken(refreshToken)
     await authRepository.blackList(refreshToken)
 
@@ -148,12 +144,7 @@ authRouter.post('/logout',
     tokensMiddleware,
     async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken
-    // const result = await jwtService.verifyToken(refreshToken)
-    // const black = await authRepository.findInvalidToken(refreshToken)
-    //
-    // if (!result || black !== null) {
-    //     return res.sendStatus(401)
-    // } else {
+
     await authRepository.blackList(refreshToken)
     return res.clearCookie("refreshToken").sendStatus(204)
 })
