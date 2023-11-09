@@ -24,7 +24,7 @@ const tokens_middleware_1 = require("../middlewares/tokens-middleware");
 const attempts_db_repository_1 = require("../repositories/attempts-db-repository");
 const attempts_middleware_1 = require("../middlewares/attempts-middleware");
 exports.authRouter = (0, express_1.Router)({});
-exports.authRouter.post('/login', body_auth_validation_1.bodyAuthValidation.loginOrEmail, body_auth_validation_1.bodyAuthValidation.password, input_validation_middleware_1.inputValidationMiddleware, attempts_middleware_1.attemptsMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/login', attempts_middleware_1.attemptsMiddleware, body_auth_validation_1.bodyAuthValidation.loginOrEmail, body_auth_validation_1.bodyAuthValidation.password, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
     yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.baseUrl);
     if (!user) {
@@ -58,7 +58,7 @@ exports.authRouter.post('/refresh-token', tokens_middleware_1.tokensMiddleware, 
         });
     }
 }));
-exports.authRouter.post('/registration', body_user_validation_1.bodyUserValidation.login, body_user_validation_1.bodyUserValidation.email, body_user_validation_1.bodyUserValidation.password, input_validation_middleware_1.inputValidationMiddleware, attempts_middleware_1.attemptsMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/registration', attempts_middleware_1.attemptsMiddleware, body_user_validation_1.bodyUserValidation.login, body_user_validation_1.bodyUserValidation.email, body_user_validation_1.bodyUserValidation.password, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const newUser = yield users_service_1.usersService.createUserForRegistration(req.body.login, req.body.email, req.body.password);
     if (newUser === "email exists") {
         return res.status(400).send({
@@ -98,7 +98,7 @@ exports.authRouter.post('/registration-confirmation', attempts_middleware_1.atte
         return res.sendStatus(204);
     }
 }));
-exports.authRouter.post('/registration-email-resending', body_user_validation_1.bodyUserValidation.email, input_validation_middleware_1.inputValidationMiddleware, attempts_middleware_1.attemptsMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/registration-email-resending', attempts_middleware_1.attemptsMiddleware, body_user_validation_1.bodyUserValidation.email, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const confirmedUser = yield users_service_1.usersService.resendConfirmation(req.body.email);
     if (confirmedUser === "User doesn't exists") {
         return res.status(400).send({
