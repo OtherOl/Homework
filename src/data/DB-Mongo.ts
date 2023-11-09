@@ -22,6 +22,7 @@ export const clientUserCollection = client.db('blogs_posts').collection<createNe
 export const clientCommentCollection = client.db('blogs_posts').collection<commentDbModel>('comments')
 export const clientAuthCollection = client.db('blogs_posts').collection<tokensModel>('auth')
 export const clientSecurityCollection = client.db('blogs_posts').collection('devices')
+export const clientAttemptCollection = client.db('blogs_posts').collection('attempts')
 
 export async function runDb() {
     try {

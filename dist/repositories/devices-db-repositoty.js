@@ -33,4 +33,9 @@ exports.devicesRepository = {
             return deleted.deletedCount === 1;
         });
     },
+    updateSession(id, newId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield DB_Mongo_1.clientSecurityCollection.findOneAndUpdate({ deviceId: id }, { $set: { deviceId: newId } });
+        });
+    },
 };

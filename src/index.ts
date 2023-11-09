@@ -2,6 +2,7 @@ import express, {Request, Response} from "express";
 import {blogsRouter} from "./routers/blogs-router";
 import {postsRouter} from "./routers/posts-router";
 import {
+    clientAttemptCollection,
     clientAuthCollection,
     clientBlogCollection,
     clientCommentCollection,
@@ -31,6 +32,7 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
     await clientCommentCollection.deleteMany({})
     await clientAuthCollection.deleteMany({})
     await clientSecurityCollection.deleteMany({})
+    await clientAttemptCollection.deleteMany({})
 
     res.sendStatus(204)
 })

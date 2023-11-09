@@ -12,36 +12,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.securityRouter = void 0;
 const express_1 = require("express");
 const jwt_service_1 = require("../application/jwt-service");
-const auth_db_repository_1 = require("../repositories/auth-db-repository");
 const devices_db_repositoty_1 = require("../repositories/devices-db-repositoty");
+const tokens_middleware_1 = require("../middlewares/tokens-middleware");
 exports.securityRouter = (0, express_1.Router)({});
-exports.securityRouter.get('/devices', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const refreshToken = req.cookies.refreshToken;
-    const verify = yield jwt_service_1.jwtService.verifyToken(refreshToken);
-    const black = yield auth_db_repository_1.authRepository.findInvalidToken(refreshToken);
-    if (!verify || black !== null)
-        return res.sendStatus(401);
+exports.securityRouter.get('/devices', tokens_middleware_1.tokensMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const verify = yield jwt_service_1.jwtService.verifyToken(req.cookies.refreshToken);
     const sessions = yield devices_db_repositoty_1.devicesRepository.getAllSessions(verify.deviceId);
     res.status(200).send(sessions);
 }));
-exports.securityRouter.delete('/devices', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const refreshToken = req.cookies.refreshToken;
-    const verify = yield jwt_service_1.jwtService.verifyToken(refreshToken);
-    const black = yield auth_db_repository_1.authRepository.findInvalidToken(refreshToken);
-    if (!verify || black !== null)
-        return res.sendStatus(401);
+exports.securityRouter.delete('/devices', tokens_middleware_1.tokensMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const verify = yield jwt_service_1.jwtService.verifyToken(req.cookies.refreshToken);
     yield devices_db_repositoty_1.devicesRepository.deleteSessions(verify.deviceId);
     res.sendStatus(204);
 }));
-exports.securityRouter.delete('/devices/:deviceId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const refreshToken = req.cookies.refreshToken;
-    const verify = yield jwt_service_1.jwtService.verifyToken(refreshToken);
-    const black = yield auth_db_repository_1.authRepository.findInvalidToken(refreshToken);
+exports.securityRouter.delete('/devices/:deviceId', tokens_middleware_1.tokensMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const reqId = req.params.deviceId;
-    if (!verify || black !== null)
-        return res.sendStatus(401);
+    const verify = yield jwt_service_1.jwtService.verifyToken(req.cookies.refreshToken);
     if (reqId !== verify.deviceId)
         return res.sendStatus(403);
     const deletedSession = yield devices_db_repositoty_1.devicesRepository.deleteSessionById(reqId);
-    return deletedSession ? res.sendStatus(204) : res.sendStatus(404);
+    if (!deletedSession)
+        return res.sendStatus(404);
+    res.sendStatus(204);
 }));
