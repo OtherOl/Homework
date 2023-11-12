@@ -19,9 +19,8 @@ authRouter.post('/login',
     bodyAuthValidation.loginOrEmail, bodyAuthValidation.password,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        await attemptsRepository.addAttempt(req.ip, req.baseUrl)
         const user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
-
+        await attemptsRepository.addAttempt(req.ip, req.originalUrl)
         if (!user) {
             return res.sendStatus(401)
         } else {
