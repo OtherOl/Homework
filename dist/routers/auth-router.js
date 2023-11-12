@@ -139,5 +139,5 @@ exports.authRouter.post('/logout', tokens_middleware_1.tokensMiddleware, (req, r
     const verifiedToken = yield jwt_service_1.jwtService.verifyToken(refreshToken);
     yield auth_db_repository_1.authRepository.blackList(refreshToken);
     yield devices_db_repositoty_1.devicesRepository.deleteSessionById(verifiedToken.deviceId);
-    return res.sendStatus(204);
+    return res.clearCookie('refreshToken').sendStatus(204);
 }));

@@ -16,7 +16,6 @@ const attemptsMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0,
     const url = req.originalUrl;
     const date = new Date();
     const attempts = yield attempts_db_repository_1.attemptsRepository.getAttemptsByIp(ip, url, date);
-    console.log(attempts);
     if (attempts > 4) {
         return res.sendStatus(429);
     }
