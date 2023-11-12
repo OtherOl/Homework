@@ -2,7 +2,6 @@ import {Router, Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
 import {devicesRepository} from "../repositories/devices-db-repositoty";
 import {tokensMiddleware} from "../middlewares/tokens-middleware";
-import {authRepository} from "../repositories/auth-db-repository";
 
 export const securityRouter = Router({})
 
