@@ -44,8 +44,9 @@ authRouter.post('/refresh-token',
 
         const accessToken = await jwtService.createJWT(getUser)
         const newRefreshToken = await jwtService.createRefreshToken(getUser)
+
         const newToken = await authRepository.findInvalidToken(newRefreshToken)
-        const verifiedToken = await jwtService.verifyToken(refreshToken)
+        const verifiedToken = await jwtService.verifyToken(newRefreshToken)
 
         if (newToken !== null) {
             return res.sendStatus(401)
