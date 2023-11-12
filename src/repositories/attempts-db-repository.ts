@@ -23,6 +23,6 @@ export const attemptsRepository = {
         url: string,
         date: any
     ) {
-        return await clientAttemptCollection.countDocuments({IP: ip, URL: url, date: {$gt: subSeconds(date, 10)}})
+        return await clientAttemptCollection.countDocuments({IP: ip, URL: url, date: {$gte: subSeconds(date, 10)}})
     },
 }

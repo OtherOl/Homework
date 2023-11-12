@@ -6,6 +6,7 @@ export const attemptsMiddleware = async (req: Request, res: Response, next: Next
     const url = req.baseUrl
     const date = new Date()
     const attempts = await attemptsRepository.getAttemptsByIp(ip, url, date)
+    console.log(attempts)
 
     if (attempts > 4) {
         return res.sendStatus(429)
