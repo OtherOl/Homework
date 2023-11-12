@@ -1,4 +1,5 @@
 import {clientAttemptCollection} from "../data/DB-Mongo";
+import subSeconds from 'date-fns/subSeconds'
 
 export const attemptsRepository = {
     async addAttempt(
@@ -22,6 +23,6 @@ export const attemptsRepository = {
         url: string,
         date: any
     ) {
-        return await clientAttemptCollection.countDocuments({IP: ip, URL: url, date: {$gte: new Date(date - 10000)}})
+        return await clientAttemptCollection.countDocuments({IP: ip, URL: url, date: {$gt: subSeconds(date, 10)}})
     },
 }
