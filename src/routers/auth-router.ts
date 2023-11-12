@@ -159,5 +159,5 @@ authRouter.post('/logout',
 
         await authRepository.blackList(refreshToken);
         await devicesRepository.deleteSessionById(verifiedToken.deviceId)
-        return res.sendStatus(204)
+        return res.clearCookie('refreshToken').sendStatus(204)
     })
