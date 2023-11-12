@@ -11,7 +11,7 @@ export const devicesRepository = {
     async getAllSessions(
         userId: string
     ) {
-        return await clientSecurityCollection.find({userId: userId}, {projection: {_id: 0}}).toArray()
+        return await clientSecurityCollection.find({userId: userId}, {projection: {_id: 0, userId: 0}}).toArray()
     },
 
     async getSessionById(

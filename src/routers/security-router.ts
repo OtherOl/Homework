@@ -25,6 +25,7 @@ securityRouter.delete('/devices/:deviceId',
     tokensMiddleware,
     async (req: Request, res: Response) => {
     const reqId = req.params.deviceId;
+    if(!reqId) return res.status(404).send({errorsMessage: []})
     const verify = await jwtService.verifyToken(req.cookies.refreshToken);
     const input = await devicesRepository.getSessionById(reqId);
 
