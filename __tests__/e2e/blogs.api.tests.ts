@@ -1,6 +1,5 @@
 import request from "supertest"
 import {app} from "../../src";
-import {errDescription, errName, errWebsiteUrl} from "../../src/models/blogs-errors-model";
 import {blogModel} from "../../src/models/blog-model";
 
 describe("tests for blogs", () => {

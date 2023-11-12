@@ -27,7 +27,7 @@ exports.attemptsRepository = {
     // },
     getAttemptsByIp(ip, url, date) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DB_Mongo_1.clientAttemptCollection.find({ IP: ip, URL: url, date: { $gte: new Date(date - 10000) } }, { projection: { _id: 0 } }).toArray();
+            return yield DB_Mongo_1.clientAttemptCollection.countDocuments({ IP: ip, URL: url, date: { $gte: new Date(date - 10000) } });
         });
     },
 };

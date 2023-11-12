@@ -22,7 +22,6 @@ export const attemptsRepository = {
         url: string,
         date: any
     ) {
-        return await clientAttemptCollection.find({IP: ip, URL: url, date: {$gte: new Date(date - 10000)}},
-            {projection: {_id: 0}}).toArray()
+        return await clientAttemptCollection.countDocuments({IP: ip, URL: url, date: {$gte: new Date(date - 10000)}})
     },
 }
