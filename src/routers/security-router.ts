@@ -28,6 +28,7 @@ securityRouter.delete('/devices/:deviceId',
     const refreshToken = req.cookies.refreshToken
     const reqId = req.params.deviceId;
     if(!reqId) return res.sendStatus(404)
+
     // if(!reqId) return res.status(404).send({errorsMessage: []});
     const verify = await jwtService.verifyToken(refreshToken);
     const input = await devicesRepository.getSessionById(reqId);
