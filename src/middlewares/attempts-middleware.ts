@@ -11,6 +11,5 @@ export const attemptsMiddleware = async (req: Request, res: Response, next: Next
         return res.sendStatus(429)
     } else {
         next()
-        return
     }
 }
