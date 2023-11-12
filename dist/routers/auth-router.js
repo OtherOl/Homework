@@ -60,7 +60,7 @@ exports.authRouter.post('/refresh-token', tokens_middleware_1.tokensMiddleware, 
 }));
 exports.authRouter.post('/registration', attempts_middleware_1.attemptsMiddleware, body_user_validation_1.bodyUserValidation.login, body_user_validation_1.bodyUserValidation.email, body_user_validation_1.bodyUserValidation.password, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const newUser = yield users_service_1.usersService.createUserForRegistration(req.body.login, req.body.email, req.body.password);
-    yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.baseUrl);
+    yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.originalUrl);
     if (newUser === "email exists") {
         return res.status(400).send({
             errorsMessages: [
@@ -85,7 +85,7 @@ exports.authRouter.post('/registration', attempts_middleware_1.attemptsMiddlewar
 }));
 exports.authRouter.post('/registration-confirmation', attempts_middleware_1.attemptsMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const confirmedUser = yield users_service_1.usersService.confirmEmail(req.body.code);
-    yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.baseUrl);
+    yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.originalUrl);
     if (!confirmedUser) {
         return res.status(400).send({
             errorsMessages: [
@@ -102,7 +102,7 @@ exports.authRouter.post('/registration-confirmation', attempts_middleware_1.atte
 }));
 exports.authRouter.post('/registration-email-resending', attempts_middleware_1.attemptsMiddleware, body_user_validation_1.bodyUserValidation.email, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const confirmedUser = yield users_service_1.usersService.resendConfirmation(req.body.email);
-    yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.baseUrl);
+    yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.originalUrl);
     if (confirmedUser === "User doesn't exists") {
         return res.status(400).send({
             errorsMessages: [

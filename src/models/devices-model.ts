@@ -3,4 +3,5 @@ export type devicesViewModel = {
     title: string
     lastActiveDate: string
     deviceId: string
+    userId: string
 }

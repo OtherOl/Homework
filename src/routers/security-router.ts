@@ -9,7 +9,7 @@ securityRouter.get('/devices',
     tokensMiddleware,
     async (req: Request, res: Response) => {
     const verify = await jwtService.verifyToken(req.cookies.refreshToken)
-    const sessions = await devicesRepository.getAllSessions(verify.deviceId)
+    const sessions = await devicesRepository.getAllSessions(verify.userId)
     res.status(200).send(sessions)
 })
 
@@ -25,10 +25,11 @@ securityRouter.delete('/devices/:deviceId',
     tokensMiddleware,
     async (req: Request, res: Response) => {
     const reqId = req.params.deviceId;
-    const verify = await jwtService.verifyToken(req.cookies.refreshToken)
+    const verify = await jwtService.verifyToken(req.cookies.refreshToken);
+    const input = await devicesRepository.getSessionById(reqId);
 
-    if (reqId !== verify.deviceId) return res.sendStatus(403)
-    const deletedSession = await devicesRepository.deleteSessionById(reqId)
-    if(!deletedSession) return res.sendStatus(404)
+    if(!input) return res.sendStatus(404)
+    if (input.userId !== verify.userId) return res.sendStatus(403);
+    await devicesRepository.deleteSessionById(reqId)
     res.sendStatus(204)
 })

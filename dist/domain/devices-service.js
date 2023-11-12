@@ -19,7 +19,7 @@ exports.devicesService = {
             const newSession = {
                 ip: ip,
                 title: title,
-                lastActiveDate: new Date(verifiedToken.iat * 1000).toDateString(),
+                lastActiveDate: new Date(verifiedToken.iat * 1000).toISOString(),
                 deviceId: verifiedToken.deviceId
             };
             yield devices_db_repositoty_1.devicesRepository.addSession(newSession);

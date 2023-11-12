@@ -11,8 +11,9 @@ export const devicesService = {
         const newSession = {
             ip: ip,
             title: title,
-            lastActiveDate: new Date(verifiedToken.iat * 1000).toDateString(),
-            deviceId: verifiedToken.deviceId
+            lastActiveDate: new Date(verifiedToken.iat * 1000).toISOString(),
+            deviceId: verifiedToken.deviceId,
+            userId: verifiedToken.userId
         }
         await devicesRepository.addSession(newSession)
         return newSession

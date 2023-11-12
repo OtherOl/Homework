@@ -13,7 +13,7 @@ exports.attemptsMiddleware = void 0;
 const attempts_db_repository_1 = require("../repositories/attempts-db-repository");
 const attemptsMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const ip = req.ip;
-    const url = req.baseUrl;
+    const url = req.originalUrl;
     const date = new Date();
     const attempts = yield attempts_db_repository_1.attemptsRepository.getAttemptsByIp(ip, url, date);
     console.log(attempts);

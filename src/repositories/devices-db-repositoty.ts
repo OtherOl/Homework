@@ -9,9 +9,15 @@ export const devicesRepository = {
     },
 
     async getAllSessions(
+        userId: string
+    ) {
+        return await clientSecurityCollection.find({userId: userId}, {projection: {_id: 0}}).toArray()
+    },
+
+    async getSessionById(
         deviceId: string
     ) {
-        return await clientSecurityCollection.find({deviceId: deviceId}, {projection: {_id: 0}}).toArray()
+        return await clientSecurityCollection.findOne({deviceId: deviceId}, {projection: {_id: 0}})
     },
 
     async deleteSessions(
@@ -23,8 +29,8 @@ export const devicesRepository = {
     async deleteSessionById(
         deviceId: string
     ) {
-      const deleted = await clientSecurityCollection.deleteOne({deviceId: deviceId})
-      return deleted.deletedCount === 1
+        const deleted = await clientSecurityCollection.deleteOne({deviceId: deviceId})
+        return deleted.deletedCount === 1
     },
 
     async updateSession(
