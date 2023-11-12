@@ -64,7 +64,7 @@ authRouter.post('/registration',
     bodyUserValidation.password, inputValidationMiddleware,
     async (req: Request, res: Response) => {
         const newUser = await usersService.createUserForRegistration(req.body.login, req.body.email, req.body.password);
-        await attemptsRepository.addAttempt(req.ip, req.baseUrl)
+        await attemptsRepository.addAttempt(req.ip, req.originalUrl)
         if (newUser === "email exists") {
             return res.status(400).send({
                 errorsMessages: [
@@ -92,7 +92,7 @@ authRouter.post('/registration-confirmation',
     attemptsMiddleware,
     async (req: Request, res: Response) => {
     const confirmedUser = await usersService.confirmEmail(req.body.code);
-    await attemptsRepository.addAttempt(req.ip, req.baseUrl)
+    await attemptsRepository.addAttempt(req.ip, req.originalUrl)
 
     if (!confirmedUser) {
         return res.status(400).send({
@@ -113,7 +113,7 @@ authRouter.post('/registration-email-resending',
     bodyUserValidation.email, inputValidationMiddleware,
     async (req: Request, res: Response) => {
         const confirmedUser = await usersService.resendConfirmation(req.body.email);
-        await attemptsRepository.addAttempt(req.ip, req.baseUrl)
+        await attemptsRepository.addAttempt(req.ip, req.originalUrl)
 
         if (confirmedUser === "User doesn't exists") {
             return res.status(400).send({

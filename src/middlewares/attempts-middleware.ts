@@ -3,7 +3,7 @@ import {attemptsRepository} from "../repositories/attempts-db-repository";
 
 export const attemptsMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const ip = req.ip
-    const url = req.baseUrl
+    const url = req.originalUrl
     const date = new Date()
     const attempts = await attemptsRepository.getAttemptsByIp(ip, url, date)
     console.log(attempts)
