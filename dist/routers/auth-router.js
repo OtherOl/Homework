@@ -25,8 +25,8 @@ const attempts_db_repository_1 = require("../repositories/attempts-db-repository
 const attempts_middleware_1 = require("../middlewares/attempts-middleware");
 exports.authRouter = (0, express_1.Router)({});
 exports.authRouter.post('/login', attempts_middleware_1.attemptsMiddleware, body_auth_validation_1.bodyAuthValidation.loginOrEmail, body_auth_validation_1.bodyAuthValidation.password, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
     yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.baseUrl);
+    const user = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
     if (!user) {
         return res.sendStatus(401);
     }
