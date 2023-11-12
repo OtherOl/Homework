@@ -20,7 +20,8 @@ exports.devicesService = {
                 ip: ip,
                 title: title,
                 lastActiveDate: new Date(verifiedToken.iat * 1000).toISOString(),
-                deviceId: verifiedToken.deviceId
+                deviceId: verifiedToken.deviceId,
+                userId: verifiedToken.userId
             };
             yield devices_db_repositoty_1.devicesRepository.addSession(newSession);
             return newSession;

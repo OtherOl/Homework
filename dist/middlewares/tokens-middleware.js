@@ -16,6 +16,8 @@ const tokensMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     const refreshToken = req.cookies.refreshToken;
     const verify = yield jwt_service_1.jwtService.verifyToken(refreshToken);
     const black = yield auth_db_repository_1.authRepository.findInvalidToken(refreshToken);
+    // const deviceId = await devicesRepository.getSessionById(verify.deviceId)
+    // console.log(deviceId, verify)
     if (!verify || black !== null) {
         return res.sendStatus(401);
     }

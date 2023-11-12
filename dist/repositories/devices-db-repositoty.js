@@ -17,9 +17,14 @@ exports.devicesRepository = {
             return yield DB_Mongo_1.clientSecurityCollection.insertOne(Object.assign({}, inputData));
         });
     },
-    getAllSessions(deviceId) {
+    getAllSessions(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DB_Mongo_1.clientSecurityCollection.find({ deviceId: deviceId }, { projection: { _id: 0 } }).toArray();
+            return yield DB_Mongo_1.clientSecurityCollection.find({ userId: userId }, { projection: { _id: 0, userId: 0 } }).toArray();
+        });
+    },
+    getSessionById(deviceId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield DB_Mongo_1.clientSecurityCollection.findOne({ deviceId: deviceId }, { projection: { _id: 0 } });
         });
     },
     deleteSessions(deviceId) {
@@ -35,7 +40,7 @@ exports.devicesRepository = {
     },
     updateSession(id, newId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DB_Mongo_1.clientSecurityCollection.findOneAndUpdate({ deviceId: id }, { $set: { deviceId: newId } });
+            return yield DB_Mongo_1.clientSecurityCollection.findOneAndUpdate({ deviceId: id }, { $set: { deviceId: newId, lastActiveDate: new Date().toISOString() } });
         });
     },
 };
