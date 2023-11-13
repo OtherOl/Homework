@@ -28,11 +28,9 @@ exports.securityRouter.delete('/devices', tokens_middleware_1.tokensMiddleware, 
 }));
 exports.securityRouter.delete('/devices/:deviceId', tokens_middleware_1.tokensMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const reqId = req.params.deviceId;
-    if (!reqId)
-        return res.status(404).send({ errorsMessage: [] });
     const verify = yield jwt_service_1.jwtService.verifyToken(req.cookies.refreshToken);
     const input = yield devices_db_repositoty_1.devicesRepository.getSessionById(reqId);
-    if (!input)
+    if (!input || !reqId)
         return res.sendStatus(404);
     if (input.userId !== verify.userId)
         return res.sendStatus(403);

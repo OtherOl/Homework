@@ -32,7 +32,6 @@ securityRouter.delete('/devices/:deviceId',
     if(!input || !reqId) return res.sendStatus(404)
     if (input.userId !== verify.userId) return res.sendStatus(403);
 
-    await authRepository.blackList(req.cookies.refreshToken)
     await devicesRepository.deleteSessionById(reqId);
     res.sendStatus(204)
 })
