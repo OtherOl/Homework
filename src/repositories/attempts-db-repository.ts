@@ -14,10 +14,6 @@ export const attemptsRepository = {
         return
     },
 
-    // async getAttempts() {
-    //   return await clientAttemptCollection.find({}, {projection: {_id: 0}}).toArray()
-    // },
-
     async getAttemptsByIp(
         ip: string,
         url: string,
