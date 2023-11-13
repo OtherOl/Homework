@@ -26,9 +26,6 @@ exports.attemptsRepository = {
             return;
         });
     },
-    // async getAttempts() {
-    //   return await clientAttemptCollection.find({}, {projection: {_id: 0}}).toArray()
-    // },
     getAttemptsByIp(ip, url, date) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield DB_Mongo_1.clientAttemptCollection.countDocuments({ IP: ip, URL: url, date: { $gt: (0, subSeconds_1.default)(date, 10) } });

@@ -16,12 +16,8 @@ const devices_db_repositoty_1 = require("../repositories/devices-db-repositoty")
 const tokensMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
     const verify = yield jwt_service_1.jwtService.verifyToken(refreshToken);
-    console.log('refToken in tokensmidl: ', refreshToken);
-    console.log('UserId in tokensmidl: ', verify.userId);
-    console.log('DeviceId in tokensmidl: ', verify.deviceId);
     const black = yield auth_db_repository_1.authRepository.findInvalidToken(refreshToken);
     const deviceId = yield devices_db_repositoty_1.devicesRepository.getSessionById(verify.deviceId);
-    console.log('deviceId: ', deviceId);
     if (!verify || black !== null || !deviceId) {
         return res.sendStatus(401);
     }

@@ -41,19 +41,16 @@ exports.authRouter.post('/login', attempts_middleware_1.attemptsMiddleware, body
 exports.authRouter.post('/refresh-token', tokens_middleware_1.tokensMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
     const verify = yield jwt_service_1.jwtService.verifyToken(refreshToken);
-    console.log('Previous refToken: ', refreshToken);
     const getUser = yield jwt_service_1.jwtService.getUserIdByToken(refreshToken);
     yield auth_db_repository_1.authRepository.blackList(refreshToken);
     const accessToken = yield jwt_service_1.jwtService.createJWT(getUser);
     const newRefreshToken = yield jwt_service_1.jwtService.createNewRefreshToken(getUser, verify.deviceId);
-    console.log('New refToken: ', newRefreshToken);
     const newToken = yield auth_db_repository_1.authRepository.findInvalidToken(newRefreshToken);
     if (newToken !== null) {
         return res.sendStatus(401);
     }
     else {
-        const a = yield devices_db_repositoty_1.devicesRepository.updateSession(verify.deviceId);
-        console.log('After refresh: ', a);
+        yield devices_db_repositoty_1.devicesRepository.updateSession(verify.deviceId);
         res.cookie('refreshToken', newRefreshToken, { httpOnly: true, secure: true });
         return res.status(200).send({
             "accessToken": accessToken
