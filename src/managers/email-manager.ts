@@ -14,7 +14,7 @@ export const emailManager = {
         })
 
         await transporter.sendMail({
-            from: 'OtherOl BackEnd<process.env.EMAIL>',
+            from: 'OtherOl BackEnd<dmitrybackenddev@gmail.com>',
             to: user.email,
             subject: "Confirmation code",
             html: "<h1>Thanks for your registration</h1>" +
