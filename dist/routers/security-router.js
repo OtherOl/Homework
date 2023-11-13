@@ -14,7 +14,6 @@ const express_1 = require("express");
 const jwt_service_1 = require("../application/jwt-service");
 const devices_db_repositoty_1 = require("../repositories/devices-db-repositoty");
 const tokens_middleware_1 = require("../middlewares/tokens-middleware");
-const auth_db_repository_1 = require("../repositories/auth-db-repository");
 exports.securityRouter = (0, express_1.Router)({});
 exports.securityRouter.get('/devices', tokens_middleware_1.tokensMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const verify = yield jwt_service_1.jwtService.verifyToken(req.cookies.refreshToken);
@@ -34,7 +33,6 @@ exports.securityRouter.delete('/devices/:deviceId', tokens_middleware_1.tokensMi
         return res.sendStatus(404);
     if (input.userId !== verify.userId)
         return res.sendStatus(403);
-    yield auth_db_repository_1.authRepository.blackList(req.cookies.refreshToken);
     yield devices_db_repositoty_1.devicesRepository.deleteSessionById(reqId);
     res.sendStatus(204);
 }));

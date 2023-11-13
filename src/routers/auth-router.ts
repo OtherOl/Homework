@@ -38,20 +38,22 @@ authRouter.post('/refresh-token',
     async (req: Request, res: Response) => {
         const refreshToken = req.cookies.refreshToken
         const verify = await jwtService.verifyToken(refreshToken)
+        console.log('Previous refToken: ', refreshToken)
 
         const getUser = await jwtService.getUserIdByToken(refreshToken)
         await authRepository.blackList(refreshToken)
 
         const accessToken = await jwtService.createJWT(getUser)
-        const newRefreshToken = await jwtService.createRefreshToken(getUser)
+        const newRefreshToken = await jwtService.createNewRefreshToken(getUser, verify.deviceId)
+        console.log('New refToken: ', newRefreshToken)
 
         const newToken = await authRepository.findInvalidToken(newRefreshToken)
-        const verifiedToken = await jwtService.verifyToken(refreshToken)
 
         if (newToken !== null) {
             return res.sendStatus(401)
         } else {
-            await devicesRepository.updateSession(verify.deviceId, verifiedToken.deviceId)
+            const a = await devicesRepository.updateSession(verify.deviceId)
+            console.log('After refresh: ', a)
             res.cookie('refreshToken', newRefreshToken, {httpOnly: true, secure: true})
             return res.status(200).send({
                 "accessToken": accessToken

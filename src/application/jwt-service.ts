@@ -15,6 +15,13 @@ export const jwtService = {
         return jwt.sign({userId: id, deviceId: randomUUID()}, settings.JWT_SECRET, {expiresIn: "2000s"})
     },
 
+    async createNewRefreshToken(
+        id: string,
+        deviceId: string
+    ) {
+        return jwt.sign({userId: id, deviceId: deviceId}, settings.JWT_SECRET, {expiresIn: "2000s"})
+    },
+
     async verifyToken(
         token: string
     ) {

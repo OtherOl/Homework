@@ -34,9 +34,9 @@ export const devicesRepository = {
     },
 
     async updateSession(
-        id: string,
-        newId: string
+        id: string
     ) {
-        return await clientSecurityCollection.findOneAndUpdate({deviceId: id}, {$set: {deviceId: newId, lastActiveDate: new Date().toISOString()}})
+        return await clientSecurityCollection.findOneAndUpdate({deviceId: id},
+            {$set: {lastActiveDate: new Date().toISOString()}}, {projection: {_id: 0}})
     },
 }
