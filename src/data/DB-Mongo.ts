@@ -9,8 +9,7 @@ import {deviceScheme} from "../mongoose-schemes/device-scheme";
 import {attemptScheme} from "../mongoose-schemes/attempt-scheme";
 dotenv.config()
 
-let dbName = "blogs_posts"
-const mongoUri = process.env.MONGO_URL || `mongodb://0.0.0.0:27017/${dbName}`
+const mongoUri = process.env.MONGO_URL || `mongodb://0.0.0.0:27017/blogs_posts`
 console.log(process.env.MONGO_URL)
 
 if (!mongoUri) {

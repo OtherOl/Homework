@@ -23,8 +23,7 @@ const auth_scheme_1 = require("../mongoose-schemes/auth-scheme");
 const device_scheme_1 = require("../mongoose-schemes/device-scheme");
 const attempt_scheme_1 = require("../mongoose-schemes/attempt-scheme");
 dotenv_1.default.config();
-let dbName = "blogs_posts";
-const mongoUri = process.env.MONGO_URL || `mongodb://0.0.0.0:27017/${dbName}`;
+const mongoUri = process.env.MONGO_URL || `mongodb://0.0.0.0:27017/blogs_posts`;
 console.log(process.env.MONGO_URL);
 if (!mongoUri) {
     throw new Error('URL doesnt found');
