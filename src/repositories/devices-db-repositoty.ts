@@ -11,7 +11,7 @@ export const devicesRepository = {
     async getAllSessions(
         userId: string
     ) {
-        return DeviceModel.find({userId: userId}, {projection: {_id: 0, userId: 0}}).lean()
+        return DeviceModel.find({userId: userId}, {projection: {_id: 0, userId: 0, __v: 0}}).lean()
     },
 
     async getSessionById(
