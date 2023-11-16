@@ -19,7 +19,7 @@ export type createNewUserModel = {
     id: string,
     login: string,
     email: string,
-    passwordHash: string;
+    passwordHash: string,
     passwordSalt: string,
     createdAt: string,
     emailConfirmation: {

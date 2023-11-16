@@ -1,4 +1,4 @@
-import {clientUserCollection} from "../data/DB-Mongo";
+import {UserModel} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
 import {createNewUserModel, userViewModel} from "../models/user-model";
 
@@ -22,13 +22,13 @@ export const usersRepository = {
                 ]
         }
 
-        const countUsers: number = await clientUserCollection.countDocuments(filter)
-        const foundUsers: userViewModel[] = await clientUserCollection
+        const countUsers: number = await UserModel.countDocuments(filter)
+        const foundUsers: userViewModel[] = await UserModel
             .find(filter, {projection: {_id: 0, passwordHash: 0, passwordSalt: 0, emailConfirmation: 0}})
             .sort(sortQuery)
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
-            .toArray()
+            .lean()
 
         const objects: paginationModel<userViewModel> = {
             pagesCount: Math.ceil(countUsers / pageSize),
@@ -44,7 +44,7 @@ export const usersRepository = {
     async createUser(
         inputData: createNewUserModel
     ) {
-        await clientUserCollection.insertOne({...inputData})
+        await UserModel.create({...inputData})
 
         return {
             id: inputData.id,
@@ -57,7 +57,7 @@ export const usersRepository = {
     async deleteUser(
         id: string
     ) {
-        const deletedUser = await clientUserCollection.deleteOne({id: id})
+        const deletedUser = await UserModel.deleteOne({id: id})
 
         return deletedUser.deletedCount === 1
     },
@@ -65,7 +65,7 @@ export const usersRepository = {
     async findByLoginOrEmail(
         loginOrEmail: string
     ) {
-        const foundUser: createNewUserModel | null = await clientUserCollection.findOne({
+        const foundUser: createNewUserModel | null = await UserModel.findOne({
             $or:
                 [
                     {login: loginOrEmail},
@@ -78,19 +78,19 @@ export const usersRepository = {
     async findUserById(
         userId: string
     ) {
-        return await clientUserCollection.findOne({id: userId})
+        return UserModel.findOne({id: userId})
     },
 
     async findUserByConfirmationCode(
         code: string
     ) {
-        return await clientUserCollection.findOne({"emailConfirmation.confirmationCode": code})
+        return UserModel.findOne({"emailConfirmation.confirmationCode": code})
     },
 
     async updateConfirmation(
         id: string
     ) {
-        const user = await clientUserCollection.updateOne({id: id}, {$set: {isConfirmed: true}})
+        const user = await UserModel.updateOne({id: id}, {$set: {isConfirmed: true}})
 
         return user.modifiedCount === 1
     },
@@ -99,7 +99,7 @@ export const usersRepository = {
         id: string,
         code: string
     ) {
-        let newCode = await clientUserCollection.updateOne({id: id}, {$set: {'emailConfirmation.confirmationCode': code}})
+        let newCode = await UserModel.updateOne({id: id}, {$set: {'emailConfirmation.confirmationCode': code}})
 
         return newCode.modifiedCount === 1
     }

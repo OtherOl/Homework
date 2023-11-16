@@ -14,33 +14,33 @@ const DB_Mongo_1 = require("../data/DB-Mongo");
 exports.devicesRepository = {
     addSession(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DB_Mongo_1.clientSecurityCollection.insertOne(Object.assign({}, inputData));
+            return yield DB_Mongo_1.DeviceModel.create(Object.assign({}, inputData));
         });
     },
     getAllSessions(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DB_Mongo_1.clientSecurityCollection.find({ userId: userId }, { projection: { _id: 0, userId: 0 } }).toArray();
+            return DB_Mongo_1.DeviceModel.find({ userId: userId }, { projection: { _id: 0, userId: 0 } }).lean();
         });
     },
     getSessionById(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DB_Mongo_1.clientSecurityCollection.findOne({ deviceId: deviceId }, { projection: { _id: 0 } });
+            return DB_Mongo_1.DeviceModel.findOne({ deviceId: deviceId }, { projection: { _id: 0 } });
         });
     },
     deleteSessions(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DB_Mongo_1.clientSecurityCollection.deleteMany({ deviceId: { $ne: deviceId } });
+            return DB_Mongo_1.DeviceModel.deleteMany({ deviceId: { $ne: deviceId } });
         });
     },
     deleteSessionById(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const deleted = yield DB_Mongo_1.clientSecurityCollection.deleteOne({ deviceId: deviceId });
+            const deleted = yield DB_Mongo_1.DeviceModel.deleteOne({ deviceId: deviceId });
             return deleted.deletedCount === 1;
         });
     },
     updateSession(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DB_Mongo_1.clientSecurityCollection.findOneAndUpdate({ deviceId: id }, { $set: { lastActiveDate: new Date().toISOString() } }, { projection: { _id: 0 } });
+            return DB_Mongo_1.DeviceModel.findOneAndUpdate({ deviceId: id }, { $set: { lastActiveDate: new Date().toISOString() } }, { projection: { _id: 0 } });
         });
     },
 };

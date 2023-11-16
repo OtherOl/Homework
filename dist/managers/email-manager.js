@@ -20,12 +20,14 @@ exports.emailManager = {
             let transporter = nodemailer_1.default.createTransport({
                 service: 'gmail',
                 auth: {
-                    user: process.env.EMAIL,
-                    pass: process.env.PASSWORD
+                    // user: process.env.EMAIL,
+                    // pass: process.env.PASSWORD
+                    user: 'dmitrybackenddev@gmail.com',
+                    pass: 'tzcjafbdsjqrpmwl'
                 }
             });
             yield transporter.sendMail({
-                from: 'OtherOl BackEnd<process.env.EMAIL>',
+                from: 'OtherOl BackEnd<dmitrybackenddev@gmail.com>',
                 to: user.email,
                 subject: "Confirmation code",
                 html: "<h1>Thanks for your registration</h1>" +
@@ -40,8 +42,10 @@ exports.emailManager = {
             let transporter = nodemailer_1.default.createTransport({
                 service: 'gmail',
                 auth: {
-                    user: process.env.EMAIL,
-                    pass: process.env.PASSWORD
+                    // user: process.env.EMAIL,
+                    // pass: process.env.PASSWORD
+                    user: 'dmitrybackenddev@gmail.com',
+                    pass: 'tzcjafbdsjqrpmwl'
                 }
             });
             yield transporter.sendMail({
