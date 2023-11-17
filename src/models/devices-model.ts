@@ -1,4 +1,6 @@
+
 export type devicesViewModel = {
+    _id: string
     ip: string
     title: string
     lastActiveDate: string

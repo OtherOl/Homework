@@ -18,7 +18,7 @@ const subSeconds_1 = __importDefault(require("date-fns/subSeconds"));
 exports.attemptsRepository = {
     addAttempt(ip, url) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield DB_Mongo_1.AttemptModel.create({
+            yield DB_Mongo_1.AttemptModelClass.create({
                 IP: ip,
                 URL: url,
                 date: new Date()
@@ -28,7 +28,7 @@ exports.attemptsRepository = {
     },
     getAttemptsByIp(ip, url, date) {
         return __awaiter(this, void 0, void 0, function* () {
-            return DB_Mongo_1.AttemptModel.countDocuments({ IP: ip, URL: url, date: { $gt: (0, subSeconds_1.default)(date, 10) } });
+            return DB_Mongo_1.AttemptModelClass.countDocuments({ IP: ip, URL: url, date: { $gt: (0, subSeconds_1.default)(date, 10) } });
         });
     },
 };

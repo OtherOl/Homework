@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.runDb = exports.AttemptModel = exports.DeviceModel = exports.AuthModel = exports.CommentModel = exports.UserModel = exports.BlogModel = exports.PostModel = void 0;
+exports.runDb = exports.AttemptModelClass = exports.DeviceModelClass = exports.AuthModelClass = exports.CommentModelClass = exports.UserModelClass = exports.BlogModelClass = exports.PostModelClass = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const post_scheme_1 = require("../mongoose-schemes/post-scheme");
@@ -28,20 +28,13 @@ console.log(process.env.MONGO_URL);
 if (!mongoUri) {
     throw new Error('URL doesnt found');
 }
-exports.PostModel = mongoose_1.default.model('posts', post_scheme_1.postScheme);
-// export const clientPostCollection = client.db('blogs_posts').collection<PostDbModel>('posts')
-exports.BlogModel = mongoose_1.default.model('blogs', blog_scheme_1.blogScheme);
-// export const clientBlogCollection = client.db('blogs_posts').collection<blogModel>('blogs')
-exports.UserModel = mongoose_1.default.model('users', user_scheme_1.userScheme);
-// export const clientUserCollection = client.db('blogs_posts').collection<createNewUserModel>('users')
-exports.CommentModel = mongoose_1.default.model('comments', comment_scheme_1.commentScheme);
-// export const clientCommentCollection = client.db('blogs_posts').collection<commentDbModel>('comments')
-exports.AuthModel = mongoose_1.default.model('auth', auth_scheme_1.authScheme);
-// export const clientAuthCollection = client.db('blogs_posts').collection<tokensModel>('auth')
-exports.DeviceModel = mongoose_1.default.model('devices', device_scheme_1.deviceScheme);
-// export const clientSecurityCollection = client.db('blogs_posts').collection('devices')
-exports.AttemptModel = mongoose_1.default.model('attempts', attempt_scheme_1.attemptScheme);
-// export const clientAttemptCollection = client.db('blogs_posts').collection('attempts')
+exports.PostModelClass = mongoose_1.default.model('posts', post_scheme_1.postScheme);
+exports.BlogModelClass = mongoose_1.default.model('blogs', blog_scheme_1.blogScheme);
+exports.UserModelClass = mongoose_1.default.model('users', user_scheme_1.userScheme);
+exports.CommentModelClass = mongoose_1.default.model('comments', comment_scheme_1.commentScheme);
+exports.AuthModelClass = mongoose_1.default.model('auth', auth_scheme_1.authScheme);
+exports.DeviceModelClass = mongoose_1.default.model('devices', device_scheme_1.deviceScheme);
+exports.AttemptModelClass = mongoose_1.default.model('attempts', attempt_scheme_1.attemptScheme);
 function runDb() {
     return __awaiter(this, void 0, void 0, function* () {
         try {

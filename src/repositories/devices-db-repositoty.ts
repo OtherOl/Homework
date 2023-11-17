@@ -1,42 +1,42 @@
 import {devicesViewModel} from "../models/devices-model";
-import {DeviceModel} from "../data/DB-Mongo";
+import {DeviceModelClass} from "../data/DB-Mongo";
 
 export const devicesRepository = {
     async addSession(
         inputData: devicesViewModel
     ) {
-        return await DeviceModel.create({...inputData})
+        return await DeviceModelClass.create({...inputData})
     },
 
     async getAllSessions(
         userId: string
     ) {
-        return DeviceModel.find({userId: userId}, {projection: {_id: 0, userId: 0, __v: 0}}).lean()
+        return DeviceModelClass.find({userId: userId}).lean()
     },
 
     async getSessionById(
         deviceId: string
     ) {
-        return DeviceModel.findOne({deviceId: deviceId}, {projection: {_id: 0}})
+        return DeviceModelClass.findOne({deviceId: deviceId})
     },
 
     async deleteSessions(
         deviceId: string
     ) {
-        return DeviceModel.deleteMany({deviceId: {$ne: deviceId}})
+        return DeviceModelClass.deleteMany({deviceId: {$ne: deviceId}})
     },
 
     async deleteSessionById(
         deviceId: string
     ) {
-        const deleted = await DeviceModel.deleteOne({deviceId: deviceId})
+        const deleted = await DeviceModelClass.deleteOne({deviceId: deviceId})
         return deleted.deletedCount === 1
     },
 
     async updateSession(
         id: string
     ) {
-        return DeviceModel.findOneAndUpdate({deviceId: id},
-            {$set: {lastActiveDate: new Date().toISOString()}}, {projection: {_id: 0}})
+        return DeviceModelClass.findOneAndUpdate({deviceId: id},
+            {$set: {lastActiveDate: new Date().toISOString()}})
     },
 }

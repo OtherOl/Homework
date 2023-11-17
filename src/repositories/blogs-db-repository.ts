@@ -1,7 +1,7 @@
 import {blogModel, createBlogModel} from "../models/blog-model";
 import {paginationModel} from "../models/pagination-model";
 import {PostDbModel, PostViewModel} from "../models/post-model";
-import {BlogModel, PostModel} from "../data/DB-Mongo";
+import {BlogModelClass, PostModelClass} from "../data/DB-Mongo";
 
 export const blogsRepository = {
     async getAllBlogs(
@@ -16,8 +16,8 @@ export const blogsRepository = {
 
         const filter = {name: RegExp(searchNameTerm, "i")}
 
-        const countBlogs: number = await BlogModel.countDocuments(filter)
-        const foundBlog: blogModel[] = await BlogModel
+        const countBlogs: number = await BlogModelClass.countDocuments(filter)
+        const foundBlog: blogModel[] = await BlogModelClass
             .find(filter, {projection: {_id: 0}})
             .sort(sortQuery)
             .skip((pageNumber - 1) * pageSize)
@@ -47,9 +47,9 @@ export const blogsRepository = {
 
         const filter = {blogId: blogId}
 
-        const isExists = await BlogModel.findOne({id: blogId})
-        const countPosts: number = await PostModel.countDocuments(filter)
-        const foundPosts: PostDbModel[] = await PostModel
+        const isExists = await BlogModelClass.findOne({id: blogId})
+        const countPosts: number = await PostModelClass.countDocuments(filter)
+        const foundPosts: PostDbModel[] = await PostModelClass
             .find(filter, {projection: {_id: 0}})
             .sort(sortQuery)
             .skip((pageNumber - 1) * pageSize)
@@ -72,16 +72,16 @@ export const blogsRepository = {
     },
 
     async getBlogById(id: string) {
-        return BlogModel.findOne({id: id}, {projection: {_id: 0}})
+        return BlogModelClass.findOne({id: id}, {projection: {_id: 0}})
     },
 
     async createBlog(inputData: blogModel) {
-        await BlogModel.create({...inputData})
+        await BlogModelClass.create({...inputData})
         return inputData
     },
 
     async updateBlog(id: string, inputData: createBlogModel) {
-        const foundBlog = await BlogModel.updateOne({id: id}, {
+        const foundBlog = await BlogModelClass.updateOne({id: id}, {
             $set: {
                 name: inputData.name,
                 description: inputData.description,
@@ -93,7 +93,7 @@ export const blogsRepository = {
     },
 
     async deleteBlog(id: string) {
-        const deleteBlog = await BlogModel.deleteOne({id: id})
+        const deleteBlog = await BlogModelClass.deleteOne({id: id})
 
         return deleteBlog.deletedCount === 1
     }

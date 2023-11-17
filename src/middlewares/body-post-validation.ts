@@ -1,9 +1,9 @@
 import {body} from "express-validator";
-import {BlogModel} from "../data/DB-Mongo";
+import {BlogModelClass} from "../data/DB-Mongo";
 
 export const bodyPostValidation = {
     blogId: body('blogId').custom(async (value) => {
-        const blogExists = await BlogModel.findOne({id: value})
+        const blogExists = await BlogModelClass.findOne({id: value})
 
         if (!blogExists) {
             throw new Error("Blog doesn't exists")

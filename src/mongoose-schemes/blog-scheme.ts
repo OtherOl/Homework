@@ -8,4 +8,5 @@ export const blogScheme = new mongoose.Schema<blogModel>({
     websiteUrl: {type: String, required: true},
     createdAt: String,
     isMembership: Boolean
-})
+},
+    {versionKey: false})

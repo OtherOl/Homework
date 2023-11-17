@@ -1,15 +1,15 @@
-import {AuthModel} from "../data/DB-Mongo";
+import {AuthModelClass} from "../data/DB-Mongo";
 
 export const authRepository = {
     async blackList(
         token: string
     ) {
-        return await AuthModel.create({token})
+        return await AuthModelClass.create({token})
     },
 
     async findInvalidToken(
         token: string
     ) {
-        return AuthModel.findOne({token: token})
+        return AuthModelClass.findOne({token: token})
     },
 }

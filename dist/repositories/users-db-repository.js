@@ -22,8 +22,8 @@ exports.usersRepository = {
                     { email: RegExp(searchEmailTerm, "i") }
                 ]
             };
-            const countUsers = yield DB_Mongo_1.UserModel.countDocuments(filter);
-            const foundUsers = yield DB_Mongo_1.UserModel
+            const countUsers = yield DB_Mongo_1.UserModelClass.countDocuments(filter);
+            const foundUsers = yield DB_Mongo_1.UserModelClass
                 .find(filter, { projection: { _id: 0, passwordHash: 0, passwordSalt: 0, emailConfirmation: 0 } })
                 .sort(sortQuery)
                 .skip((pageNumber - 1) * pageSize)
@@ -41,7 +41,7 @@ exports.usersRepository = {
     },
     createUser(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield DB_Mongo_1.UserModel.create(Object.assign({}, inputData));
+            yield DB_Mongo_1.UserModelClass.create(Object.assign({}, inputData));
             return {
                 id: inputData.id,
                 login: inputData.login,
@@ -52,13 +52,13 @@ exports.usersRepository = {
     },
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const deletedUser = yield DB_Mongo_1.UserModel.deleteOne({ id: id });
+            const deletedUser = yield DB_Mongo_1.UserModelClass.deleteOne({ id: id });
             return deletedUser.deletedCount === 1;
         });
     },
     findByLoginOrEmail(loginOrEmail) {
         return __awaiter(this, void 0, void 0, function* () {
-            const foundUser = yield DB_Mongo_1.UserModel.findOne({
+            const foundUser = yield DB_Mongo_1.UserModelClass.findOne({
                 $or: [
                     { login: loginOrEmail },
                     { email: loginOrEmail }
@@ -69,23 +69,23 @@ exports.usersRepository = {
     },
     findUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return DB_Mongo_1.UserModel.findOne({ id: userId });
+            return DB_Mongo_1.UserModelClass.findOne({ id: userId });
         });
     },
     findUserByConfirmationCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            return DB_Mongo_1.UserModel.findOne({ "emailConfirmation.confirmationCode": code });
+            return DB_Mongo_1.UserModelClass.findOne({ "emailConfirmation.confirmationCode": code });
         });
     },
     updateConfirmation(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield DB_Mongo_1.UserModel.updateOne({ id: id }, { $set: { isConfirmed: true } });
+            const user = yield DB_Mongo_1.UserModelClass.updateOne({ id: id }, { $set: { isConfirmed: true } });
             return user.modifiedCount === 1;
         });
     },
     changeConfirmationCode(id, code) {
         return __awaiter(this, void 0, void 0, function* () {
-            let newCode = yield DB_Mongo_1.UserModel.updateOne({ id: id }, { $set: { 'emailConfirmation.confirmationCode': code } });
+            let newCode = yield DB_Mongo_1.UserModelClass.updateOne({ id: id }, { $set: { 'emailConfirmation.confirmationCode': code } });
             return newCode.modifiedCount === 1;
         });
     }

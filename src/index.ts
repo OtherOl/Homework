@@ -2,12 +2,12 @@ import express, {Request, Response} from "express";
 import {blogsRouter} from "./routers/blogs-router";
 import {postsRouter} from "./routers/posts-router";
 import {
-    AttemptModel,
-    AuthModel,
-    BlogModel,
-    CommentModel,
-    PostModel, DeviceModel,
-    UserModel,
+    AttemptModelClass,
+    AuthModelClass,
+    BlogModelClass,
+    CommentModelClass,
+    PostModelClass, DeviceModelClass,
+    UserModelClass,
     runDb
 } from "./data/DB-Mongo";
 import {usersRouter} from "./routers/users-router";
@@ -26,13 +26,13 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.delete('/testing/all-data', async (req: Request, res: Response) => {
-    await BlogModel.deleteMany({})
-    await PostModel.deleteMany({})
-    await UserModel.deleteMany({})
-    await CommentModel.deleteMany({})
-    await AuthModel.deleteMany({})
-    await DeviceModel.deleteMany({})
-    await AttemptModel.deleteMany({})
+    await BlogModelClass.deleteMany({})
+    await PostModelClass.deleteMany({})
+    await UserModelClass.deleteMany({})
+    await CommentModelClass.deleteMany({})
+    await AuthModelClass.deleteMany({})
+    await DeviceModelClass.deleteMany({})
+    await AttemptModelClass.deleteMany({})
 
     res.sendStatus(204)
 })

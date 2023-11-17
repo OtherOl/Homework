@@ -1,5 +1,6 @@
 import {devicesRepository} from "../repositories/devices-db-repositoty";
 import {jwtService} from "../application/jwt-service";
+import {randomUUID} from "crypto";
 
 export const devicesService = {
     async createSession(
@@ -9,6 +10,7 @@ export const devicesService = {
     ) {
         const verifiedToken = await jwtService.verifyToken(refreshToken)
         const newSession = {
+            _id: randomUUID(),
             ip: ip,
             title: title,
             lastActiveDate: new Date(verifiedToken.iat * 1000).toISOString(),

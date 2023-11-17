@@ -30,13 +30,13 @@ exports.app.get('/', (req, res) => {
     res.send('Hello, at this moment we will create our future!');
 });
 exports.app.delete('/testing/all-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield DB_Mongo_1.BlogModel.deleteMany({});
-    yield DB_Mongo_1.PostModel.deleteMany({});
-    yield DB_Mongo_1.UserModel.deleteMany({});
-    yield DB_Mongo_1.CommentModel.deleteMany({});
-    yield DB_Mongo_1.AuthModel.deleteMany({});
-    yield DB_Mongo_1.DeviceModel.deleteMany({});
-    yield DB_Mongo_1.AttemptModel.deleteMany({});
+    yield DB_Mongo_1.BlogModelClass.deleteMany({});
+    yield DB_Mongo_1.PostModelClass.deleteMany({});
+    yield DB_Mongo_1.UserModelClass.deleteMany({});
+    yield DB_Mongo_1.CommentModelClass.deleteMany({});
+    yield DB_Mongo_1.AuthModelClass.deleteMany({});
+    yield DB_Mongo_1.DeviceModelClass.deleteMany({});
+    yield DB_Mongo_1.AttemptModelClass.deleteMany({});
     res.sendStatus(204);
 }));
 exports.app.use(express_1.default.json());

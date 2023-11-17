@@ -1,8 +1,7 @@
 import {PostDbModel, PostViewModel, UpdatePostModel} from "../models/post-model";
-// import {clientCommentCollection, clientPostCollection, clientUserCollection} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
 import {commentDbModel} from "../models/comments-model";
-import {CommentModel, PostModel, UserModel} from "../data/DB-Mongo";
+import {CommentModelClass, PostModelClass, UserModelClass} from "../data/DB-Mongo";
 
 export const postsRepository = {
     async getAllPosts(
@@ -14,8 +13,8 @@ export const postsRepository = {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
 
-        const countPosts: number = await PostModel.countDocuments()
-        const foundPost: PostDbModel[] = await PostModel
+        const countPosts: number = await PostModelClass.countDocuments()
+        const foundPost: PostDbModel[] = await PostModelClass
             .find({}, {projection: {_id: 0}})
             .sort(sortQuery)
             .skip((pageNumber - 1) * pageSize)
@@ -34,18 +33,18 @@ export const postsRepository = {
     },
 
     async getPostById(id: string) {
-        return PostModel.findOne({id: id}, {projection: {_id: 0}})
+        return PostModelClass.findOne({id: id}, {projection: {_id: 0}})
     },
 
     async createPost(inputData: PostDbModel) {
-        return await PostModel.create({...inputData})
+        return await PostModelClass.create({...inputData})
     },
 
     async updatePost(
         id: string,
         inputData: UpdatePostModel
     ) {
-        const isUpdated = await PostModel.updateOne({id: id}, {
+        const isUpdated = await PostModelClass.updateOne({id: id}, {
             $set: {...inputData}
         })
 
@@ -53,7 +52,7 @@ export const postsRepository = {
     },
 
     async deletePost(id: string) {
-        const deleteBlog = await PostModel.deleteOne({id: id})
+        const deleteBlog = await PostModelClass.deleteOne({id: id})
 
         return deleteBlog.deletedCount === 1
     },
@@ -63,9 +62,9 @@ export const postsRepository = {
         content: string,
         userId: string
     ) {
-        const foundPost = await PostModel.findOne({id: id})
+        const foundPost = await PostModelClass.findOne({id: id})
 
-        const foundUser = await UserModel.findOne({id: userId})
+        const foundUser = await UserModelClass.findOne({id: userId})
 
         if (!foundPost) {
             return false
@@ -79,7 +78,7 @@ export const postsRepository = {
                 },
                 createdAt: new Date().toISOString()
             }
-            await CommentModel.create({...comment})
+            await CommentModelClass.create({...comment})
 
             return comment;
         }
@@ -96,9 +95,9 @@ export const postsRepository = {
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
         const filter = {id: id}
-        const isExists = await CommentModel.findOne(filter)
-        const count: number = await CommentModel.countDocuments(filter)
-        const comment: commentDbModel[] = await CommentModel
+        const isExists = await CommentModelClass.findOne(filter)
+        const count: number = await CommentModelClass.countDocuments(filter)
+        const comment: commentDbModel[] = await CommentModelClass
             .find(filter, {projection: {_id: 0}})
             .sort(sortQuery)
             .skip((pageNumber - 1) * pageSize)

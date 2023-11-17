@@ -1,4 +1,4 @@
-import {UserModel} from "../data/DB-Mongo";
+import {UserModelClass} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
 import {createNewUserModel, userViewModel} from "../models/user-model";
 
@@ -22,8 +22,8 @@ export const usersRepository = {
                 ]
         }
 
-        const countUsers: number = await UserModel.countDocuments(filter)
-        const foundUsers: userViewModel[] = await UserModel
+        const countUsers: number = await UserModelClass.countDocuments(filter)
+        const foundUsers: userViewModel[] = await UserModelClass
             .find(filter, {projection: {_id: 0, passwordHash: 0, passwordSalt: 0, emailConfirmation: 0}})
             .sort(sortQuery)
             .skip((pageNumber - 1) * pageSize)
@@ -44,7 +44,7 @@ export const usersRepository = {
     async createUser(
         inputData: createNewUserModel
     ) {
-        await UserModel.create({...inputData})
+        await UserModelClass.create({...inputData})
 
         return {
             id: inputData.id,
@@ -57,7 +57,7 @@ export const usersRepository = {
     async deleteUser(
         id: string
     ) {
-        const deletedUser = await UserModel.deleteOne({id: id})
+        const deletedUser = await UserModelClass.deleteOne({id: id})
 
         return deletedUser.deletedCount === 1
     },
@@ -65,7 +65,7 @@ export const usersRepository = {
     async findByLoginOrEmail(
         loginOrEmail: string
     ) {
-        const foundUser: createNewUserModel | null = await UserModel.findOne({
+        const foundUser: createNewUserModel | null = await UserModelClass.findOne({
             $or:
                 [
                     {login: loginOrEmail},
@@ -78,19 +78,19 @@ export const usersRepository = {
     async findUserById(
         userId: string
     ) {
-        return UserModel.findOne({id: userId})
+        return UserModelClass.findOne({id: userId})
     },
 
     async findUserByConfirmationCode(
         code: string
     ) {
-        return UserModel.findOne({"emailConfirmation.confirmationCode": code})
+        return UserModelClass.findOne({"emailConfirmation.confirmationCode": code})
     },
 
     async updateConfirmation(
         id: string
     ) {
-        const user = await UserModel.updateOne({id: id}, {$set: {isConfirmed: true}})
+        const user = await UserModelClass.updateOne({id: id}, {$set: {isConfirmed: true}})
 
         return user.modifiedCount === 1
     },
@@ -99,7 +99,7 @@ export const usersRepository = {
         id: string,
         code: string
     ) {
-        let newCode = await UserModel.updateOne({id: id}, {$set: {'emailConfirmation.confirmationCode': code}})
+        let newCode = await UserModelClass.updateOne({id: id}, {$set: {'emailConfirmation.confirmationCode': code}})
 
         return newCode.modifiedCount === 1
     }

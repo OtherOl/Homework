@@ -12,4 +12,4 @@ exports.blogScheme = new mongoose_1.default.Schema({
     websiteUrl: { type: String, required: true },
     createdAt: String,
     isMembership: Boolean
-});
+}, { versionKey: false });

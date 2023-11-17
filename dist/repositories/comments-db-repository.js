@@ -14,7 +14,7 @@ const DB_Mongo_1 = require("../data/DB-Mongo");
 exports.commentsRepository = {
     getCommentById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const comment = yield DB_Mongo_1.CommentModel.findOne({ id: id }, { projection: { _id: 0 } });
+            const comment = yield DB_Mongo_1.CommentModelClass.findOne({ id: id }, { projection: { _id: 0 } });
             if (!comment) {
                 return false;
             }
@@ -25,24 +25,24 @@ exports.commentsRepository = {
     },
     updateComment(commentId, content) {
         return __awaiter(this, void 0, void 0, function* () {
-            const comment = yield DB_Mongo_1.CommentModel.findOne({ id: commentId });
+            const comment = yield DB_Mongo_1.CommentModelClass.findOne({ id: commentId });
             if (!comment) {
                 return false;
             }
             else {
-                yield DB_Mongo_1.CommentModel.updateOne({ id: commentId }, { $set: { content: content } });
+                yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, { $set: { content: content } });
                 return comment;
             }
         });
     },
     deleteCommentById(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const comment = yield DB_Mongo_1.CommentModel.findOne({ id: commentId });
+            const comment = yield DB_Mongo_1.CommentModelClass.findOne({ id: commentId });
             if (!comment) {
                 return false;
             }
             else {
-                yield DB_Mongo_1.CommentModel.deleteOne({ id: commentId });
+                yield DB_Mongo_1.CommentModelClass.deleteOne({ id: commentId });
                 return comment;
             }
         });

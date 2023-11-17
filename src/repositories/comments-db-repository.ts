@@ -1,11 +1,11 @@
-import {CommentModel} from "../data/DB-Mongo";
+import {CommentModelClass} from "../data/DB-Mongo";
 import {commentDbModel} from "../models/comments-model";
 
 export const commentsRepository = {
     async getCommentById(
         id: string
     ) {
-        const comment = await CommentModel.findOne({id: id}, {projection: {_id: 0}})
+        const comment = await CommentModelClass.findOne({id: id}, {projection: {_id: 0}})
 
         if (!comment) {
             return false
@@ -18,12 +18,12 @@ export const commentsRepository = {
         commentId: string,
         content: string,
     ) {
-        const comment: commentDbModel | null = await CommentModel.findOne({id: commentId})
+        const comment: commentDbModel | null = await CommentModelClass.findOne({id: commentId})
 
         if (!comment) {
             return false
         } else {
-            await CommentModel.updateOne({id: commentId}, {$set: {content: content}})
+            await CommentModelClass.updateOne({id: commentId}, {$set: {content: content}})
             return comment
         }
     },
@@ -31,12 +31,12 @@ export const commentsRepository = {
     async deleteCommentById(
         commentId: string
     ) {
-        const comment: commentDbModel | null = await CommentModel.findOne({id: commentId})
+        const comment: commentDbModel | null = await CommentModelClass.findOne({id: commentId})
 
         if (!comment) {
             return false
         } else {
-            await CommentModel.deleteOne({id: commentId})
+            await CommentModelClass.deleteOne({id: commentId})
             return comment
         }
     }

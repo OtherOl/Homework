@@ -1,4 +1,4 @@
-import {AttemptModel} from "../data/DB-Mongo";
+import {AttemptModelClass} from "../data/DB-Mongo";
 import subSeconds from 'date-fns/subSeconds'
 
 export const attemptsRepository = {
@@ -6,7 +6,7 @@ export const attemptsRepository = {
         ip: string,
         url: string
     ) {
-        await AttemptModel.create({
+        await AttemptModelClass.create({
             IP: ip,
             URL: url,
             date: new Date()
@@ -19,6 +19,6 @@ export const attemptsRepository = {
         url: string,
         date: any
     ) {
-        return AttemptModel.countDocuments({IP: ip, URL: url, date: {$gt: subSeconds(date, 10)}})
+        return AttemptModelClass.countDocuments({IP: ip, URL: url, date: {$gt: subSeconds(date, 10)}})
     },
 }

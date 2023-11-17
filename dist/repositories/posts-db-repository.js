@@ -16,8 +16,8 @@ exports.postsRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             let sortQuery = {};
             sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
-            const countPosts = yield DB_Mongo_1.PostModel.countDocuments();
-            const foundPost = yield DB_Mongo_1.PostModel
+            const countPosts = yield DB_Mongo_1.PostModelClass.countDocuments();
+            const foundPost = yield DB_Mongo_1.PostModelClass
                 .find({}, { projection: { _id: 0 } })
                 .sort(sortQuery)
                 .skip((pageNumber - 1) * pageSize)
@@ -35,17 +35,17 @@ exports.postsRepository = {
     },
     getPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return DB_Mongo_1.PostModel.findOne({ id: id }, { projection: { _id: 0 } });
+            return DB_Mongo_1.PostModelClass.findOne({ id: id }, { projection: { _id: 0 } });
         });
     },
     createPost(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DB_Mongo_1.PostModel.create(Object.assign({}, inputData));
+            return yield DB_Mongo_1.PostModelClass.create(Object.assign({}, inputData));
         });
     },
     updatePost(id, inputData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isUpdated = yield DB_Mongo_1.PostModel.updateOne({ id: id }, {
+            const isUpdated = yield DB_Mongo_1.PostModelClass.updateOne({ id: id }, {
                 $set: Object.assign({}, inputData)
             });
             return isUpdated.matchedCount === 1;
@@ -53,14 +53,14 @@ exports.postsRepository = {
     },
     deletePost(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const deleteBlog = yield DB_Mongo_1.PostModel.deleteOne({ id: id });
+            const deleteBlog = yield DB_Mongo_1.PostModelClass.deleteOne({ id: id });
             return deleteBlog.deletedCount === 1;
         });
     },
     createComment(id, content, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const foundPost = yield DB_Mongo_1.PostModel.findOne({ id: id });
-            const foundUser = yield DB_Mongo_1.UserModel.findOne({ id: userId });
+            const foundPost = yield DB_Mongo_1.PostModelClass.findOne({ id: id });
+            const foundUser = yield DB_Mongo_1.UserModelClass.findOne({ id: userId });
             if (!foundPost) {
                 return false;
             }
@@ -74,7 +74,7 @@ exports.postsRepository = {
                     },
                     createdAt: new Date().toISOString()
                 };
-                yield DB_Mongo_1.CommentModel.create(Object.assign({}, comment));
+                yield DB_Mongo_1.CommentModelClass.create(Object.assign({}, comment));
                 return comment;
             }
         });
@@ -84,9 +84,9 @@ exports.postsRepository = {
             let sortQuery = {};
             sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
             const filter = { id: id };
-            const isExists = yield DB_Mongo_1.CommentModel.findOne(filter);
-            const count = yield DB_Mongo_1.CommentModel.countDocuments(filter);
-            const comment = yield DB_Mongo_1.CommentModel
+            const isExists = yield DB_Mongo_1.CommentModelClass.findOne(filter);
+            const count = yield DB_Mongo_1.CommentModelClass.countDocuments(filter);
+            const comment = yield DB_Mongo_1.CommentModelClass
                 .find(filter, { projection: { _id: 0 } })
                 .sort(sortQuery)
                 .skip((pageNumber - 1) * pageSize)

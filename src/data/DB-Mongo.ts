@@ -16,20 +16,13 @@ if (!mongoUri) {
     throw new Error('URL doesnt found')
 }
 
-export const PostModel = mongoose.model('posts', postScheme)
-// export const clientPostCollection = client.db('blogs_posts').collection<PostDbModel>('posts')
-export const BlogModel = mongoose.model('blogs', blogScheme)
-// export const clientBlogCollection = client.db('blogs_posts').collection<blogModel>('blogs')
-export const UserModel = mongoose.model('users', userScheme)
-// export const clientUserCollection = client.db('blogs_posts').collection<createNewUserModel>('users')
-export const CommentModel = mongoose.model('comments', commentScheme)
-// export const clientCommentCollection = client.db('blogs_posts').collection<commentDbModel>('comments')
-export const AuthModel = mongoose.model('auth', authScheme)
-// export const clientAuthCollection = client.db('blogs_posts').collection<tokensModel>('auth')
-export const DeviceModel = mongoose.model('devices', deviceScheme)
-// export const clientSecurityCollection = client.db('blogs_posts').collection('devices')
-export const AttemptModel = mongoose.model('attempts', attemptScheme)
-// export const clientAttemptCollection = client.db('blogs_posts').collection('attempts')
+export const PostModelClass = mongoose.model('posts', postScheme)
+export const BlogModelClass = mongoose.model('blogs', blogScheme)
+export const UserModelClass = mongoose.model('users', userScheme)
+export const CommentModelClass = mongoose.model('comments', commentScheme)
+export const AuthModelClass = mongoose.model('auth', authScheme)
+export const DeviceModelClass = mongoose.model('devices', deviceScheme)
+export const AttemptModelClass = mongoose.model('attempts', attemptScheme)
 
 export async function runDb() {
     try {

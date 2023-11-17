@@ -14,12 +14,12 @@ const DB_Mongo_1 = require("../data/DB-Mongo");
 exports.authRepository = {
     blackList(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DB_Mongo_1.AuthModel.create({ token });
+            return yield DB_Mongo_1.AuthModelClass.create({ token });
         });
     },
     findInvalidToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            return DB_Mongo_1.AuthModel.findOne({ token: token });
+            return DB_Mongo_1.AuthModelClass.findOne({ token: token });
         });
     },
 };
