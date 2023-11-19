@@ -11,7 +11,11 @@ export const devicesRepository = {
     async getAllSessions(
         userId: string
     ) {
-        return DeviceModelClass.find({userId: userId}).lean()
+        const session: devicesViewModel[] = await DeviceModelClass.find({userId: userId}).lean()
+        return session.map(a => {
+            const {_id, userId, ...rest} = a;
+            return rest
+        })
     },
 
     async getSessionById(

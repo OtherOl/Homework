@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
@@ -24,17 +35,21 @@ exports.usersRepository = {
             };
             const countUsers = yield DB_Mongo_1.UserModelClass.countDocuments(filter);
             const foundUsers = yield DB_Mongo_1.UserModelClass
-                .find(filter, { projection: { _id: 0, passwordHash: 0, passwordSalt: 0, emailConfirmation: 0 } })
+                .find(filter)
                 .sort(sortQuery)
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)
                 .lean();
+            const modifiedUsers = foundUsers.map(user => {
+                const { _id, passwordHash, passwordSalt, emailConfirmation, isConfirmed } = user, rest = __rest(user, ["_id", "passwordHash", "passwordSalt", "emailConfirmation", "isConfirmed"]);
+                return rest;
+            });
             const objects = {
                 pagesCount: Math.ceil(countUsers / pageSize),
                 page: pageNumber,
                 pageSize: pageSize,
                 totalCount: countUsers,
-                items: foundUsers,
+                items: modifiedUsers,
             };
             return objects;
         });

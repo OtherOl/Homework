@@ -26,7 +26,6 @@ export const AttemptModelClass = mongoose.model('attempts', attemptScheme)
 
 export async function runDb() {
     try {
-        // await client.db('blogs_posts').command({ping: 1});
         await mongoose.connect(mongoUri)
         console.log('Connected successfully to mongo server');
     } catch {

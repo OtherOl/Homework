@@ -20,6 +20,7 @@ const uuid_1 = require("uuid");
 const add_1 = __importDefault(require("date-fns/add"));
 const email_manager_1 = require("../managers/email-manager");
 const email_adapter_1 = require("../adapters/email-adapter");
+const mongodb_1 = require("mongodb");
 exports.usersService = {
     getAllUsers(sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -31,6 +32,7 @@ exports.usersService = {
             const passwordSalt = yield bcrypt_1.default.genSalt(10);
             const passwordHash = yield this._generateHash(password, passwordSalt);
             const newUser = {
+                _id: new mongodb_1.ObjectId(),
                 id: (0, crypto_1.randomUUID)(),
                 login: login,
                 email,
@@ -53,6 +55,7 @@ exports.usersService = {
             const passwordSalt = yield bcrypt_1.default.genSalt(10);
             const passwordHash = yield this._generateHash(password, passwordSalt);
             const newUser = {
+                _id: new mongodb_1.ObjectId(),
                 id: (0, crypto_1.randomUUID)(),
                 login: login,
                 email,

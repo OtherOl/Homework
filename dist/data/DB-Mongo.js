@@ -38,7 +38,6 @@ exports.AttemptModelClass = mongoose_1.default.model('attempts', attempt_scheme_
 function runDb() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            // await client.db('blogs_posts').command({ping: 1});
             yield mongoose_1.default.connect(mongoUri);
             console.log('Connected successfully to mongo server');
         }

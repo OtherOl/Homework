@@ -1,4 +1,3 @@
-import {ObjectId} from "mongodb";
 
 export type CreatePostModel = {
     title: string,
@@ -15,7 +14,6 @@ export type UpdatePostModel = {
 }
 
 export type PostDbModel = {
-    _id: ObjectId
     id: string
     title: string
     shortDescription: string

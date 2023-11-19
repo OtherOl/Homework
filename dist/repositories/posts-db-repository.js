@@ -18,7 +18,7 @@ exports.postsRepository = {
             sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
             const countPosts = yield DB_Mongo_1.PostModelClass.countDocuments();
             const foundPost = yield DB_Mongo_1.PostModelClass
-                .find({}, { projection: { _id: 0 } })
+                .find({})
                 .sort(sortQuery)
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)

@@ -2,7 +2,6 @@ import {CreatePostModel, PostDbModel, PostViewModel, UpdatePostModel} from "../m
 import {randomUUID} from "crypto";
 import {postsRepository} from "../repositories/posts-db-repository";
 import {blogsRepository} from "../repositories/blogs-db-repository";
-import {ObjectId} from "mongodb";
 
 export const postsService = {
     async getAllPosts(
@@ -28,7 +27,6 @@ export const postsService = {
         if (!blog) return null
 
         const newPost: PostDbModel = {
-            _id: new ObjectId(),
             id: randomUUID(),
             title: inputData.title,
             shortDescription: inputData.shortDescription,

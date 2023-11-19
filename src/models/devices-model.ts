@@ -1,6 +1,7 @@
+import {ObjectId} from "mongodb";
 
 export type devicesViewModel = {
-    _id: string
+    _id: ObjectId
     ip: string
     title: string
     lastActiveDate: string

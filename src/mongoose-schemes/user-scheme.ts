@@ -12,5 +12,6 @@ export const userScheme = new mongoose.Schema<createNewUserModel>({
         confirmationCode: String,
         expirationDate: Date
     },
-    isConfirmed: Boolean
-})
+    isConfirmed: Boolean,
+},
+    {versionKey: false})

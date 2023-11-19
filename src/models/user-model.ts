@@ -1,3 +1,6 @@
+import {Types} from "mongoose";
+import {ObjectId} from "mongodb";
+
 export type userModel = {
     id: string,
     login: string,
@@ -6,16 +9,8 @@ export type userModel = {
     createdAt: string
 }
 
-export type createUserModel = {
-    id: string,
-    login: string,
-    email: string,
-    passwordHash: string;
-    passwordSalt: string,
-    createdAt: string
-}
-
 export type createNewUserModel = {
+    _id: ObjectId
     id: string,
     login: string,
     email: string,

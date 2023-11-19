@@ -15,7 +15,7 @@ export const postsRepository = {
 
         const countPosts: number = await PostModelClass.countDocuments()
         const foundPost: PostDbModel[] = await PostModelClass
-            .find({}, {projection: {_id: 0}})
+            .find({})
             .sort(sortQuery)
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)

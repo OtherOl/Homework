@@ -16,5 +16,5 @@ exports.userScheme = new mongoose_1.default.Schema({
         confirmationCode: String,
         expirationDate: Date
     },
-    isConfirmed: Boolean
-});
+    isConfirmed: Boolean,
+}, { versionKey: false });

@@ -5,11 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deviceScheme = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
+const mongodb_1 = require("mongodb");
 exports.deviceScheme = new mongoose_1.default.Schema({
-    _id: { type: String, select: false },
+    _id: mongodb_1.ObjectId,
     ip: String,
     title: String,
     lastActiveDate: Date,
     deviceId: String,
-    userId: { type: String, select: false }
+    userId: String
 }, { versionKey: false });

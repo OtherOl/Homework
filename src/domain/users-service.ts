@@ -7,6 +7,7 @@ import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
 import {emailManager} from "../managers/email-manager";
 import {emailAdapter} from "../adapters/email-adapter";
+import {ObjectId} from "mongodb";
 
 export const usersService = {
     async getAllUsers(
@@ -36,6 +37,7 @@ export const usersService = {
         const passwordHash = await this._generateHash(password, passwordSalt)
 
         const newUser = {
+            _id: new ObjectId(),
             id: randomUUID(),
             login: login,
             email,
@@ -63,6 +65,7 @@ export const usersService = {
         const passwordHash = await this._generateHash(password, passwordSalt)
 
         const newUser = {
+            _id: new ObjectId(),
             id: randomUUID(),
             login: login,
             email,

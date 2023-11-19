@@ -13,7 +13,6 @@ exports.postsService = void 0;
 const crypto_1 = require("crypto");
 const posts_db_repository_1 = require("../repositories/posts-db-repository");
 const blogs_db_repository_1 = require("../repositories/blogs-db-repository");
-const mongodb_1 = require("mongodb");
 exports.postsService = {
     getAllPosts(sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -31,7 +30,6 @@ exports.postsService = {
             if (!blog)
                 return null;
             const newPost = {
-                _id: new mongodb_1.ObjectId(),
                 id: (0, crypto_1.randomUUID)(),
                 title: inputData.title,
                 shortDescription: inputData.shortDescription,
