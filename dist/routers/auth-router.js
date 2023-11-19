@@ -23,6 +23,8 @@ const devices_db_repositoty_1 = require("../repositories/devices-db-repositoty")
 const tokens_middleware_1 = require("../middlewares/tokens-middleware");
 const attempts_db_repository_1 = require("../repositories/attempts-db-repository");
 const attempts_middleware_1 = require("../middlewares/attempts-middleware");
+const email_manager_1 = require("../managers/email-manager");
+const users_db_repository_1 = require("../repositories/users-db-repository");
 exports.authRouter = (0, express_1.Router)({});
 exports.authRouter.post('/login', attempts_middleware_1.attemptsMiddleware, body_auth_validation_1.bodyAuthValidation.loginOrEmail, body_auth_validation_1.bodyAuthValidation.password, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
@@ -36,6 +38,36 @@ exports.authRouter.post('/login', attempts_middleware_1.attemptsMiddleware, body
         yield devices_service_1.devicesService.createSession(req.ip, req.headers['user-agent'], refreshToken);
         res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
         return res.status(200).send({ "accessToken": token });
+    }
+}));
+exports.authRouter.post('/password-recovery', attempts_middleware_1.attemptsMiddleware, body_user_validation_1.bodyUserValidation.email, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.originalUrl);
+    const user = yield users_db_repository_1.usersRepository.findByLoginOrEmail(req.body.email);
+    if (!user) {
+        return res.sendStatus(400);
+    }
+    else {
+        yield email_manager_1.emailManager.sendCodeForPassword(user);
+        return res.sendStatus(204);
+    }
+}));
+exports.authRouter.post('/new-password', attempts_middleware_1.attemptsMiddleware, body_user_validation_1.bodyUserValidation.newPassword, body_user_validation_1.bodyUserValidation.recoveryCode, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.originalUrl);
+    const confirmedUser = yield users_service_1.usersService.confirmRecoveryCode(req.body.recoveryCode);
+    const inputPassword = req.body.newPassword;
+    if (!confirmedUser) {
+        return res.status(400).send({
+            errorsMessages: [
+                {
+                    message: "Incorrect code",
+                    field: "code"
+                }
+            ]
+        });
+    }
+    else {
+        yield users_service_1.usersService.createPasswordAndUpdate(confirmedUser.id, inputPassword);
+        return res.sendStatus(204);
     }
 }));
 exports.authRouter.post('/refresh-token', tokens_middleware_1.tokensMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {

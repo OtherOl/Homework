@@ -41,7 +41,7 @@ exports.usersRepository = {
                 .limit(pageSize)
                 .lean();
             const modifiedUsers = foundUsers.map(user => {
-                const { _id, passwordHash, passwordSalt, emailConfirmation, isConfirmed } = user, rest = __rest(user, ["_id", "passwordHash", "passwordSalt", "emailConfirmation", "isConfirmed"]);
+                const { _id, passwordHash, passwordSalt, emailConfirmation, recoveryConfirmation, isConfirmed } = user, rest = __rest(user, ["_id", "passwordHash", "passwordSalt", "emailConfirmation", "recoveryConfirmation", "isConfirmed"]);
                 return rest;
             });
             const objects = {
@@ -78,7 +78,7 @@ exports.usersRepository = {
                     { login: loginOrEmail },
                     { email: loginOrEmail }
                 ]
-            });
+            }).lean();
             return foundUser;
         });
     },
@@ -92,9 +92,20 @@ exports.usersRepository = {
             return DB_Mongo_1.UserModelClass.findOne({ "emailConfirmation.confirmationCode": code });
         });
     },
+    findUserByRecoveryCode(code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return DB_Mongo_1.UserModelClass.findOne({ "recoveryConfirmation.recoveryCode": code });
+        });
+    },
     updateConfirmation(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield DB_Mongo_1.UserModelClass.updateOne({ id: id }, { $set: { isConfirmed: true } });
+            return user.modifiedCount === 1;
+        });
+    },
+    updatePassword(id, passwordHash, passwordSalt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield DB_Mongo_1.UserModelClass.updateOne({ id: id }, { $set: { passwordHash, passwordSalt } });
             return user.modifiedCount === 1;
         });
     },

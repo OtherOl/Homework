@@ -16,5 +16,9 @@ exports.userScheme = new mongoose_1.default.Schema({
         confirmationCode: String,
         expirationDate: Date
     },
+    recoveryConfirmation: {
+        recoveryCode: String,
+        expirationDate: Date
+    },
     isConfirmed: Boolean,
 }, { versionKey: false });

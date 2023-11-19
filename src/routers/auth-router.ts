@@ -11,6 +11,8 @@ import {devicesRepository} from "../repositories/devices-db-repositoty";
 import {tokensMiddleware} from "../middlewares/tokens-middleware";
 import {attemptsRepository} from "../repositories/attempts-db-repository";
 import {attemptsMiddleware} from "../middlewares/attempts-middleware";
+import {emailManager} from "../managers/email-manager";
+import {usersRepository} from "../repositories/users-db-repository";
 
 export const authRouter = Router({})
 
@@ -30,6 +32,45 @@ authRouter.post('/login',
 
             res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true})
             return res.status(200).send({"accessToken": token})
+        }
+    })
+
+authRouter.post('/password-recovery',
+    attemptsMiddleware,
+    bodyUserValidation.email, inputValidationMiddleware,
+    async (req: Request, res: Response) => {
+        await attemptsRepository.addAttempt(req.ip, req.originalUrl);
+        const user = await usersRepository.findByLoginOrEmail(req.body.email)
+
+        if (!user) {
+            return res.sendStatus(400)
+        } else {
+            await emailManager.sendCodeForPassword(user)
+            return res.sendStatus(204)
+        }
+    })
+
+authRouter.post('/new-password',
+    attemptsMiddleware,
+    bodyUserValidation.newPassword, bodyUserValidation.recoveryCode,
+    inputValidationMiddleware,
+    async (req: Request, res: Response) => {
+        await attemptsRepository.addAttempt(req.ip, req.originalUrl);
+        const confirmedUser = await usersService.confirmRecoveryCode(req.body.recoveryCode);
+        const inputPassword = req.body.newPassword
+
+        if (!confirmedUser) {
+            return res.status(400).send({
+                errorsMessages: [
+                    {
+                        message: "Incorrect code",
+                        field: "code"
+                    }
+                ]
+            })
+        } else {
+            await usersService.createPasswordAndUpdate(confirmedUser.id, inputPassword)
+            return res.sendStatus(204)
         }
     })
 
@@ -91,22 +132,22 @@ authRouter.post('/registration',
 authRouter.post('/registration-confirmation',
     attemptsMiddleware,
     async (req: Request, res: Response) => {
-    const confirmedUser = await usersService.confirmEmail(req.body.code);
-    await attemptsRepository.addAttempt(req.ip, req.originalUrl)
+        const confirmedUser = await usersService.confirmEmail(req.body.code);
+        await attemptsRepository.addAttempt(req.ip, req.originalUrl)
 
-    if (!confirmedUser) {
-        return res.status(400).send({
-            errorsMessages: [
-                {
-                    message: "Incorrect code",
-                    field: "code"
-                }
-            ]
-        })
-    } else {
-        return res.sendStatus(204)
-    }
-})
+        if (!confirmedUser) {
+            return res.status(400).send({
+                errorsMessages: [
+                    {
+                        message: "Incorrect code",
+                        field: "code"
+                    }
+                ]
+            })
+        } else {
+            return res.sendStatus(204)
+        }
+    })
 
 authRouter.post('/registration-email-resending',
     attemptsMiddleware,

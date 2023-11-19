@@ -37,6 +37,28 @@ exports.emailManager = {
             });
         });
     },
+    sendCodeForPassword(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let transporter = nodemailer_1.default.createTransport({
+                service: 'gmail',
+                auth: {
+                    // user: process.env.EMAIL,
+                    // pass: process.env.PASSWORD
+                    user: 'dmitrybackenddev@gmail.com',
+                    pass: 'tzcjafbdsjqrpmwl'
+                }
+            });
+            yield transporter.sendMail({
+                from: 'OtherOl BackEnd<dmitrybackenddev@gmail.com>',
+                to: user.email,
+                subject: "Password recovery",
+                html: "<h1>Password recovery</h1>" +
+                    `<p style="font-size: 18px;">To finish password recovery please follow the link below:
+                    <a href='https://homework-beta-sooty.vercel.app/password-recovery?recoveryCode==${user.recoveryConfirmation.recoveryCode}'>
+                    recovery password</a></p>`,
+            });
+        });
+    },
     resendConfirmation(user, code) {
         return __awaiter(this, void 0, void 0, function* () {
             let transporter = nodemailer_1.default.createTransport({

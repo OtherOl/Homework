@@ -50,6 +50,12 @@ export const usersService = {
                     minutes: 3
                 })
             },
+            recoveryConfirmation: {
+                recoveryCode: uuidv4(),
+                expirationDate: add(new Date(), {
+                    minutes: 1000
+                })
+            },
             isConfirmed: true
         }
 
@@ -78,15 +84,30 @@ export const usersService = {
                     minutes: 3
                 })
             },
+            recoveryConfirmation: {
+                recoveryCode: uuidv4(),
+                expirationDate: add(new Date(), {
+                    minutes: 1000
+                })
+            },
             isConfirmed: false
         }
         const isExists = await usersRepository.findByLoginOrEmail(email);
-        if(isExists !== null) return "email exists"
+        if (isExists !== null) return "email exists"
         const isExistsLogin = await usersRepository.findByLoginOrEmail(login);
-        if(isExistsLogin !== null) return "login exists"
+        if (isExistsLogin !== null) return "login exists"
 
         await emailManager.sendEmailConfirmationCode(newUser)
         return await usersRepository.createUser(newUser)
+    },
+
+    async createPasswordAndUpdate(
+        id: string,
+        password: string
+    ) {
+        const passwordSalt = await bcrypt.genSalt(10)
+        const passwordHash = await this._generateHash(password, passwordSalt)
+        return await usersRepository.updatePassword(id, passwordHash, passwordSalt)
     },
 
     async _generateHash(
@@ -108,7 +129,7 @@ export const usersService = {
     ) {
         const foundUser = await usersRepository.findByLoginOrEmail(loginOrEmail)
         if (!foundUser) return false
-        if(!foundUser.isConfirmed) return false
+        if (!foundUser.isConfirmed) return false
 
         const passwordHash = await this._generateHash(password, foundUser.passwordHash)
 
@@ -130,12 +151,24 @@ export const usersService = {
     ) {
         const user = await usersRepository.findUserByConfirmationCode(code)
 
-        if(user === null) return false
-        if(user.isConfirmed) return false
-        if(user.emailConfirmation.confirmationCode !== code) return false
-        if(user.emailConfirmation.expirationDate < new Date()) return false
+        if (user === null) return false
+        if (user.isConfirmed) return false
+        if (user.emailConfirmation.confirmationCode !== code) return false
+        if (user.emailConfirmation.expirationDate < new Date()) return false
 
         return await usersRepository.updateConfirmation(user.id)
+    },
+
+    async confirmRecoveryCode(
+        code: string
+    ) {
+        const user = await usersRepository.findUserByRecoveryCode(code)
+
+        if (user === null) return false
+        if (user.recoveryConfirmation.recoveryCode !== code) return false
+        if (user.recoveryConfirmation.expirationDate < new Date()) return false
+
+        return user
     },
 
     async resendConfirmation(
@@ -143,8 +176,8 @@ export const usersService = {
     ) {
         const user = await usersRepository.findByLoginOrEmail(email)
 
-        if(user === null) return "User doesn't exists"
-        if(user.isConfirmed) return "User already confirmed"
+        if (user === null) return "User doesn't exists"
+        if (user.isConfirmed) return "User already confirmed"
 
         const confirmationCode = uuidv4()
 

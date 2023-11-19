@@ -1,4 +1,3 @@
-import {Types} from "mongoose";
 import {ObjectId} from "mongodb";
 
 export type userModel = {
@@ -19,6 +18,10 @@ export type createNewUserModel = {
     createdAt: string,
     emailConfirmation: {
         confirmationCode: string,
+        expirationDate: any
+    },
+    recoveryConfirmation: {
+        recoveryCode: string,
         expirationDate: any
     },
     isConfirmed: boolean

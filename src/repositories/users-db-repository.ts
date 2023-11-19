@@ -36,6 +36,7 @@ export const usersRepository = {
                 passwordHash,
                 passwordSalt,
                 emailConfirmation,
+                recoveryConfirmation,
                 isConfirmed,
                 ...rest
             } = user;
@@ -83,7 +84,7 @@ export const usersRepository = {
                     {login: loginOrEmail},
                     {email: loginOrEmail}
                 ]
-        })
+        }).lean()
         return foundUser
     },
 
@@ -99,10 +100,26 @@ export const usersRepository = {
         return UserModelClass.findOne({"emailConfirmation.confirmationCode": code})
     },
 
+    async findUserByRecoveryCode(
+        code: string
+    ) {
+        return UserModelClass.findOne({"recoveryConfirmation.recoveryCode": code})
+    },
+
     async updateConfirmation(
         id: string
     ) {
         const user = await UserModelClass.updateOne({id: id}, {$set: {isConfirmed: true}})
+
+        return user.modifiedCount === 1
+    },
+
+    async updatePassword(
+        id: string,
+        passwordHash: any,
+        passwordSalt: any
+    ) {
+        const user = await UserModelClass.updateOne({id: id}, {$set: {passwordHash, passwordSalt}})
 
         return user.modifiedCount === 1
     },

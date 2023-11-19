@@ -45,6 +45,12 @@ exports.usersService = {
                         minutes: 3
                     })
                 },
+                recoveryConfirmation: {
+                    recoveryCode: (0, uuid_1.v4)(),
+                    expirationDate: (0, add_1.default)(new Date(), {
+                        minutes: 1000
+                    })
+                },
                 isConfirmed: true
             };
             return yield users_db_repository_1.usersRepository.createUser(newUser);
@@ -68,6 +74,12 @@ exports.usersService = {
                         minutes: 3
                     })
                 },
+                recoveryConfirmation: {
+                    recoveryCode: (0, uuid_1.v4)(),
+                    expirationDate: (0, add_1.default)(new Date(), {
+                        minutes: 1000
+                    })
+                },
                 isConfirmed: false
             };
             const isExists = yield users_db_repository_1.usersRepository.findByLoginOrEmail(email);
@@ -78,6 +90,13 @@ exports.usersService = {
                 return "login exists";
             yield email_manager_1.emailManager.sendEmailConfirmationCode(newUser);
             return yield users_db_repository_1.usersRepository.createUser(newUser);
+        });
+    },
+    createPasswordAndUpdate(id, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const passwordSalt = yield bcrypt_1.default.genSalt(10);
+            const passwordHash = yield this._generateHash(password, passwordSalt);
+            return yield users_db_repository_1.usersRepository.updatePassword(id, passwordHash, passwordSalt);
         });
     },
     _generateHash(password, salt) {
@@ -123,6 +142,18 @@ exports.usersService = {
             if (user.emailConfirmation.expirationDate < new Date())
                 return false;
             return yield users_db_repository_1.usersRepository.updateConfirmation(user.id);
+        });
+    },
+    confirmRecoveryCode(code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield users_db_repository_1.usersRepository.findUserByRecoveryCode(code);
+            if (user === null)
+                return false;
+            if (user.recoveryConfirmation.recoveryCode !== code)
+                return false;
+            if (user.recoveryConfirmation.expirationDate < new Date())
+                return false;
+            return user;
         });
     },
     resendConfirmation(email) {
