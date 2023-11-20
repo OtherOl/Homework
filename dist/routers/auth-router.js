@@ -44,7 +44,7 @@ exports.authRouter.post('/password-recovery', attempts_middleware_1.attemptsMidd
     yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.originalUrl);
     const user = yield users_db_repository_1.usersRepository.findByLoginOrEmail(req.body.email);
     if (!user) {
-        return res.sendStatus(400);
+        return res.sendStatus(204);
     }
     else {
         yield email_manager_1.emailManager.sendCodeForPassword(user);

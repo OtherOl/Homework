@@ -43,7 +43,7 @@ authRouter.post('/password-recovery',
         const user = await usersRepository.findByLoginOrEmail(req.body.email)
 
         if (!user) {
-            return res.sendStatus(400)
+            return res.sendStatus(204)
         } else {
             await emailManager.sendCodeForPassword(user)
             return res.sendStatus(204)
