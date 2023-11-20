@@ -24,31 +24,19 @@ export const usersRepository = {
 
         const countUsers: number = await UserModelClass.countDocuments(filter)
         const foundUsers: createNewUserModel[] = await UserModelClass
-            .find(filter)
+            .find(filter, {_id: 0, passwordHash: 0, passwordSalt: 0,
+                emailConfirmation: 0, recoveryConfirmation: 0, isConfirmed: 0})
             .sort(sortQuery)
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
             .lean()
-
-        const modifiedUsers: userViewModel[] = foundUsers.map(user => {
-            const {
-                _id,
-                passwordHash,
-                passwordSalt,
-                emailConfirmation,
-                recoveryConfirmation,
-                isConfirmed,
-                ...rest
-            } = user;
-            return rest;
-        });
 
         const objects: paginationModel<userViewModel> = {
             pagesCount: Math.ceil(countUsers / pageSize),
             page: pageNumber,
             pageSize: pageSize,
             totalCount: countUsers,
-            items: modifiedUsers,
+            items: foundUsers,
         }
 
         return objects

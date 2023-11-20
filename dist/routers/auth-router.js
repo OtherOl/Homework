@@ -60,7 +60,7 @@ exports.authRouter.post('/new-password', attempts_middleware_1.attemptsMiddlewar
             errorsMessages: [
                 {
                     message: "Incorrect code",
-                    field: "code"
+                    field: "recoveryCode"
                 }
             ]
         });

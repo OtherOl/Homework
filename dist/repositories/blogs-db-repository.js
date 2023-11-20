@@ -19,7 +19,7 @@ exports.blogsRepository = {
             const filter = { name: RegExp(searchNameTerm, "i") };
             const countBlogs = yield DB_Mongo_1.BlogModelClass.countDocuments(filter);
             const foundBlog = yield DB_Mongo_1.BlogModelClass
-                .find(filter, { projection: { _id: 0 } })
+                .find(filter, { _id: 0 })
                 .sort(sortQuery)
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)

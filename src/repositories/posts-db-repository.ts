@@ -15,7 +15,7 @@ export const postsRepository = {
 
         const countPosts: number = await PostModelClass.countDocuments()
         const foundPost: PostDbModel[] = await PostModelClass
-            .find({})
+            .find({}, {_id: 0})
             .sort(sortQuery)
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
@@ -33,7 +33,7 @@ export const postsRepository = {
     },
 
     async getPostById(id: string) {
-        return PostModelClass.findOne({id: id}, {projection: {_id: 0}})
+        return PostModelClass.findOne({id: id}, {_id: 0})
     },
 
     async createPost(inputData: PostDbModel) {
@@ -98,7 +98,7 @@ export const postsRepository = {
         const isExists = await CommentModelClass.findOne(filter)
         const count: number = await CommentModelClass.countDocuments(filter)
         const comment: commentDbModel[] = await CommentModelClass
-            .find(filter, {projection: {_id: 0}})
+            .find(filter, {_id: 0})
             .sort(sortQuery)
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)

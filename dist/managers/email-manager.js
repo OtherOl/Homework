@@ -54,7 +54,7 @@ exports.emailManager = {
                 subject: "Password recovery",
                 html: "<h1>Password recovery</h1>" +
                     `<p style="font-size: 18px;">To finish password recovery please follow the link below:
-                    <a href='https://homework-beta-sooty.vercel.app/password-recovery?recoveryCode==${user.recoveryConfirmation.recoveryCode}'>
+                    <a href='https://homework-beta-sooty.vercel.app/password-recovery?recoveryCode=${user.recoveryConfirmation.recoveryCode}'>
                     recovery password</a></p>`,
             });
         });

@@ -64,7 +64,7 @@ authRouter.post('/new-password',
                 errorsMessages: [
                     {
                         message: "Incorrect code",
-                        field: "code"
+                        field: "recoveryCode"
                     }
                 ]
             })

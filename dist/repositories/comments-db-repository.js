@@ -14,7 +14,7 @@ const DB_Mongo_1 = require("../data/DB-Mongo");
 exports.commentsRepository = {
     getCommentById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const comment = yield DB_Mongo_1.CommentModelClass.findOne({ id: id }, { projection: { _id: 0 } });
+            const comment = yield DB_Mongo_1.CommentModelClass.findOne({ id: id }, { _id: 0 });
             if (!comment) {
                 return false;
             }

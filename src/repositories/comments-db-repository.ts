@@ -5,7 +5,7 @@ export const commentsRepository = {
     async getCommentById(
         id: string
     ) {
-        const comment = await CommentModelClass.findOne({id: id}, {projection: {_id: 0}})
+        const comment = await CommentModelClass.findOne({id: id}, {_id: 0})
 
         if (!comment) {
             return false

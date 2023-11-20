@@ -18,7 +18,7 @@ export const blogsRepository = {
 
         const countBlogs: number = await BlogModelClass.countDocuments(filter)
         const foundBlog: blogModel[] = await BlogModelClass
-            .find(filter, {projection: {_id: 0}})
+            .find(filter, {_id: 0})
             .sort(sortQuery)
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
