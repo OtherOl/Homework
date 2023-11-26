@@ -2,29 +2,23 @@ import {Router, Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
 import {devicesRepository} from "../repositories/devices-db-repository";
 import {tokensMiddleware} from "../middlewares/tokens-middleware";
-import {devicesViewModel} from "../models/devices-model";
 
 export const securityRouter = Router({})
 
-securityRouter.get('/devices',
-    tokensMiddleware,
-    async (req: Request, res: Response) => {
+class SecurityController {
+    async getAllSessions(req: Request, res: Response) {
         const verify = await jwtService.verifyToken(req.cookies.refreshToken);
         const sessions = await devicesRepository.getAllSessions(verify.userId)
         res.status(200).send(sessions)
-    })
+    }
 
-securityRouter.delete('/devices',
-    tokensMiddleware,
-    async (req: Request, res: Response) => {
+    async deleteSessionsExceptOne(req: Request, res: Response) {
         const verify = await jwtService.verifyToken(req.cookies.refreshToken)
         await devicesRepository.deleteSessions(verify.deviceId)
         res.sendStatus(204)
-    })
+    }
 
-securityRouter.delete('/devices/:deviceId',
-    tokensMiddleware,
-    async (req: Request, res: Response) => {
+    async deleteSessionById(req: Request, res: Response) {
         const reqId = req.params.deviceId;
         const verify = await jwtService.verifyToken(req.cookies.refreshToken);
         const input = await devicesRepository.getSessionById(reqId);
@@ -34,4 +28,19 @@ securityRouter.delete('/devices/:deviceId',
 
         await devicesRepository.deleteSessionById(reqId);
         res.sendStatus(204)
-    })
+    }
+}
+
+const securityControllerInstance = new SecurityController()
+
+securityRouter.get('/devices',
+    tokensMiddleware,
+    securityControllerInstance.getAllSessions)
+
+securityRouter.delete('/devices',
+    tokensMiddleware,
+    securityControllerInstance.deleteSessionsExceptOne)
+
+securityRouter.delete('/devices/:deviceId',
+    tokensMiddleware,
+    securityControllerInstance.deleteSessionById)

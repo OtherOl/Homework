@@ -8,45 +8,38 @@ import {postsService} from "../domain/posts-service";
 
 export const blogsRouter = Router({})
 
-blogsRouter.get('/', async (req: Request<{}, {}, {}, blogGeneric>, res: Response) => {
-    const allBlogs = await blogsService.getAllBlogs(
-        req.query.searchNameTerm, req.query.sortBy,
-        req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1,
-        req.query.pageSize ? +req.query.pageSize : 10
-    )
-    res.status(200).send(allBlogs)
-})
+class BlogsController {
+    async getAllBlogs(req: Request<{}, {}, {}, blogGeneric>, res: Response) {
+        const allBlogs = await blogsService.getAllBlogs(
+            req.query.searchNameTerm, req.query.sortBy,
+            req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1,
+            req.query.pageSize ? +req.query.pageSize : 10
+        )
+        res.status(200).send(allBlogs)
+    }
 
-blogsRouter.post('/',
-    authorisationMiddleware, bodyBlogValidation.name,
-    bodyBlogValidation.description,
-    bodyBlogValidation.websiteUrl, inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+    async createBlog(req: Request, res: Response) {
         const {name, description, websiteUrl} = req.body
         const newBlog = await blogsService.createBlog({name, description, websiteUrl})
 
         res.status(201).send(newBlog)
-    })
-
-blogsRouter.get('/:blogId/posts', async (req: Request<{ blogId: string }, {}, {}, blogGeneric>, res: Response) => {
-    const foundPost = await blogsService.getPostByBlogId(
-        req.params.blogId, req.query.sortBy,
-        req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1,
-        req.query.pageSize ? +req.query.pageSize : 10
-    )
-
-    if (foundPost === false) {
-        res.sendStatus(404)
-    } else {
-        res.status(200).send(foundPost)
     }
-})
 
-blogsRouter.post('/:blogId/posts',
-    authorisationMiddleware, bodyPostValidation.title,
-    bodyPostValidation.shortDescription,
-    bodyPostValidation.content, inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+    async getPostByBlogId(req: Request<{ blogId: string }, {}, {}, blogGeneric>, res: Response) {
+        const foundPost = await blogsService.getPostByBlogId(
+            req.params.blogId, req.query.sortBy,
+            req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1,
+            req.query.pageSize ? +req.query.pageSize : 10
+        )
+
+        if (foundPost === false) {
+            res.sendStatus(404)
+        } else {
+            res.status(200).send(foundPost)
+        }
+    }
+
+    async createPostForBlog(req: Request, res: Response) {
         const blogId = req.params.blogId
         const {title, shortDescription, content} = req.body
 
@@ -57,23 +50,19 @@ blogsRouter.post('/:blogId/posts',
         } else {
             res.status(201).send(newPost)
         }
-    })
-
-blogsRouter.get('/:id', async (req: Request, res: Response) => {
-    let findBlog = await blogsService.getBlogById(req.params.id)
-
-    if (!findBlog) {
-        res.sendStatus(404)
-    } else {
-        res.status(200).send(findBlog)
     }
-})
 
-blogsRouter.put('/:id',
-    authorisationMiddleware, bodyBlogValidation.name,
-    bodyBlogValidation.description, bodyBlogValidation.websiteUrl,
-    inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+    async getBlogById(req: Request, res: Response) {
+        let findBlog = await blogsService.getBlogById(req.params.id)
+
+        if (!findBlog) {
+            res.sendStatus(404)
+        } else {
+            res.status(200).send(findBlog)
+        }
+    }
+
+    async updateBlog(req: Request, res: Response) {
         const {name, description, websiteUrl} = req.body
 
         const updatedBlog = await blogsService.updateBlog(req.params.id, req.body)
@@ -83,14 +72,43 @@ blogsRouter.put('/:id',
         } else {
             res.sendStatus(404)
         }
-    })
-
-blogsRouter.delete('/:id', authorisationMiddleware, async (req: Request, res: Response) => {
-    const foundedBlog = await blogsService.deleteBlog(req.params.id)
-
-    if (!foundedBlog) {
-        res.sendStatus(404)
-    } else {
-        res.sendStatus(204)
     }
-})
+
+    async deleteBlogById(req: Request, res: Response) {
+        const foundedBlog = await blogsService.deleteBlog(req.params.id)
+
+        if (!foundedBlog) {
+            res.sendStatus(404)
+        } else {
+            res.sendStatus(204)
+        }
+    }
+}
+
+const blogsControllerInstance = new BlogsController()
+
+blogsRouter.get('/', blogsControllerInstance.getAllBlogs)
+
+blogsRouter.post('/',
+    authorisationMiddleware, bodyBlogValidation.name,
+    bodyBlogValidation.description,
+    bodyBlogValidation.websiteUrl, inputValidationMiddleware,
+    blogsControllerInstance.createBlog)
+
+blogsRouter.get('/:blogId/posts', blogsControllerInstance.getPostByBlogId)
+
+blogsRouter.post('/:blogId/posts',
+    authorisationMiddleware, bodyPostValidation.title,
+    bodyPostValidation.shortDescription,
+    bodyPostValidation.content, inputValidationMiddleware,
+    blogsControllerInstance.createPostForBlog)
+
+blogsRouter.get('/:id', blogsControllerInstance.getBlogById)
+
+blogsRouter.put('/:id',
+    authorisationMiddleware, bodyBlogValidation.name,
+    bodyBlogValidation.description, bodyBlogValidation.websiteUrl,
+    inputValidationMiddleware,
+    blogsControllerInstance.updateBlog)
+
+blogsRouter.delete('/:id', authorisationMiddleware, blogsControllerInstance.deleteBlogById)

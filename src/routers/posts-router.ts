@@ -7,40 +7,33 @@ import {authMiddleware} from "../middlewares/auth-middleware";
 
 export const postsRouter = Router({})
 
-postsRouter.get('/', async (req: Request<{}, {}, {}, blogGeneric>, res: Response) => {
-    const allPosts = await postsService.getAllPosts(
-        req.query.sortBy, req.query.sortDirection,
-        req.query.pageNumber ? +req.query.pageNumber : 1,
-        req.query.pageSize ? +req.query.pageSize : 10
-    )
-    res.status(200).send(allPosts)
-})
+class PostsController {
+    async getAllPosts(req: Request<{}, {}, {}, blogGeneric>, res: Response) {
+        const allPosts = await postsService.getAllPosts(
+            req.query.sortBy, req.query.sortDirection,
+            req.query.pageNumber ? +req.query.pageNumber : 1,
+            req.query.pageSize ? +req.query.pageSize : 10
+        )
+        res.status(200).send(allPosts)
+    }
 
-postsRouter.post('/',
-    authorisationMiddleware, bodyPostValidation.blogId,
-    bodyPostValidation.title, bodyPostValidation.shortDescription,
-    bodyPostValidation.content, inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+    async createPost(req: Request, res: Response) {
         const {title, shortDescription, content, blogId} = req.body
 
         const newPost = await postsService.createPost({blogId, content, title, shortDescription})
         res.status(201).send(newPost)
-    })
-
-postsRouter.get('/:id', async (req: Request, res: Response) => {
-    const foundPost = await postsService.getPostById(req.params.id)
-    if (!foundPost) {
-        res.sendStatus(404)
-    } else {
-        res.status(200).send(foundPost)
     }
-})
 
-postsRouter.put('/:id',
-    authorisationMiddleware, bodyPostValidation.title,
-    bodyPostValidation.shortDescription, bodyPostValidation.content,
-    bodyPostValidation.blogId, inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+    async getPostById(req: Request, res: Response) {
+        const foundPost = await postsService.getPostById(req.params.id)
+        if (!foundPost) {
+            res.sendStatus(404)
+        } else {
+            res.status(200).send(foundPost)
+        }
+    }
+
+    async updatePost(req: Request, res: Response) {
         const {title, shortDescription, content, blogId} = req.body
 
         const updatedPost = await postsService.updatePost(req.params.id, req.body)
@@ -51,11 +44,9 @@ postsRouter.put('/:id',
             res.sendStatus(404)
         }
 
-    })
+    }
 
-postsRouter.delete('/:id',
-    authorisationMiddleware,
-    async (req: Request, res: Response) => {
+    async deletePost(req: Request, res: Response) {
         const successDel = await postsService.deletePost(req.params.id)
 
         if (!successDel) {
@@ -63,12 +54,9 @@ postsRouter.delete('/:id',
         } else {
             res.sendStatus(204)
         }
-    })
+    }
 
-postsRouter.post('/:id/comments',
-    authMiddleware,
-    bodyPostValidation.comment, inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+    async createCommentForPost(req: Request, res: Response) {
         const comment = await postsService.createComment(req.params.id, req.body.content, req.user!.id)
 
         if (!comment) {
@@ -76,19 +64,49 @@ postsRouter.post('/:id/comments',
         } else {
             res.status(201).send(comment)
         }
-    })
-
-postsRouter.get('/:id/comments', async (req: Request<{ id: string }, {}, {}, commentGeneric>, res: Response) => {
-    const comment = await postsService.getCommentById(
-        req.params.id,
-        req.query.pageNumber ? +req.query.pageNumber : 1,
-        req.query.pageSize ? +req.query.pageSize : 10,
-        req.query.sortBy, req.query.sortDirection
-    )
-
-    if (!comment) {
-        res.sendStatus(404)
-    } else {
-        res.status(200).send(comment)
     }
-})
+
+    async getCommentById(req: Request<{ id: string }, {}, {}, commentGeneric>, res: Response) {
+        const comment = await postsService.getCommentById(
+            req.params.id,
+            req.query.pageNumber ? +req.query.pageNumber : 1,
+            req.query.pageSize ? +req.query.pageSize : 10,
+            req.query.sortBy, req.query.sortDirection
+        )
+
+        if (!comment) {
+            res.sendStatus(404)
+        } else {
+            res.status(200).send(comment)
+        }
+    }
+}
+
+const postsControllerInstance = new PostsController()
+
+postsRouter.get('/', postsControllerInstance.getAllPosts)
+
+postsRouter.post('/',
+    authorisationMiddleware, bodyPostValidation.blogId,
+    bodyPostValidation.title, bodyPostValidation.shortDescription,
+    bodyPostValidation.content, inputValidationMiddleware,
+    postsControllerInstance.createPost)
+
+postsRouter.get('/:id', postsControllerInstance.getPostById)
+
+postsRouter.put('/:id',
+    authorisationMiddleware, bodyPostValidation.title,
+    bodyPostValidation.shortDescription, bodyPostValidation.content,
+    bodyPostValidation.blogId, inputValidationMiddleware,
+    postsControllerInstance.updatePost)
+
+postsRouter.delete('/:id',
+    authorisationMiddleware,
+    postsControllerInstance.deletePost)
+
+postsRouter.post('/:id/comments',
+    authMiddleware,
+    bodyPostValidation.comment, inputValidationMiddleware,
+    postsControllerInstance.createCommentForPost)
+
+postsRouter.get('/:id/comments', postsControllerInstance.getCommentById)
