@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.commentsRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
-exports.commentsRepository = {
+class CommentsDbRepository {
     getCommentById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield DB_Mongo_1.CommentModelClass.findOne({ id: id }, { _id: 0 });
@@ -22,7 +22,7 @@ exports.commentsRepository = {
                 return comment;
             }
         });
-    },
+    }
     updateComment(commentId, content) {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield DB_Mongo_1.CommentModelClass.findOne({ id: commentId });
@@ -34,7 +34,7 @@ exports.commentsRepository = {
                 return comment;
             }
         });
-    },
+    }
     deleteCommentById(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield DB_Mongo_1.CommentModelClass.findOne({ id: commentId });
@@ -47,4 +47,5 @@ exports.commentsRepository = {
             }
         });
     }
-};
+}
+exports.commentsRepository = new CommentsDbRepository();

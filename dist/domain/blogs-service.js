@@ -12,22 +12,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsService = void 0;
 const crypto_1 = require("crypto");
 const blogs_db_repository_1 = require("../repositories/blogs-db-repository");
-exports.blogsService = {
+class BlogsService {
     getAllBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield blogs_db_repository_1.blogsRepository.getAllBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize);
         });
-    },
+    }
     getPostByBlogId(blogId, sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield blogs_db_repository_1.blogsRepository.getPostByBlogId(blogId, sortBy, sortDirection, pageNumber, pageSize);
         });
-    },
+    }
     getBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield blogs_db_repository_1.blogsRepository.getBlogById(id);
         });
-    },
+    }
     createBlog(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
             const newBlog = {
@@ -40,15 +40,16 @@ exports.blogsService = {
             };
             return yield blogs_db_repository_1.blogsRepository.createBlog(newBlog);
         });
-    },
+    }
     updateBlog(id, inputData) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield blogs_db_repository_1.blogsRepository.updateBlog(id, inputData);
         });
-    },
+    }
     deleteBlog(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield blogs_db_repository_1.blogsRepository.deleteBlog(id);
         });
     }
-};
+}
+exports.blogsService = new BlogsService();

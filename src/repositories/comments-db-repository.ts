@@ -1,7 +1,7 @@
 import {CommentModelClass} from "../data/DB-Mongo";
 import {commentDbModel} from "../models/comments-model";
 
-export const commentsRepository = {
+class CommentsDbRepository {
     async getCommentById(
         id: string
     ) {
@@ -12,7 +12,7 @@ export const commentsRepository = {
         } else {
             return comment
         }
-    },
+    }
 
     async updateComment(
         commentId: string,
@@ -26,7 +26,7 @@ export const commentsRepository = {
             await CommentModelClass.updateOne({id: commentId}, {$set: {content: content}})
             return comment
         }
-    },
+    }
 
     async deleteCommentById(
         commentId: string
@@ -41,3 +41,5 @@ export const commentsRepository = {
         }
     }
 }
+
+export const commentsRepository = new CommentsDbRepository()

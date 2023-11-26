@@ -9,7 +9,7 @@ import {emailManager} from "../managers/email-manager";
 import {emailAdapter} from "../adapters/email-adapter";
 import {ObjectId} from "mongodb";
 
-export const usersService = {
+class UsersService {
     async getAllUsers(
         sortBy: string,
         sortDirection: string,
@@ -26,7 +26,7 @@ export const usersService = {
             searchLoginTerm,
             searchEmailTerm
         )
-    },
+    }
 
     async createUser(
         login: string,
@@ -60,7 +60,7 @@ export const usersService = {
         }
 
         return await usersRepository.createUser(newUser)
-    },
+    }
 
     async createUserForRegistration(
         login: string,
@@ -99,7 +99,7 @@ export const usersService = {
 
         await emailManager.sendEmailConfirmationCode(newUser)
         return await usersRepository.createUser(newUser)
-    },
+    }
 
     async createPasswordAndUpdate(
         id: string,
@@ -108,20 +108,20 @@ export const usersService = {
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this._generateHash(password, passwordSalt)
         return await usersRepository.updatePassword(id, passwordHash, passwordSalt)
-    },
+    }
 
     async _generateHash(
         password: string,
         salt: string
     ) {
         return await bcrypt.hash(password, salt)
-    },
+    }
 
     async deleteUser(
         id: string
     ) {
         return await usersRepository.deleteUser(id)
-    },
+    }
 
     async checkCredentials(
         loginOrEmail: string,
@@ -138,13 +138,13 @@ export const usersService = {
         } else {
             return foundUser
         }
-    },
+    }
 
     async findUserById(
         userId: any
     ) {
         return await usersRepository.findUserById(userId)
-    },
+    }
 
     async confirmEmail(
         code: string
@@ -157,7 +157,7 @@ export const usersService = {
         if (user.emailConfirmation.expirationDate < new Date()) return false
 
         return await usersRepository.updateConfirmation(user.id)
-    },
+    }
 
     async confirmRecoveryCode(
         code: string
@@ -169,7 +169,7 @@ export const usersService = {
         if (user.recoveryConfirmation.expirationDate < new Date()) return false
 
         return user
-    },
+    }
 
     async resendConfirmation(
         email: string
@@ -188,3 +188,5 @@ export const usersService = {
         return true
     }
 }
+
+export const usersService = new UsersService()

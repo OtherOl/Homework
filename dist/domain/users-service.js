@@ -21,12 +21,12 @@ const add_1 = __importDefault(require("date-fns/add"));
 const email_manager_1 = require("../managers/email-manager");
 const email_adapter_1 = require("../adapters/email-adapter");
 const mongodb_1 = require("mongodb");
-exports.usersService = {
+class UsersService {
     getAllUsers(sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield users_db_repository_1.usersRepository.getAllUsers(sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm);
         });
-    },
+    }
     createUser(login, email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordSalt = yield bcrypt_1.default.genSalt(10);
@@ -55,7 +55,7 @@ exports.usersService = {
             };
             return yield users_db_repository_1.usersRepository.createUser(newUser);
         });
-    },
+    }
     createUserForRegistration(login, email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordSalt = yield bcrypt_1.default.genSalt(10);
@@ -91,24 +91,24 @@ exports.usersService = {
             yield email_manager_1.emailManager.sendEmailConfirmationCode(newUser);
             return yield users_db_repository_1.usersRepository.createUser(newUser);
         });
-    },
+    }
     createPasswordAndUpdate(id, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordSalt = yield bcrypt_1.default.genSalt(10);
             const passwordHash = yield this._generateHash(password, passwordSalt);
             return yield users_db_repository_1.usersRepository.updatePassword(id, passwordHash, passwordSalt);
         });
-    },
+    }
     _generateHash(password, salt) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield bcrypt_1.default.hash(password, salt);
         });
-    },
+    }
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield users_db_repository_1.usersRepository.deleteUser(id);
         });
-    },
+    }
     checkCredentials(loginOrEmail, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const foundUser = yield users_db_repository_1.usersRepository.findByLoginOrEmail(loginOrEmail);
@@ -124,12 +124,12 @@ exports.usersService = {
                 return foundUser;
             }
         });
-    },
+    }
     findUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield users_db_repository_1.usersRepository.findUserById(userId);
         });
-    },
+    }
     confirmEmail(code) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield users_db_repository_1.usersRepository.findUserByConfirmationCode(code);
@@ -143,7 +143,7 @@ exports.usersService = {
                 return false;
             return yield users_db_repository_1.usersRepository.updateConfirmation(user.id);
         });
-    },
+    }
     confirmRecoveryCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield users_db_repository_1.usersRepository.findUserByRecoveryCode(code);
@@ -155,7 +155,7 @@ exports.usersService = {
                 return false;
             return user;
         });
-    },
+    }
     resendConfirmation(email) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield users_db_repository_1.usersRepository.findByLoginOrEmail(email);
@@ -169,4 +169,5 @@ exports.usersService = {
             return true;
         });
     }
-};
+}
+exports.usersService = new UsersService();

@@ -3,7 +3,7 @@ import {paginationModel} from "../models/pagination-model";
 import {PostDbModel, PostViewModel} from "../models/post-model";
 import {BlogModelClass, PostModelClass} from "../data/DB-Mongo";
 
-export const blogsRepository = {
+class BlogsDbRepository {
     async getAllBlogs(
         searchNameTerm: string,
         sortBy: string = "createdAt",
@@ -33,7 +33,7 @@ export const blogsRepository = {
         }
 
         return objects
-    },
+    }
 
     async getPostByBlogId(
         blogId: string,
@@ -69,16 +69,16 @@ export const blogsRepository = {
         } else {
             return objects
         }
-    },
+    }
 
     async getBlogById(id: string) {
         return BlogModelClass.findOne({id: id}, {projection: {_id: 0}})
-    },
+    }
 
     async createBlog(inputData: blogModel) {
         await BlogModelClass.create({...inputData})
         return inputData
-    },
+    }
 
     async updateBlog(id: string, inputData: createBlogModel) {
         const foundBlog = await BlogModelClass.updateOne({id: id}, {
@@ -90,7 +90,7 @@ export const blogsRepository = {
         })
 
         return foundBlog.matchedCount === 1
-    },
+    }
 
     async deleteBlog(id: string) {
         const deleteBlog = await BlogModelClass.deleteOne({id: id})
@@ -98,3 +98,5 @@ export const blogsRepository = {
         return deleteBlog.deletedCount === 1
     }
 }
+
+export const blogsRepository = new BlogsDbRepository()

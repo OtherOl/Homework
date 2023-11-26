@@ -2,7 +2,7 @@ import {UserModelClass} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
 import {createNewUserModel, userViewModel} from "../models/user-model";
 
-export const usersRepository = {
+class UsersDbRepository {
     async getAllUsers(
         sortBy: string = "createdAt",
         sortDirection: string = "desc",
@@ -40,7 +40,7 @@ export const usersRepository = {
         }
 
         return objects
-    },
+    }
 
     async createUser(
         inputData: createNewUserModel
@@ -53,7 +53,7 @@ export const usersRepository = {
             email: inputData.email,
             createdAt: inputData.createdAt
         }
-    },
+    }
 
     async deleteUser(
         id: string
@@ -61,7 +61,7 @@ export const usersRepository = {
         const deletedUser = await UserModelClass.deleteOne({id: id})
 
         return deletedUser.deletedCount === 1
-    },
+    }
 
     async findByLoginOrEmail(
         loginOrEmail: string
@@ -74,25 +74,25 @@ export const usersRepository = {
                 ]
         }).lean()
         return foundUser
-    },
+    }
 
     async findUserById(
         userId: string
     ) {
         return UserModelClass.findOne({id: userId})
-    },
+    }
 
     async findUserByConfirmationCode(
         code: string
     ) {
         return UserModelClass.findOne({"emailConfirmation.confirmationCode": code})
-    },
+    }
 
     async findUserByRecoveryCode(
         code: string
     ) {
         return UserModelClass.findOne({"recoveryConfirmation.recoveryCode": code})
-    },
+    }
 
     async updateConfirmation(
         id: string
@@ -100,7 +100,7 @@ export const usersRepository = {
         const user = await UserModelClass.updateOne({id: id}, {$set: {isConfirmed: true}})
 
         return user.modifiedCount === 1
-    },
+    }
 
     async updatePassword(
         id: string,
@@ -110,7 +110,7 @@ export const usersRepository = {
         const user = await UserModelClass.updateOne({id: id}, {$set: {passwordHash, passwordSalt}})
 
         return user.modifiedCount === 1
-    },
+    }
 
     async changeConfirmationCode(
         id: string,
@@ -121,3 +121,5 @@ export const usersRepository = {
         return newCode.modifiedCount === 1
     }
 }
+
+export const usersRepository = new UsersDbRepository()

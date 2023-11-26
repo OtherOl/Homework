@@ -1,6 +1,6 @@
 import {Router, Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
-import {devicesRepository} from "../repositories/devices-db-repositoty";
+import {devicesRepository} from "../repositories/devices-db-repository";
 import {tokensMiddleware} from "../middlewares/tokens-middleware";
 import {devicesViewModel} from "../models/devices-model";
 

@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
-exports.blogsRepository = {
+class BlogsDbRepository {
     getAllBlogs(searchNameTerm, sortBy = "createdAt", sortDirection = "desc", pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             let sortQuery = {};
@@ -33,7 +33,7 @@ exports.blogsRepository = {
             };
             return objects;
         });
-    },
+    }
     getPostByBlogId(blogId, sortBy = "createdAt", sortDirection = "desc", pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             let sortQuery = {};
@@ -61,18 +61,18 @@ exports.blogsRepository = {
                 return objects;
             }
         });
-    },
+    }
     getBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return DB_Mongo_1.BlogModelClass.findOne({ id: id }, { projection: { _id: 0 } });
         });
-    },
+    }
     createBlog(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
             yield DB_Mongo_1.BlogModelClass.create(Object.assign({}, inputData));
             return inputData;
         });
-    },
+    }
     updateBlog(id, inputData) {
         return __awaiter(this, void 0, void 0, function* () {
             const foundBlog = yield DB_Mongo_1.BlogModelClass.updateOne({ id: id }, {
@@ -84,11 +84,12 @@ exports.blogsRepository = {
             });
             return foundBlog.matchedCount === 1;
         });
-    },
+    }
     deleteBlog(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const deleteBlog = yield DB_Mongo_1.BlogModelClass.deleteOne({ id: id });
             return deleteBlog.deletedCount === 1;
         });
     }
-};
+}
+exports.blogsRepository = new BlogsDbRepository();

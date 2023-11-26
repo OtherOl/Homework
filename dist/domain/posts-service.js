@@ -13,17 +13,17 @@ exports.postsService = void 0;
 const crypto_1 = require("crypto");
 const posts_db_repository_1 = require("../repositories/posts-db-repository");
 const blogs_db_repository_1 = require("../repositories/blogs-db-repository");
-exports.postsService = {
+class PostsService {
     getAllPosts(sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield posts_db_repository_1.postsRepository.getAllPosts(sortBy, sortDirection, pageNumber, pageSize);
         });
-    },
+    }
     getPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield posts_db_repository_1.postsRepository.getPostById(id);
         });
-    },
+    }
     createPost(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
             const blog = yield blogs_db_repository_1.blogsRepository.getBlogById(inputData.blogId);
@@ -49,25 +49,26 @@ exports.postsService = {
                 createdAt: newPost.createdAt
             };
         });
-    },
+    }
     updatePost(id, inputData) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield posts_db_repository_1.postsRepository.updatePost(id, inputData);
         });
-    },
+    }
     deletePost(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield posts_db_repository_1.postsRepository.deletePost(id);
         });
-    },
+    }
     createComment(id, content, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield posts_db_repository_1.postsRepository.createComment(id, content, userId);
         });
-    },
+    }
     getCommentById(id, pageNumber, pageSize, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield posts_db_repository_1.postsRepository.getCommentById(id, pageNumber, pageSize, sortBy, sortDirection);
         });
-    },
-};
+    }
+}
+exports.postsService = new PostsService();

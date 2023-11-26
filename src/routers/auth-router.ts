@@ -7,7 +7,7 @@ import {authMiddleware} from "../middlewares/auth-middleware";
 import {bodyUserValidation} from "../middlewares/body-user-validation";
 import {authRepository} from "../repositories/auth-db-repository";
 import {devicesService} from "../domain/devices-service";
-import {devicesRepository} from "../repositories/devices-db-repositoty";
+import {devicesRepository} from "../repositories/devices-db-repository";
 import {tokensMiddleware} from "../middlewares/tokens-middleware";
 import {attemptsRepository} from "../repositories/attempts-db-repository";
 import {attemptsMiddleware} from "../middlewares/attempts-middleware";
@@ -16,11 +16,8 @@ import {usersRepository} from "../repositories/users-db-repository";
 
 export const authRouter = Router({})
 
-authRouter.post('/login',
-    attemptsMiddleware,
-    bodyAuthValidation.loginOrEmail, bodyAuthValidation.password,
-    inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+class AuthController {
+    async login(req: Request, res: Response) {
         const user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
         await attemptsRepository.addAttempt(req.ip, req.originalUrl)
         if (!user) {
@@ -33,12 +30,9 @@ authRouter.post('/login',
             res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true})
             return res.status(200).send({"accessToken": token})
         }
-    })
+    }
 
-authRouter.post('/password-recovery',
-    attemptsMiddleware,
-    bodyUserValidation.email, inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+    async passwordRecovery(req: Request, res: Response) {
         await attemptsRepository.addAttempt(req.ip, req.originalUrl);
         const user = await usersRepository.findByLoginOrEmail(req.body.email)
 
@@ -48,13 +42,9 @@ authRouter.post('/password-recovery',
             await emailManager.sendCodeForPassword(user)
             return res.sendStatus(204)
         }
-    })
+    }
 
-authRouter.post('/new-password',
-    attemptsMiddleware,
-    bodyUserValidation.newPassword, bodyUserValidation.recoveryCode,
-    inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+    async newPassword(req: Request, res: Response) {
         await attemptsRepository.addAttempt(req.ip, req.originalUrl);
         const confirmedUser = await usersService.confirmRecoveryCode(req.body.recoveryCode);
         const inputPassword = req.body.newPassword
@@ -72,11 +62,9 @@ authRouter.post('/new-password',
             await usersService.createPasswordAndUpdate(confirmedUser.id, inputPassword)
             return res.sendStatus(204)
         }
-    })
+    }
 
-authRouter.post('/refresh-token',
-    tokensMiddleware,
-    async (req: Request, res: Response) => {
+    async refreshToken(req: Request, res: Response) {
         const refreshToken = req.cookies.refreshToken
         const verify = await jwtService.verifyToken(refreshToken)
 
@@ -97,13 +85,9 @@ authRouter.post('/refresh-token',
                 "accessToken": accessToken
             })
         }
-    })
+    }
 
-authRouter.post('/registration',
-    attemptsMiddleware,
-    bodyUserValidation.login, bodyUserValidation.email,
-    bodyUserValidation.password, inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+    async registration(req: Request, res: Response) {
         const newUser = await usersService.createUserForRegistration(req.body.login, req.body.email, req.body.password);
         await attemptsRepository.addAttempt(req.ip, req.originalUrl)
         if (newUser === "email exists") {
@@ -127,11 +111,9 @@ authRouter.post('/registration',
         }
 
         res.sendStatus(204)
-    })
+    }
 
-authRouter.post('/registration-confirmation',
-    attemptsMiddleware,
-    async (req: Request, res: Response) => {
+    async registrationConfirmation(req: Request, res: Response) {
         const confirmedUser = await usersService.confirmEmail(req.body.code);
         await attemptsRepository.addAttempt(req.ip, req.originalUrl)
 
@@ -147,12 +129,9 @@ authRouter.post('/registration-confirmation',
         } else {
             return res.sendStatus(204)
         }
-    })
+    }
 
-authRouter.post('/registration-email-resending',
-    attemptsMiddleware,
-    bodyUserValidation.email, inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+    async registrationEmailResending(req: Request, res: Response) {
         const confirmedUser = await usersService.resendConfirmation(req.body.email);
         await attemptsRepository.addAttempt(req.ip, req.originalUrl)
 
@@ -177,11 +156,9 @@ authRouter.post('/registration-email-resending',
         }
 
         res.sendStatus(204)
-    })
+    }
 
-authRouter.get('/me',
-    authMiddleware,
-    async (req: Request, res: Response) => {
+    async userInfo(req: Request, res: Response) {
         const user = req.user;
         const currUser = {
             email: user!.email,
@@ -190,15 +167,59 @@ authRouter.get('/me',
         }
 
         res.status(200).send(currUser)
-    })
+    }
 
-authRouter.post('/logout',
-    tokensMiddleware,
-    async (req: Request, res: Response) => {
+    async logout(req: Request, res: Response) {
         const refreshToken = req.cookies.refreshToken
         const verifiedToken = await jwtService.verifyToken(refreshToken)
 
         await authRepository.blackList(refreshToken);
         await devicesRepository.deleteSessionById(verifiedToken.deviceId)
         return res.clearCookie('refreshToken').sendStatus(204)
-    })
+    }
+}
+
+const authControllerInstance = new AuthController()
+
+authRouter.post('/login',
+    attemptsMiddleware,
+    bodyAuthValidation.loginOrEmail, bodyAuthValidation.password,
+    inputValidationMiddleware, authControllerInstance.login)
+
+authRouter.post('/password-recovery',
+    attemptsMiddleware,
+    bodyUserValidation.email, inputValidationMiddleware,
+    authControllerInstance.passwordRecovery)
+
+authRouter.post('/new-password',
+    attemptsMiddleware,
+    bodyUserValidation.newPassword, bodyUserValidation.recoveryCode,
+    inputValidationMiddleware,
+    authControllerInstance.newPassword)
+
+authRouter.post('/refresh-token',
+    tokensMiddleware,
+    authControllerInstance.refreshToken)
+
+authRouter.post('/registration',
+    attemptsMiddleware,
+    bodyUserValidation.login, bodyUserValidation.email,
+    bodyUserValidation.password, inputValidationMiddleware,
+    authControllerInstance.registration)
+
+authRouter.post('/registration-confirmation',
+    attemptsMiddleware,
+    authControllerInstance.registrationConfirmation)
+
+authRouter.post('/registration-email-resending',
+    attemptsMiddleware,
+    bodyUserValidation.email, inputValidationMiddleware,
+    authControllerInstance.registrationEmailResending)
+
+authRouter.get('/me',
+    authMiddleware,
+    authControllerInstance.userInfo)
+
+authRouter.post('/logout',
+    tokensMiddleware,
+    authControllerInstance.logout)

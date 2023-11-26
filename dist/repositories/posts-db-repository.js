@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
-exports.postsRepository = {
+class PostsDbRepository {
     getAllPosts(sortBy = "createdAt", sortDirection = "desc", pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             let sortQuery = {};
@@ -32,17 +32,17 @@ exports.postsRepository = {
             };
             return objects;
         });
-    },
+    }
     getPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return DB_Mongo_1.PostModelClass.findOne({ id: id }, { _id: 0 });
         });
-    },
+    }
     createPost(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield DB_Mongo_1.PostModelClass.create(Object.assign({}, inputData));
         });
-    },
+    }
     updatePost(id, inputData) {
         return __awaiter(this, void 0, void 0, function* () {
             const isUpdated = yield DB_Mongo_1.PostModelClass.updateOne({ id: id }, {
@@ -50,13 +50,13 @@ exports.postsRepository = {
             });
             return isUpdated.matchedCount === 1;
         });
-    },
+    }
     deletePost(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const deleteBlog = yield DB_Mongo_1.PostModelClass.deleteOne({ id: id });
             return deleteBlog.deletedCount === 1;
         });
-    },
+    }
     createComment(id, content, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const foundPost = yield DB_Mongo_1.PostModelClass.findOne({ id: id });
@@ -78,7 +78,7 @@ exports.postsRepository = {
                 return comment;
             }
         });
-    },
+    }
     getCommentById(id, pageNumber, pageSize, sortBy = "createdAt", sortDirection = "desc") {
         return __awaiter(this, void 0, void 0, function* () {
             let sortQuery = {};
@@ -106,5 +106,6 @@ exports.postsRepository = {
                 return objects;
             }
         });
-    },
-};
+    }
+}
+exports.postsRepository = new PostsDbRepository();

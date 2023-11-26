@@ -1,8 +1,8 @@
-import {devicesRepository} from "../repositories/devices-db-repositoty";
+import {devicesRepository} from "../repositories/devices-db-repository";
 import {jwtService} from "../application/jwt-service";
 import {ObjectId} from "mongodb";
 
-export const devicesService = {
+class DevicesService {
     async createSession(
         ip: string,
         title: string = "Chrome 105",
@@ -20,5 +20,7 @@ export const devicesService = {
 
         await devicesRepository.addSession(newSession)
         return newSession
-    },
+    }
 }
+
+export const devicesService = new DevicesService()

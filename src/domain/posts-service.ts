@@ -3,7 +3,7 @@ import {randomUUID} from "crypto";
 import {postsRepository} from "../repositories/posts-db-repository";
 import {blogsRepository} from "../repositories/blogs-db-repository";
 
-export const postsService = {
+class PostsService {
     async getAllPosts(
         sortBy: string,
         sortDirection: string,
@@ -16,11 +16,11 @@ export const postsService = {
             pageNumber,
             pageSize
         )
-    },
+    }
 
     async getPostById(id: string) {
         return await postsRepository.getPostById(id)
-    },
+    }
 
     async createPost(inputData: CreatePostModel): Promise<PostViewModel | null> {
         const blog = await blogsRepository.getBlogById(inputData.blogId)
@@ -46,20 +46,20 @@ export const postsService = {
             blogName: newPost.blogName,
             createdAt: newPost.createdAt
         }
-    },
+    }
 
     async updatePost(
         id: string,
         inputData: UpdatePostModel
     ) {
         return await postsRepository.updatePost(id, inputData)
-    },
+    }
 
     async deletePost(
         id: string
     ) {
         return await postsRepository.deletePost(id)
-    },
+    }
 
     async createComment(
         id: string,
@@ -67,7 +67,7 @@ export const postsService = {
         userId: string
     ) {
         return await postsRepository.createComment(id, content, userId)
-    },
+    }
 
     async getCommentById(
         id: string,
@@ -83,5 +83,7 @@ export const postsService = {
             sortBy,
             sortDirection
         )
-    },
+    }
 }
+
+export const postsService = new PostsService()

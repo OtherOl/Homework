@@ -2,7 +2,7 @@ import {randomUUID} from "crypto";
 import {blogModel, createBlogModel} from "../models/blog-model";
 import {blogsRepository} from "../repositories/blogs-db-repository";
 
-export const blogsService = {
+class BlogsService {
     async getAllBlogs(
         searchNameTerm: string,
         sortBy: string,
@@ -17,7 +17,7 @@ export const blogsService = {
             pageNumber,
             pageSize
         )
-    },
+    }
 
     async getPostByBlogId(
         blogId: string,
@@ -33,12 +33,12 @@ export const blogsService = {
             pageNumber,
             pageSize
         )
-    },
+    }
 
 
     async getBlogById(id: string) {
         return await blogsRepository.getBlogById(id)
-    },
+    }
 
     async createBlog(inputData: createBlogModel): Promise<blogModel> {
         const newBlog = {
@@ -50,13 +50,15 @@ export const blogsService = {
             isMembership: false
         }
         return await blogsRepository.createBlog(newBlog)
-    },
+    }
 
     async updateBlog(id: string, inputData: blogModel) {
         return await blogsRepository.updateBlog(id, inputData)
-    },
+    }
 
     async deleteBlog(id: string) {
         return await blogsRepository.deleteBlog(id)
     }
 }
+
+export const blogsService = new BlogsService()

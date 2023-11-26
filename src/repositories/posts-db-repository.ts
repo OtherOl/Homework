@@ -3,7 +3,7 @@ import {paginationModel} from "../models/pagination-model";
 import {commentDbModel} from "../models/comments-model";
 import {CommentModelClass, PostModelClass, UserModelClass} from "../data/DB-Mongo";
 
-export const postsRepository = {
+class PostsDbRepository {
     async getAllPosts(
         sortBy: string = "createdAt",
         sortDirection: string = "desc",
@@ -30,15 +30,15 @@ export const postsRepository = {
         }
 
         return objects
-    },
+    }
 
     async getPostById(id: string) {
         return PostModelClass.findOne({id: id}, {_id: 0})
-    },
+    }
 
     async createPost(inputData: PostDbModel) {
         return await PostModelClass.create({...inputData})
-    },
+    }
 
     async updatePost(
         id: string,
@@ -49,13 +49,13 @@ export const postsRepository = {
         })
 
         return isUpdated.matchedCount === 1
-    },
+    }
 
     async deletePost(id: string) {
         const deleteBlog = await PostModelClass.deleteOne({id: id})
 
         return deleteBlog.deletedCount === 1
-    },
+    }
 
     async createComment(
         id: string,
@@ -82,7 +82,7 @@ export const postsRepository = {
 
             return comment;
         }
-    },
+    }
 
     async getCommentById(
         id: string,
@@ -117,5 +117,7 @@ export const postsRepository = {
         } else {
             return objects
         }
-    },
+    }
 }
+
+export const postsRepository = new PostsDbRepository()

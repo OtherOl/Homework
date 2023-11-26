@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.attemptsRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
 const subSeconds_1 = __importDefault(require("date-fns/subSeconds"));
-exports.attemptsRepository = {
+class AttemptsDbRepository {
     addAttempt(ip, url) {
         return __awaiter(this, void 0, void 0, function* () {
             yield DB_Mongo_1.AttemptModelClass.create({
@@ -25,10 +25,11 @@ exports.attemptsRepository = {
             });
             return;
         });
-    },
+    }
     getAttemptsByIp(ip, url, date) {
         return __awaiter(this, void 0, void 0, function* () {
             return DB_Mongo_1.AttemptModelClass.countDocuments({ IP: ip, URL: url, date: { $gt: (0, subSeconds_1.default)(date, 10) } });
         });
-    },
-};
+    }
+}
+exports.attemptsRepository = new AttemptsDbRepository();

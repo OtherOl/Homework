@@ -12,12 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.tokensMiddleware = void 0;
 const jwt_service_1 = require("../application/jwt-service");
 const auth_db_repository_1 = require("../repositories/auth-db-repository");
-const devices_db_repositoty_1 = require("../repositories/devices-db-repositoty");
+const devices_db_repository_1 = require("../repositories/devices-db-repository");
 const tokensMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
     const verify = yield jwt_service_1.jwtService.verifyToken(refreshToken);
     const black = yield auth_db_repository_1.authRepository.findInvalidToken(refreshToken);
-    const deviceId = yield devices_db_repositoty_1.devicesRepository.getSessionById(verify.deviceId);
+    const deviceId = yield devices_db_repository_1.devicesRepository.getSessionById(verify.deviceId);
     if (!verify || black !== null || !deviceId) {
         return res.sendStatus(401);
     }
