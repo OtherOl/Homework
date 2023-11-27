@@ -1,4 +1,4 @@
-import {usersRepository} from "../repositories/users-db-repository";
+import {UsersRepository} from "../repositories/users-repository";
 import {randomUUID} from "crypto";
 import bcrypt from 'bcrypt'
 import {userViewModel} from "../models/user-model";
@@ -6,10 +6,17 @@ import {paginationModel} from "../models/pagination-model";
 import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
 import {emailManager} from "../managers/email-manager";
-import {emailAdapter} from "../adapters/email-adapter";
+import {EmailAdapter} from "../adapters/email-adapter";
 import {ObjectId} from "mongodb";
 
-class UsersService {
+export class UsersService {
+    usersRepository: UsersRepository
+    emailAdapter: EmailAdapter
+    constructor() {
+        this.usersRepository = new UsersRepository()
+        this.emailAdapter = new EmailAdapter()
+    }
+
     async getAllUsers(
         sortBy: string,
         sortDirection: string,
@@ -18,7 +25,7 @@ class UsersService {
         searchLoginTerm: string,
         searchEmailTerm: string
     ): Promise<paginationModel<userViewModel>> {
-        return await usersRepository.getAllUsers(
+        return await this.usersRepository.getAllUsers(
             sortBy,
             sortDirection,
             pageNumber,
@@ -59,7 +66,7 @@ class UsersService {
             isConfirmed: true
         }
 
-        return await usersRepository.createUser(newUser)
+        return await this.usersRepository.createUser(newUser)
     }
 
     async createUserForRegistration(
@@ -92,13 +99,13 @@ class UsersService {
             },
             isConfirmed: false
         }
-        const isExists = await usersRepository.findByLoginOrEmail(email);
+        const isExists = await this.usersRepository.findByLoginOrEmail(email);
         if (isExists !== null) return "email exists"
-        const isExistsLogin = await usersRepository.findByLoginOrEmail(login);
+        const isExistsLogin = await this.usersRepository.findByLoginOrEmail(login);
         if (isExistsLogin !== null) return "login exists"
 
         await emailManager.sendEmailConfirmationCode(newUser)
-        return await usersRepository.createUser(newUser)
+        return await this.usersRepository.createUser(newUser)
     }
 
     async createPasswordAndUpdate(
@@ -107,7 +114,7 @@ class UsersService {
     ) {
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this._generateHash(password, passwordSalt)
-        return await usersRepository.updatePassword(id, passwordHash, passwordSalt)
+        return await this.usersRepository.updatePassword(id, passwordHash, passwordSalt)
     }
 
     async _generateHash(
@@ -120,14 +127,14 @@ class UsersService {
     async deleteUser(
         id: string
     ) {
-        return await usersRepository.deleteUser(id)
+        return await this.usersRepository.deleteUser(id)
     }
 
     async checkCredentials(
         loginOrEmail: string,
         password: string
     ) {
-        const foundUser = await usersRepository.findByLoginOrEmail(loginOrEmail)
+        const foundUser = await this.usersRepository.findByLoginOrEmail(loginOrEmail)
         if (!foundUser) return false
         if (!foundUser.isConfirmed) return false
 
@@ -143,26 +150,26 @@ class UsersService {
     async findUserById(
         userId: any
     ) {
-        return await usersRepository.findUserById(userId)
+        return await this.usersRepository.findUserById(userId)
     }
 
     async confirmEmail(
         code: string
     ) {
-        const user = await usersRepository.findUserByConfirmationCode(code)
+        const user = await this.usersRepository.findUserByConfirmationCode(code)
 
         if (user === null) return false
         if (user.isConfirmed) return false
         if (user.emailConfirmation.confirmationCode !== code) return false
         if (user.emailConfirmation.expirationDate < new Date()) return false
 
-        return await usersRepository.updateConfirmation(user.id)
+        return await this.usersRepository.updateConfirmation(user.id)
     }
 
     async confirmRecoveryCode(
         code: string
     ) {
-        const user = await usersRepository.findUserByRecoveryCode(code)
+        const user = await this.usersRepository.findUserByRecoveryCode(code)
 
         if (user === null) return false
         if (user.recoveryConfirmation.recoveryCode !== code) return false
@@ -174,19 +181,19 @@ class UsersService {
     async resendConfirmation(
         email: string
     ) {
-        const user = await usersRepository.findByLoginOrEmail(email)
+        const user = await this.usersRepository.findByLoginOrEmail(email)
 
         if (user === null) return "User doesn't exists"
         if (user.isConfirmed) return "User already confirmed"
 
         const confirmationCode = uuidv4()
 
-        await usersRepository.changeConfirmationCode(user.id, confirmationCode)
+        await this.usersRepository.changeConfirmationCode(user.id, confirmationCode)
 
-        await emailAdapter.resendEmailConfirmationCode(email, confirmationCode)
+        await this.emailAdapter.resendEmailConfirmationCode(email, confirmationCode)
 
         return true
     }
 }
 
-export const usersService = new UsersService()
+export const usersService = new UsersService() // only for middlewares

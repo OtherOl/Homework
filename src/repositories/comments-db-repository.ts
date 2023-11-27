@@ -1,7 +1,7 @@
 import {CommentModelClass} from "../data/DB-Mongo";
 import {commentDbModel} from "../models/comments-model";
 
-class CommentsDbRepository {
+class CommentsRepository {
     async getCommentById(
         id: string
     ) {
@@ -42,4 +42,4 @@ class CommentsDbRepository {
     }
 }
 
-export const commentsRepository = new CommentsDbRepository()
+export const commentsRepository = new CommentsRepository()

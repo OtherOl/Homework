@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
-class PostsDbRepository {
+class PostsRepository {
     getAllPosts(sortBy = "createdAt", sortDirection = "desc", pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             let sortQuery = {};
@@ -108,4 +108,4 @@ class PostsDbRepository {
         });
     }
 }
-exports.postsRepository = new PostsDbRepository();
+exports.postsRepository = new PostsRepository();

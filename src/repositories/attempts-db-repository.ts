@@ -1,7 +1,7 @@
 import {AttemptModelClass} from "../data/DB-Mongo";
 import subSeconds from 'date-fns/subSeconds'
 
-class AttemptsDbRepository {
+export class AttemptsRepository {
     async addAttempt(
         ip: string,
         url: string
@@ -23,4 +23,4 @@ class AttemptsDbRepository {
     }
 }
 
-export const attemptsRepository = new AttemptsDbRepository()
+export const attemptsRepository = new AttemptsRepository()

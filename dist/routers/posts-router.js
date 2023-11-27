@@ -17,58 +17,82 @@ const authorisation_middleware_1 = require("../middlewares/authorisation-middlew
 const posts_service_1 = require("../domain/posts-service");
 const auth_middleware_1 = require("../middlewares/auth-middleware");
 exports.postsRouter = (0, express_1.Router)({});
-exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const allPosts = yield posts_service_1.postsService.getAllPosts(req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10);
-    res.status(200).send(allPosts);
-}));
-exports.postsRouter.post('/', authorisation_middleware_1.authorisationMiddleware, body_post_validation_1.bodyPostValidation.blogId, body_post_validation_1.bodyPostValidation.title, body_post_validation_1.bodyPostValidation.shortDescription, body_post_validation_1.bodyPostValidation.content, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, shortDescription, content, blogId } = req.body;
-    const newPost = yield posts_service_1.postsService.createPost({ blogId, content, title, shortDescription });
-    res.status(201).send(newPost);
-}));
-exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const foundPost = yield posts_service_1.postsService.getPostById(req.params.id);
-    if (!foundPost) {
-        res.sendStatus(404);
+class PostsController {
+    getAllPosts(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const allPosts = yield posts_service_1.postsService.getAllPosts(req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10);
+            res.status(200).send(allPosts);
+        });
     }
-    else {
-        res.status(200).send(foundPost);
+    createPost(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { title, shortDescription, content, blogId } = req.body;
+            const newPost = yield posts_service_1.postsService.createPost({ blogId, content, title, shortDescription });
+            res.status(201).send(newPost);
+        });
     }
-}));
-exports.postsRouter.put('/:id', authorisation_middleware_1.authorisationMiddleware, body_post_validation_1.bodyPostValidation.title, body_post_validation_1.bodyPostValidation.shortDescription, body_post_validation_1.bodyPostValidation.content, body_post_validation_1.bodyPostValidation.blogId, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, shortDescription, content, blogId } = req.body;
-    const updatedPost = yield posts_service_1.postsService.updatePost(req.params.id, req.body);
-    if (updatedPost) {
-        res.sendStatus(204);
+    getPostById(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const foundPost = yield posts_service_1.postsService.getPostById(req.params.id);
+            if (!foundPost) {
+                res.sendStatus(404);
+            }
+            else {
+                res.status(200).send(foundPost);
+            }
+        });
     }
-    else {
-        res.sendStatus(404);
+    updatePost(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { title, shortDescription, content, blogId } = req.body;
+            const updatedPost = yield posts_service_1.postsService.updatePost(req.params.id, req.body);
+            if (updatedPost) {
+                res.sendStatus(204);
+            }
+            else {
+                res.sendStatus(404);
+            }
+        });
     }
-}));
-exports.postsRouter.delete('/:id', authorisation_middleware_1.authorisationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const successDel = yield posts_service_1.postsService.deletePost(req.params.id);
-    if (!successDel) {
-        res.sendStatus(404);
+    deletePost(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const successDel = yield posts_service_1.postsService.deletePost(req.params.id);
+            if (!successDel) {
+                res.sendStatus(404);
+            }
+            else {
+                res.sendStatus(204);
+            }
+        });
     }
-    else {
-        res.sendStatus(204);
+    createCommentForPost(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const comment = yield posts_service_1.postsService.createComment(req.params.id, req.body.content, req.user.id);
+            if (!comment) {
+                res.sendStatus(404);
+            }
+            else {
+                res.status(201).send(comment);
+            }
+        });
     }
-}));
-exports.postsRouter.post('/:id/comments', auth_middleware_1.authMiddleware, body_post_validation_1.bodyPostValidation.comment, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const comment = yield posts_service_1.postsService.createComment(req.params.id, req.body.content, req.user.id);
-    if (!comment) {
-        res.sendStatus(404);
+    getCommentById(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const comment = yield posts_service_1.postsService.getCommentById(req.params.id, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10, req.query.sortBy, req.query.sortDirection);
+            if (!comment) {
+                res.sendStatus(404);
+            }
+            else {
+                res.status(200).send(comment);
+            }
+        });
     }
-    else {
-        res.status(201).send(comment);
-    }
-}));
-exports.postsRouter.get('/:id/comments', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const comment = yield posts_service_1.postsService.getCommentById(req.params.id, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10, req.query.sortBy, req.query.sortDirection);
-    if (!comment) {
-        res.sendStatus(404);
-    }
-    else {
-        res.status(200).send(comment);
-    }
-}));
+}
+const postsControllerInstance = new PostsController();
+exports.postsRouter.get('/', postsControllerInstance.getAllPosts);
+exports.postsRouter.post('/', authorisation_middleware_1.authorisationMiddleware, body_post_validation_1.bodyPostValidation.blogId, body_post_validation_1.bodyPostValidation.title, body_post_validation_1.bodyPostValidation.shortDescription, body_post_validation_1.bodyPostValidation.content, input_validation_middleware_1.inputValidationMiddleware, postsControllerInstance.createPost);
+exports.postsRouter.get('/:id', postsControllerInstance.getPostById);
+exports.postsRouter.put('/:id', authorisation_middleware_1.authorisationMiddleware, body_post_validation_1.bodyPostValidation.title, body_post_validation_1.bodyPostValidation.shortDescription, body_post_validation_1.bodyPostValidation.content, body_post_validation_1.bodyPostValidation.blogId, input_validation_middleware_1.inputValidationMiddleware, postsControllerInstance.updatePost);
+exports.postsRouter.delete('/:id', authorisation_middleware_1.authorisationMiddleware, postsControllerInstance.deletePost);
+exports.postsRouter.post('/:id/comments', auth_middleware_1.authMiddleware, body_post_validation_1.bodyPostValidation.comment, input_validation_middleware_1.inputValidationMiddleware, postsControllerInstance.createCommentForPost);
+exports.postsRouter.get('/:id/comments', postsControllerInstance.getCommentById);

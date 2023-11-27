@@ -1,6 +1,6 @@
 import {AuthModelClass} from "../data/DB-Mongo";
 
-class AuthDbRepository {
+class AuthRepository {
     async blackList(
         token: string
     ) {
@@ -14,4 +14,4 @@ class AuthDbRepository {
     }
 }
 
-export const authRepository = new AuthDbRepository()
+export const authRepository = new AuthRepository()

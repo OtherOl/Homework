@@ -9,14 +9,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.emailAdapter = void 0;
-const users_db_repository_1 = require("../repositories/users-db-repository");
+exports.EmailAdapter = void 0;
+const users_repository_1 = require("../repositories/users-repository");
 const email_manager_1 = require("../managers/email-manager");
-exports.emailAdapter = {
+class EmailAdapter {
+    constructor() {
+        this.usersRepository = new users_repository_1.UsersRepository();
+    }
     resendEmailConfirmationCode(email, code) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_db_repository_1.usersRepository.findByLoginOrEmail(email);
+            const user = yield this.usersRepository.findByLoginOrEmail(email);
             yield email_manager_1.emailManager.resendConfirmation(user, code);
         });
     }
-};
+}
+exports.EmailAdapter = EmailAdapter;

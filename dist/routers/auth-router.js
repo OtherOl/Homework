@@ -22,15 +22,20 @@ const devices_service_1 = require("../domain/devices-service");
 const devices_db_repository_1 = require("../repositories/devices-db-repository");
 const tokens_middleware_1 = require("../middlewares/tokens-middleware");
 const attempts_db_repository_1 = require("../repositories/attempts-db-repository");
-const attempts_middleware_1 = require("../middlewares/attempts-middleware");
 const email_manager_1 = require("../managers/email-manager");
-const users_db_repository_1 = require("../repositories/users-db-repository");
+const users_repository_1 = require("../repositories/users-repository");
+const attempts_middleware_1 = require("../middlewares/attempts-middleware");
 exports.authRouter = (0, express_1.Router)({});
 class AuthController {
+    constructor() {
+        this.usersService = new users_service_1.UsersService();
+        this.usersRepository = new users_repository_1.UsersRepository();
+        this.attemptsRepository = new attempts_db_repository_1.AttemptsRepository();
+    }
     login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
-            yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.originalUrl);
+            const user = yield this.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
+            yield this.attemptsRepository.addAttempt(req.ip, req.originalUrl);
             if (!user) {
                 return res.sendStatus(401);
             }
@@ -45,8 +50,8 @@ class AuthController {
     }
     passwordRecovery(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.originalUrl);
-            const user = yield users_db_repository_1.usersRepository.findByLoginOrEmail(req.body.email);
+            yield this.attemptsRepository.addAttempt(req.ip, req.originalUrl);
+            const user = yield this.usersRepository.findByLoginOrEmail(req.body.email);
             if (!user) {
                 return res.sendStatus(204);
             }
@@ -58,8 +63,8 @@ class AuthController {
     }
     newPassword(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.originalUrl);
-            const confirmedUser = yield users_service_1.usersService.confirmRecoveryCode(req.body.recoveryCode);
+            yield this.attemptsRepository.addAttempt(req.ip, req.originalUrl);
+            const confirmedUser = yield this.usersService.confirmRecoveryCode(req.body.recoveryCode);
             const inputPassword = req.body.newPassword;
             if (!confirmedUser) {
                 return res.status(400).send({
@@ -72,7 +77,7 @@ class AuthController {
                 });
             }
             else {
-                yield users_service_1.usersService.createPasswordAndUpdate(confirmedUser.id, inputPassword);
+                yield this.usersService.createPasswordAndUpdate(confirmedUser.id, inputPassword);
                 return res.sendStatus(204);
             }
         });
@@ -100,8 +105,8 @@ class AuthController {
     }
     registration(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newUser = yield users_service_1.usersService.createUserForRegistration(req.body.login, req.body.email, req.body.password);
-            yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.originalUrl);
+            const newUser = yield this.usersService.createUserForRegistration(req.body.login, req.body.email, req.body.password);
+            yield this.attemptsRepository.addAttempt(req.ip, req.originalUrl);
             if (newUser === "email exists") {
                 return res.status(400).send({
                     errorsMessages: [
@@ -127,8 +132,8 @@ class AuthController {
     }
     registrationConfirmation(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const confirmedUser = yield users_service_1.usersService.confirmEmail(req.body.code);
-            yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.originalUrl);
+            const confirmedUser = yield this.usersService.confirmEmail(req.body.code);
+            yield this.attemptsRepository.addAttempt(req.ip, req.originalUrl);
             if (!confirmedUser) {
                 return res.status(400).send({
                     errorsMessages: [
@@ -146,8 +151,8 @@ class AuthController {
     }
     registrationEmailResending(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const confirmedUser = yield users_service_1.usersService.resendConfirmation(req.body.email);
-            yield attempts_db_repository_1.attemptsRepository.addAttempt(req.ip, req.originalUrl);
+            const confirmedUser = yield this.usersService.resendConfirmation(req.body.email);
+            yield this.attemptsRepository.addAttempt(req.ip, req.originalUrl);
             if (confirmedUser === "User doesn't exists") {
                 return res.status(400).send({
                     errorsMessages: [
@@ -193,12 +198,12 @@ class AuthController {
     }
 }
 const authControllerInstance = new AuthController();
-exports.authRouter.post('/login', attempts_middleware_1.attemptsMiddleware, body_auth_validation_1.bodyAuthValidation.loginOrEmail, body_auth_validation_1.bodyAuthValidation.password, input_validation_middleware_1.inputValidationMiddleware, authControllerInstance.login);
-exports.authRouter.post('/password-recovery', attempts_middleware_1.attemptsMiddleware, body_user_validation_1.bodyUserValidation.email, input_validation_middleware_1.inputValidationMiddleware, authControllerInstance.passwordRecovery);
-exports.authRouter.post('/new-password', attempts_middleware_1.attemptsMiddleware, body_user_validation_1.bodyUserValidation.newPassword, body_user_validation_1.bodyUserValidation.recoveryCode, input_validation_middleware_1.inputValidationMiddleware, authControllerInstance.newPassword);
-exports.authRouter.post('/refresh-token', tokens_middleware_1.tokensMiddleware, authControllerInstance.refreshToken);
-exports.authRouter.post('/registration', attempts_middleware_1.attemptsMiddleware, body_user_validation_1.bodyUserValidation.login, body_user_validation_1.bodyUserValidation.email, body_user_validation_1.bodyUserValidation.password, input_validation_middleware_1.inputValidationMiddleware, authControllerInstance.registration);
-exports.authRouter.post('/registration-confirmation', attempts_middleware_1.attemptsMiddleware, authControllerInstance.registrationConfirmation);
-exports.authRouter.post('/registration-email-resending', attempts_middleware_1.attemptsMiddleware, body_user_validation_1.bodyUserValidation.email, input_validation_middleware_1.inputValidationMiddleware, authControllerInstance.registrationEmailResending);
-exports.authRouter.get('/me', auth_middleware_1.authMiddleware, authControllerInstance.userInfo);
-exports.authRouter.post('/logout', tokens_middleware_1.tokensMiddleware, authControllerInstance.logout);
+exports.authRouter.post('/login', attempts_middleware_1.attemptsMiddleware, body_auth_validation_1.bodyAuthValidation.loginOrEmail, body_auth_validation_1.bodyAuthValidation.password, input_validation_middleware_1.inputValidationMiddleware, authControllerInstance.login.bind(authControllerInstance));
+exports.authRouter.post('/password-recovery', attempts_middleware_1.attemptsMiddleware, body_user_validation_1.bodyUserValidation.email, input_validation_middleware_1.inputValidationMiddleware, authControllerInstance.passwordRecovery.bind(authControllerInstance));
+exports.authRouter.post('/new-password', attempts_middleware_1.attemptsMiddleware, body_user_validation_1.bodyUserValidation.newPassword, body_user_validation_1.bodyUserValidation.recoveryCode, input_validation_middleware_1.inputValidationMiddleware, authControllerInstance.newPassword.bind(authControllerInstance));
+exports.authRouter.post('/refresh-token', tokens_middleware_1.tokensMiddleware, authControllerInstance.refreshToken.bind(authControllerInstance));
+exports.authRouter.post('/registration', attempts_middleware_1.attemptsMiddleware, body_user_validation_1.bodyUserValidation.login, body_user_validation_1.bodyUserValidation.email, body_user_validation_1.bodyUserValidation.password, input_validation_middleware_1.inputValidationMiddleware, authControllerInstance.registration.bind(authControllerInstance));
+exports.authRouter.post('/registration-confirmation', attempts_middleware_1.attemptsMiddleware, authControllerInstance.registrationConfirmation.bind(authControllerInstance));
+exports.authRouter.post('/registration-email-resending', attempts_middleware_1.attemptsMiddleware, body_user_validation_1.bodyUserValidation.email, input_validation_middleware_1.inputValidationMiddleware, authControllerInstance.registrationEmailResending.bind(authControllerInstance));
+exports.authRouter.get('/me', auth_middleware_1.authMiddleware, authControllerInstance.userInfo.bind(authControllerInstance));
+exports.authRouter.post('/logout', tokens_middleware_1.tokensMiddleware, authControllerInstance.logout.bind(authControllerInstance));

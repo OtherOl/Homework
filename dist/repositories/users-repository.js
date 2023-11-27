@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.usersRepository = void 0;
+exports.UsersRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
-exports.usersRepository = {
+class UsersRepository {
     getAllUsers(sortBy = "createdAt", sortDirection = "desc", pageNumber, pageSize, searchLoginTerm, searchEmailTerm) {
         return __awaiter(this, void 0, void 0, function* () {
             let sortQuery = {};
@@ -22,13 +22,14 @@ exports.usersRepository = {
                     { email: RegExp(searchEmailTerm, "i") }
                 ]
             };
-            const countUsers = yield DB_Mongo_1.clientUserCollection.countDocuments(filter);
-            const foundUsers = yield DB_Mongo_1.clientUserCollection
-                .find(filter, { projection: { _id: 0, passwordHash: 0, passwordSalt: 0 } })
+            const countUsers = yield DB_Mongo_1.UserModelClass.countDocuments(filter);
+            const foundUsers = yield DB_Mongo_1.UserModelClass
+                .find(filter, { _id: 0, passwordHash: 0, passwordSalt: 0,
+                emailConfirmation: 0, recoveryConfirmation: 0, isConfirmed: 0 })
                 .sort(sortQuery)
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)
-                .toArray();
+                .lean();
             const objects = {
                 pagesCount: Math.ceil(countUsers / pageSize),
                 page: pageNumber,
@@ -38,10 +39,10 @@ exports.usersRepository = {
             };
             return objects;
         });
-    },
+    }
     createUser(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield DB_Mongo_1.clientUserCollection.insertOne(Object.assign({}, inputData));
+            yield DB_Mongo_1.UserModelClass.create(Object.assign({}, inputData));
             return {
                 id: inputData.id,
                 login: inputData.login,
@@ -49,27 +50,56 @@ exports.usersRepository = {
                 createdAt: inputData.createdAt
             };
         });
-    },
+    }
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const deletedUser = yield DB_Mongo_1.clientUserCollection.deleteOne({ id: id });
+            const deletedUser = yield DB_Mongo_1.UserModelClass.deleteOne({ id: id });
             return deletedUser.deletedCount === 1;
         });
-    },
+    }
     findByLoginOrEmail(loginOrEmail) {
         return __awaiter(this, void 0, void 0, function* () {
-            const foundUser = yield DB_Mongo_1.clientUserCollection.findOne({
+            const foundUser = yield DB_Mongo_1.UserModelClass.findOne({
                 $or: [
                     { login: loginOrEmail },
                     { email: loginOrEmail }
                 ]
-            });
+            }).lean();
             return foundUser;
         });
-    },
+    }
     findUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DB_Mongo_1.clientUserCollection.findOne({ id: userId });
+            return DB_Mongo_1.UserModelClass.findOne({ id: userId });
         });
     }
-};
+    findUserByConfirmationCode(code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return DB_Mongo_1.UserModelClass.findOne({ "emailConfirmation.confirmationCode": code });
+        });
+    }
+    findUserByRecoveryCode(code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return DB_Mongo_1.UserModelClass.findOne({ "recoveryConfirmation.recoveryCode": code });
+        });
+    }
+    updateConfirmation(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield DB_Mongo_1.UserModelClass.updateOne({ id: id }, { $set: { isConfirmed: true } });
+            return user.modifiedCount === 1;
+        });
+    }
+    updatePassword(id, passwordHash, passwordSalt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield DB_Mongo_1.UserModelClass.updateOne({ id: id }, { $set: { passwordHash, passwordSalt } });
+            return user.modifiedCount === 1;
+        });
+    }
+    changeConfirmationCode(id, code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let newCode = yield DB_Mongo_1.UserModelClass.updateOne({ id: id }, { $set: { 'emailConfirmation.confirmationCode': code } });
+            return newCode.modifiedCount === 1;
+        });
+    }
+}
+exports.UsersRepository = UsersRepository;

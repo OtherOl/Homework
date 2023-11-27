@@ -1,7 +1,7 @@
 import {devicesViewModel} from "../models/devices-model";
 import {DeviceModelClass} from "../data/DB-Mongo";
 
-class DevicesDbRepository {
+class DevicesRepository {
     async addSession(
         inputData: devicesViewModel
     ) {
@@ -43,4 +43,4 @@ class DevicesDbRepository {
     }
 }
 
-export const devicesRepository = new DevicesDbRepository()
+export const devicesRepository = new DevicesRepository()

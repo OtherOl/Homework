@@ -16,20 +16,35 @@ const authorisation_middleware_1 = require("../middlewares/authorisation-middlew
 const body_user_validation_1 = require("../middlewares/body-user-validation");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 exports.usersRouter = (0, express_1.Router)({});
-exports.usersRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const allUsers = yield users_service_1.usersService.getAllUsers(req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10, req.query.searchLoginTerm, req.query.searchEmailTerm);
-    res.status(200).send(allUsers);
-}));
-exports.usersRouter.post('/', authorisation_middleware_1.authorisationMiddleware, body_user_validation_1.bodyUserValidation.login, body_user_validation_1.bodyUserValidation.password, body_user_validation_1.bodyUserValidation.email, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const createdBlog = yield users_service_1.usersService.createUser(req.body.login, req.body.email, req.body.password);
-    res.status(201).send(createdBlog);
-}));
-exports.usersRouter.delete('/:id', authorisation_middleware_1.authorisationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const deletedUser = yield users_service_1.usersService.deleteUser(req.params.id);
-    if (!deletedUser) {
-        res.sendStatus(404);
+class UsersController {
+    constructor() {
+        this.usersService = new users_service_1.UsersService();
     }
-    else {
-        res.sendStatus(204);
+    getAllUsers(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const allUsers = yield this.usersService.getAllUsers(req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10, req.query.searchLoginTerm, req.query.searchEmailTerm);
+            res.status(200).send(allUsers);
+        });
     }
-}));
+    createUser(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const createdBlog = yield this.usersService.createUser(req.body.login, req.body.email, req.body.password);
+            res.status(201).send(createdBlog);
+        });
+    }
+    deleteUserById(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const deletedUser = yield this.usersService.deleteUser(req.params.id);
+            if (!deletedUser) {
+                res.sendStatus(404);
+            }
+            else {
+                res.sendStatus(204);
+            }
+        });
+    }
+}
+const usersControllerInstance = new UsersController();
+exports.usersRouter.get('/', usersControllerInstance.getAllUsers.bind(usersControllerInstance));
+exports.usersRouter.post('/', authorisation_middleware_1.authorisationMiddleware, body_user_validation_1.bodyUserValidation.login, body_user_validation_1.bodyUserValidation.password, body_user_validation_1.bodyUserValidation.email, input_validation_middleware_1.inputValidationMiddleware, usersControllerInstance.createUser.bind(usersControllerInstance));
+exports.usersRouter.delete('/:id', authorisation_middleware_1.authorisationMiddleware, usersControllerInstance.deleteUserById.bind(usersControllerInstance));

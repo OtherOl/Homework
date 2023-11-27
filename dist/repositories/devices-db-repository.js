@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.devicesRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
-class DevicesDbRepository {
+class DevicesRepository {
     addSession(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield DB_Mongo_1.DeviceModelClass.create(Object.assign({}, inputData));
@@ -45,4 +45,4 @@ class DevicesDbRepository {
         });
     }
 }
-exports.devicesRepository = new DevicesDbRepository();
+exports.devicesRepository = new DevicesRepository();

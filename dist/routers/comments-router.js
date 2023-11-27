@@ -17,40 +17,52 @@ const body_post_validation_1 = require("../middlewares/body-post-validation");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 const jwt_service_1 = require("../application/jwt-service");
 exports.commentsRouter = (0, express_1.Router)({});
-exports.commentsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const comment = yield comments_service_1.commentsService.getCommentById(req.params.id);
-    if (!comment) {
-        res.sendStatus(404);
+class CommentsController {
+    getCommentById(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const comment = yield comments_service_1.commentsService.getCommentById(req.params.id);
+            if (!comment) {
+                res.sendStatus(404);
+            }
+            else {
+                res.status(200).send(comment);
+            }
+        });
     }
-    else {
-        res.status(200).send(comment);
+    updateComment(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const token = req.headers.authorization.split(" ")[1];
+            const userId = yield jwt_service_1.jwtService.getUserIdByToken(token);
+            const updatedComment = yield comments_service_1.commentsService.updateComment(req.params.id, req.body.content);
+            if (!updatedComment) {
+                res.sendStatus(404);
+            }
+            else if (updatedComment.commentatorInfo.userId !== userId) {
+                res.sendStatus(403);
+            }
+            else {
+                res.sendStatus(204);
+            }
+        });
     }
-}));
-exports.commentsRouter.put('/:id', auth_middleware_1.authMiddleware, body_post_validation_1.bodyPostValidation.comment, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = req.headers.authorization.split(" ")[1];
-    const userId = yield jwt_service_1.jwtService.getUserIdByToken(token);
-    const updatedComment = yield comments_service_1.commentsService.updateComment(req.params.id, req.body.content);
-    if (!updatedComment) {
-        res.sendStatus(404);
+    deleteCommentById(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const token = req.headers.authorization.split(" ")[1];
+            const userId = yield jwt_service_1.jwtService.getUserIdByToken(token);
+            const comment = yield comments_service_1.commentsService.deleteCommentById(req.params.commentId);
+            if (!comment) {
+                res.sendStatus(404);
+            }
+            else if (comment.commentatorInfo.userId !== userId) {
+                res.sendStatus(403);
+            }
+            else {
+                res.sendStatus(204);
+            }
+        });
     }
-    else if (updatedComment.commentatorInfo.userId !== userId) {
-        res.sendStatus(403);
-    }
-    else {
-        res.sendStatus(204);
-    }
-}));
-exports.commentsRouter.delete('/:commentId', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = req.headers.authorization.split(" ")[1];
-    const userId = yield jwt_service_1.jwtService.getUserIdByToken(token);
-    const comment = yield comments_service_1.commentsService.deleteCommentById(req.params.commentId);
-    if (!comment) {
-        res.sendStatus(404);
-    }
-    else if (comment.commentatorInfo.userId !== userId) {
-        res.sendStatus(403);
-    }
-    else {
-        res.sendStatus(204);
-    }
-}));
+}
+const commentsControllerInstance = new CommentsController();
+exports.commentsRouter.get('/:id', commentsControllerInstance.getCommentById);
+exports.commentsRouter.put('/:id', auth_middleware_1.authMiddleware, body_post_validation_1.bodyPostValidation.comment, input_validation_middleware_1.inputValidationMiddleware, commentsControllerInstance.updateComment);
+exports.commentsRouter.delete('/:commentId', auth_middleware_1.authMiddleware, commentsControllerInstance.deleteCommentById);

@@ -2,7 +2,7 @@ import {UserModelClass} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
 import {createNewUserModel, userViewModel} from "../models/user-model";
 
-class UsersDbRepository {
+export class UsersRepository {
     async getAllUsers(
         sortBy: string = "createdAt",
         sortDirection: string = "desc",
@@ -121,5 +121,3 @@ class UsersDbRepository {
         return newCode.modifiedCount === 1
     }
 }
-
-export const usersRepository = new UsersDbRepository()

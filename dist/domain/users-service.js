@@ -12,8 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.usersService = void 0;
-const users_db_repository_1 = require("../repositories/users-db-repository");
+exports.UsersService = void 0;
+const users_repository_1 = require("../repositories/users-repository");
 const crypto_1 = require("crypto");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const uuid_1 = require("uuid");
@@ -22,9 +22,13 @@ const email_manager_1 = require("../managers/email-manager");
 const email_adapter_1 = require("../adapters/email-adapter");
 const mongodb_1 = require("mongodb");
 class UsersService {
+    constructor() {
+        this.usersRepository = new users_repository_1.UsersRepository();
+        this.emailAdapter = new email_adapter_1.EmailAdapter();
+    }
     getAllUsers(sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield users_db_repository_1.usersRepository.getAllUsers(sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm);
+            return yield this.usersRepository.getAllUsers(sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm);
         });
     }
     createUser(login, email, password) {
@@ -53,7 +57,7 @@ class UsersService {
                 },
                 isConfirmed: true
             };
-            return yield users_db_repository_1.usersRepository.createUser(newUser);
+            return yield this.usersRepository.createUser(newUser);
         });
     }
     createUserForRegistration(login, email, password) {
@@ -82,21 +86,21 @@ class UsersService {
                 },
                 isConfirmed: false
             };
-            const isExists = yield users_db_repository_1.usersRepository.findByLoginOrEmail(email);
+            const isExists = yield this.usersRepository.findByLoginOrEmail(email);
             if (isExists !== null)
                 return "email exists";
-            const isExistsLogin = yield users_db_repository_1.usersRepository.findByLoginOrEmail(login);
+            const isExistsLogin = yield this.usersRepository.findByLoginOrEmail(login);
             if (isExistsLogin !== null)
                 return "login exists";
             yield email_manager_1.emailManager.sendEmailConfirmationCode(newUser);
-            return yield users_db_repository_1.usersRepository.createUser(newUser);
+            return yield this.usersRepository.createUser(newUser);
         });
     }
     createPasswordAndUpdate(id, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordSalt = yield bcrypt_1.default.genSalt(10);
             const passwordHash = yield this._generateHash(password, passwordSalt);
-            return yield users_db_repository_1.usersRepository.updatePassword(id, passwordHash, passwordSalt);
+            return yield this.usersRepository.updatePassword(id, passwordHash, passwordSalt);
         });
     }
     _generateHash(password, salt) {
@@ -106,12 +110,12 @@ class UsersService {
     }
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield users_db_repository_1.usersRepository.deleteUser(id);
+            return yield this.usersRepository.deleteUser(id);
         });
     }
     checkCredentials(loginOrEmail, password) {
         return __awaiter(this, void 0, void 0, function* () {
-            const foundUser = yield users_db_repository_1.usersRepository.findByLoginOrEmail(loginOrEmail);
+            const foundUser = yield this.usersRepository.findByLoginOrEmail(loginOrEmail);
             if (!foundUser)
                 return false;
             if (!foundUser.isConfirmed)
@@ -127,12 +131,12 @@ class UsersService {
     }
     findUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield users_db_repository_1.usersRepository.findUserById(userId);
+            return yield this.usersRepository.findUserById(userId);
         });
     }
     confirmEmail(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_db_repository_1.usersRepository.findUserByConfirmationCode(code);
+            const user = yield this.usersRepository.findUserByConfirmationCode(code);
             if (user === null)
                 return false;
             if (user.isConfirmed)
@@ -141,12 +145,12 @@ class UsersService {
                 return false;
             if (user.emailConfirmation.expirationDate < new Date())
                 return false;
-            return yield users_db_repository_1.usersRepository.updateConfirmation(user.id);
+            return yield this.usersRepository.updateConfirmation(user.id);
         });
     }
     confirmRecoveryCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_db_repository_1.usersRepository.findUserByRecoveryCode(code);
+            const user = yield this.usersRepository.findUserByRecoveryCode(code);
             if (user === null)
                 return false;
             if (user.recoveryConfirmation.recoveryCode !== code)
@@ -158,16 +162,16 @@ class UsersService {
     }
     resendConfirmation(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_db_repository_1.usersRepository.findByLoginOrEmail(email);
+            const user = yield this.usersRepository.findByLoginOrEmail(email);
             if (user === null)
                 return "User doesn't exists";
             if (user.isConfirmed)
                 return "User already confirmed";
             const confirmationCode = (0, uuid_1.v4)();
-            yield users_db_repository_1.usersRepository.changeConfirmationCode(user.id, confirmationCode);
-            yield email_adapter_1.emailAdapter.resendEmailConfirmationCode(email, confirmationCode);
+            yield this.usersRepository.changeConfirmationCode(user.id, confirmationCode);
+            yield this.emailAdapter.resendEmailConfirmationCode(email, confirmationCode);
             return true;
         });
     }
 }
-exports.usersService = new UsersService();
+exports.UsersService = UsersService;

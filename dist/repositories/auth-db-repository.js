@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
-class AuthDbRepository {
+class AuthRepository {
     blackList(token) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield DB_Mongo_1.AuthModelClass.create({ token });
@@ -23,4 +23,4 @@ class AuthDbRepository {
         });
     }
 }
-exports.authRepository = new AuthDbRepository();
+exports.authRepository = new AuthRepository();

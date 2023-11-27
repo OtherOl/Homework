@@ -3,7 +3,7 @@ import {paginationModel} from "../models/pagination-model";
 import {PostDbModel, PostViewModel} from "../models/post-model";
 import {BlogModelClass, PostModelClass} from "../data/DB-Mongo";
 
-class BlogsDbRepository {
+class BlogsRepository {
     async getAllBlogs(
         searchNameTerm: string,
         sortBy: string = "createdAt",
@@ -99,4 +99,4 @@ class BlogsDbRepository {
     }
 }
 
-export const blogsRepository = new BlogsDbRepository()
+export const blogsRepository = new BlogsRepository()

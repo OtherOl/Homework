@@ -3,7 +3,7 @@ import {paginationModel} from "../models/pagination-model";
 import {commentDbModel} from "../models/comments-model";
 import {CommentModelClass, PostModelClass, UserModelClass} from "../data/DB-Mongo";
 
-class PostsDbRepository {
+class PostsRepository {
     async getAllPosts(
         sortBy: string = "createdAt",
         sortDirection: string = "desc",
@@ -120,4 +120,4 @@ class PostsDbRepository {
     }
 }
 
-export const postsRepository = new PostsDbRepository()
+export const postsRepository = new PostsRepository()
