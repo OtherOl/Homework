@@ -1,17 +1,21 @@
-import {commentsRepository} from "../repositories/comments-db-repository";
+import {CommentsRepository} from "../repositories/comments-db-repository";
 
-class CommentsService {
+export class CommentsService {
+    commentsRepository: CommentsRepository
+    constructor() {
+        this.commentsRepository = new CommentsRepository()
+    }
     async getCommentById(
         id: string
     ) {
-        return await commentsRepository.getCommentById(id)
+        return await this.commentsRepository.getCommentById(id)
     }
 
     async updateComment(
         commentId: string,
         content: string,
     ) {
-        return await commentsRepository.updateComment(
+        return await this.commentsRepository.updateComment(
             commentId,
             content,
         )
@@ -20,8 +24,8 @@ class CommentsService {
     async deleteCommentById(
         commentId: string
     ) {
-        return await commentsRepository.deleteCommentById(commentId)
+        return await this.commentsRepository.deleteCommentById(commentId)
     }
 }
 
-export const commentsService = new CommentsService()
+// export const commentsService = new CommentsService()

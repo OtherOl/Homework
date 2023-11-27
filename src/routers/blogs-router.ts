@@ -1,16 +1,22 @@
 import {Request, Response, Router} from "express";
 import {bodyBlogValidation} from "../middlewares/body-blog-validation";
-import {blogsService} from "../domain/blogs-service";
+import {BlogsService} from "../domain/blogs-service";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {authorisationMiddleware} from "../middlewares/authorisation-middleware";
 import {bodyPostValidation} from "../middlewares/body-post-validation";
-import {postsService} from "../domain/posts-service";
+import {PostsService} from "../domain/posts-service";
 
 export const blogsRouter = Router({})
 
 class BlogsController {
+    blogsService: BlogsService
+    postsService: PostsService
+    constructor() {
+        this.blogsService = new BlogsService()
+        this.postsService = new PostsService()
+    }
     async getAllBlogs(req: Request<{}, {}, {}, blogGeneric>, res: Response) {
-        const allBlogs = await blogsService.getAllBlogs(
+        const allBlogs = await this.blogsService.getAllBlogs(
             req.query.searchNameTerm, req.query.sortBy,
             req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1,
             req.query.pageSize ? +req.query.pageSize : 10
@@ -20,13 +26,13 @@ class BlogsController {
 
     async createBlog(req: Request, res: Response) {
         const {name, description, websiteUrl} = req.body
-        const newBlog = await blogsService.createBlog({name, description, websiteUrl})
+        const newBlog = await this.blogsService.createBlog({name, description, websiteUrl})
 
         res.status(201).send(newBlog)
     }
 
     async getPostByBlogId(req: Request<{ blogId: string }, {}, {}, blogGeneric>, res: Response) {
-        const foundPost = await blogsService.getPostByBlogId(
+        const foundPost = await this.blogsService.getPostByBlogId(
             req.params.blogId, req.query.sortBy,
             req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1,
             req.query.pageSize ? +req.query.pageSize : 10
@@ -43,7 +49,7 @@ class BlogsController {
         const blogId = req.params.blogId
         const {title, shortDescription, content} = req.body
 
-        const newPost = await postsService.createPost({blogId, content, title, shortDescription})
+        const newPost = await this.postsService.createPost({blogId, content, title, shortDescription})
 
         if (!newPost) {
             res.sendStatus(404)
@@ -53,7 +59,7 @@ class BlogsController {
     }
 
     async getBlogById(req: Request, res: Response) {
-        let findBlog = await blogsService.getBlogById(req.params.id)
+        let findBlog = await this.blogsService.getBlogById(req.params.id)
 
         if (!findBlog) {
             res.sendStatus(404)
@@ -65,7 +71,7 @@ class BlogsController {
     async updateBlog(req: Request, res: Response) {
         const {name, description, websiteUrl} = req.body
 
-        const updatedBlog = await blogsService.updateBlog(req.params.id, req.body)
+        const updatedBlog = await this.blogsService.updateBlog(req.params.id, req.body)
 
         if (updatedBlog) {
             res.sendStatus(204)
@@ -75,7 +81,7 @@ class BlogsController {
     }
 
     async deleteBlogById(req: Request, res: Response) {
-        const foundedBlog = await blogsService.deleteBlog(req.params.id)
+        const foundedBlog = await this.blogsService.deleteBlog(req.params.id)
 
         if (!foundedBlog) {
             res.sendStatus(404)
@@ -87,28 +93,28 @@ class BlogsController {
 
 const blogsControllerInstance = new BlogsController()
 
-blogsRouter.get('/', blogsControllerInstance.getAllBlogs)
+blogsRouter.get('/', blogsControllerInstance.getAllBlogs.bind(blogsControllerInstance))
 
 blogsRouter.post('/',
     authorisationMiddleware, bodyBlogValidation.name,
     bodyBlogValidation.description,
     bodyBlogValidation.websiteUrl, inputValidationMiddleware,
-    blogsControllerInstance.createBlog)
+    blogsControllerInstance.createBlog.bind(blogsControllerInstance))
 
-blogsRouter.get('/:blogId/posts', blogsControllerInstance.getPostByBlogId)
+blogsRouter.get('/:blogId/posts', blogsControllerInstance.getPostByBlogId.bind(blogsControllerInstance))
 
 blogsRouter.post('/:blogId/posts',
     authorisationMiddleware, bodyPostValidation.title,
     bodyPostValidation.shortDescription,
     bodyPostValidation.content, inputValidationMiddleware,
-    blogsControllerInstance.createPostForBlog)
+    blogsControllerInstance.createPostForBlog.bind(blogsControllerInstance))
 
-blogsRouter.get('/:id', blogsControllerInstance.getBlogById)
+blogsRouter.get('/:id', blogsControllerInstance.getBlogById.bind(blogsControllerInstance))
 
 blogsRouter.put('/:id',
     authorisationMiddleware, bodyBlogValidation.name,
     bodyBlogValidation.description, bodyBlogValidation.websiteUrl,
     inputValidationMiddleware,
-    blogsControllerInstance.updateBlog)
+    blogsControllerInstance.updateBlog.bind(blogsControllerInstance))
 
-blogsRouter.delete('/:id', authorisationMiddleware, blogsControllerInstance.deleteBlogById)
+blogsRouter.delete('/:id', authorisationMiddleware, blogsControllerInstance.deleteBlogById.bind(blogsControllerInstance))

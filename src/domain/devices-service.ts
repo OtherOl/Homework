@@ -1,8 +1,12 @@
-import {devicesRepository} from "../repositories/devices-db-repository";
+import {DevicesRepository} from "../repositories/devices-db-repository";
 import {jwtService} from "../application/jwt-service";
 import {ObjectId} from "mongodb";
 
-class DevicesService {
+export class DevicesService {
+    devicesRepository: DevicesRepository
+    constructor() {
+        this.devicesRepository = new DevicesRepository()
+    }
     async createSession(
         ip: string,
         title: string = "Chrome 105",
@@ -18,9 +22,9 @@ class DevicesService {
             userId: verifiedToken.userId
         }
 
-        await devicesRepository.addSession(newSession)
+        await this.devicesRepository.addSession(newSession)
         return newSession
     }
 }
 
-export const devicesService = new DevicesService()
+// export const devicesService = new DevicesService()

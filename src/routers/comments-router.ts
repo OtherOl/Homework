@@ -1,5 +1,5 @@
 import {Router, Request, Response} from "express";
-import {commentsService} from "../domain/comments-service";
+import {CommentsService} from "../domain/comments-service";
 import {authMiddleware} from "../middlewares/auth-middleware";
 import {bodyPostValidation} from "../middlewares/body-post-validation";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
@@ -8,8 +8,12 @@ import {jwtService} from "../application/jwt-service";
 export const commentsRouter = Router({})
 
 class CommentsController {
+    commentsService: CommentsService
+    constructor() {
+        this.commentsService = new CommentsService()
+    }
     async getCommentById(req: Request, res: Response) {
-        const comment = await commentsService.getCommentById(req.params.id)
+        const comment = await this.commentsService.getCommentById(req.params.id)
 
         if (!comment) {
             res.sendStatus(404)
@@ -22,7 +26,7 @@ class CommentsController {
         const token = req.headers.authorization!.split(" ")[1]
         const userId = await jwtService.getUserIdByToken(token)
 
-        const updatedComment = await commentsService.updateComment(
+        const updatedComment = await this.commentsService.updateComment(
             req.params.id,
             req.body.content,
         );
@@ -41,7 +45,7 @@ class CommentsController {
         const token = req.headers.authorization!.split(" ")[1]
         const userId = await jwtService.getUserIdByToken(token)
 
-        const comment = await commentsService.deleteCommentById(req.params.commentId);
+        const comment = await this.commentsService.deleteCommentById(req.params.commentId);
 
         if (!comment) {
             res.sendStatus(404)
@@ -55,14 +59,14 @@ class CommentsController {
 
 const commentsControllerInstance = new CommentsController()
 
-commentsRouter.get('/:id', commentsControllerInstance.getCommentById)
+commentsRouter.get('/:id', commentsControllerInstance.getCommentById.bind(commentsControllerInstance))
 
 commentsRouter.put('/:id',
     authMiddleware,
     bodyPostValidation.comment,
     inputValidationMiddleware,
-    commentsControllerInstance.updateComment)
+    commentsControllerInstance.updateComment.bind(commentsControllerInstance))
 
 commentsRouter.delete('/:commentId',
     authMiddleware,
-    commentsControllerInstance.deleteCommentById)
+    commentsControllerInstance.deleteCommentById.bind(commentsControllerInstance))

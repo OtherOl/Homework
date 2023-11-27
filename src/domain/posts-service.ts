@@ -1,16 +1,22 @@
 import {CreatePostModel, PostDbModel, PostViewModel, UpdatePostModel} from "../models/post-model";
 import {randomUUID} from "crypto";
-import {postsRepository} from "../repositories/posts-db-repository";
-import {blogsRepository} from "../repositories/blogs-db-repository";
+import {PostsRepository} from "../repositories/posts-db-repository";
+import {BlogsRepository} from "../repositories/blogs-db-repository";
 
-class PostsService {
+export class PostsService {
+    blogsRepository: BlogsRepository
+    postsRepository: PostsRepository
+    constructor() {
+        this.blogsRepository = new BlogsRepository()
+        this.postsRepository = new PostsRepository()
+    }
     async getAllPosts(
         sortBy: string,
         sortDirection: string,
         pageNumber: number,
         pageSize: number
     ) {
-        return await postsRepository.getAllPosts(
+        return await this.postsRepository.getAllPosts(
             sortBy,
             sortDirection,
             pageNumber,
@@ -19,11 +25,11 @@ class PostsService {
     }
 
     async getPostById(id: string) {
-        return await postsRepository.getPostById(id)
+        return await this.postsRepository.getPostById(id)
     }
 
     async createPost(inputData: CreatePostModel): Promise<PostViewModel | null> {
-        const blog = await blogsRepository.getBlogById(inputData.blogId)
+        const blog = await this.blogsRepository.getBlogById(inputData.blogId)
         if (!blog) return null
 
         const newPost: PostDbModel = {
@@ -36,7 +42,7 @@ class PostsService {
             createdAt: new Date().toISOString()
         }
 
-        await postsRepository.createPost(newPost)
+        await this.postsRepository.createPost(newPost)
         return {
             id: newPost.id,
             title: newPost.title,
@@ -52,13 +58,13 @@ class PostsService {
         id: string,
         inputData: UpdatePostModel
     ) {
-        return await postsRepository.updatePost(id, inputData)
+        return await this.postsRepository.updatePost(id, inputData)
     }
 
     async deletePost(
         id: string
     ) {
-        return await postsRepository.deletePost(id)
+        return await this.postsRepository.deletePost(id)
     }
 
     async createComment(
@@ -66,7 +72,7 @@ class PostsService {
         content: string,
         userId: string
     ) {
-        return await postsRepository.createComment(id, content, userId)
+        return await this.postsRepository.createComment(id, content, userId)
     }
 
     async getCommentById(
@@ -76,7 +82,7 @@ class PostsService {
         sortBy: string,
         sortDirection: string
     ) {
-        return await postsRepository.getCommentById(
+        return await this.postsRepository.getCommentById(
             id,
             pageNumber,
             pageSize,
@@ -86,4 +92,4 @@ class PostsService {
     }
 }
 
-export const postsService = new PostsService()
+// export const postsService = new PostsService()

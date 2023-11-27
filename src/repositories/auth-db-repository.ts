@@ -1,6 +1,6 @@
 import {AuthModelClass} from "../data/DB-Mongo";
 
-class AuthRepository {
+export class AuthRepository {
     async blackList(
         token: string
     ) {

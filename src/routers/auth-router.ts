@@ -5,9 +5,9 @@ import {inputValidationMiddleware} from "../middlewares/input-validation-middlew
 import {bodyAuthValidation} from "../middlewares/body-auth-validation";
 import {authMiddleware} from "../middlewares/auth-middleware";
 import {bodyUserValidation} from "../middlewares/body-user-validation";
-import {authRepository} from "../repositories/auth-db-repository";
-import {devicesService} from "../domain/devices-service";
-import {devicesRepository} from "../repositories/devices-db-repository";
+import {AuthRepository} from "../repositories/auth-db-repository";
+import {DevicesService} from "../domain/devices-service";
+import {DevicesRepository} from "../repositories/devices-db-repository";
 import {tokensMiddleware} from "../middlewares/tokens-middleware";
 import {AttemptsRepository} from "../repositories/attempts-db-repository";
 import {emailManager} from "../managers/email-manager";
@@ -20,10 +20,16 @@ class AuthController {
     usersService: UsersService
     usersRepository: UsersRepository
     attemptsRepository: AttemptsRepository
+    authRepository: AuthRepository
+    devicesRepository: DevicesRepository
+    devicesService: DevicesService
     constructor() {
         this.usersService = new UsersService()
         this.usersRepository = new UsersRepository()
         this.attemptsRepository = new AttemptsRepository()
+        this.authRepository = new AuthRepository()
+        this.devicesRepository = new DevicesRepository()
+        this.devicesService = new DevicesService()
     }
     async login(req: Request, res: Response) {
         const user = await this.usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
@@ -33,7 +39,7 @@ class AuthController {
         } else {
             const token = await jwtService.createJWT(user.id)
             const refreshToken = await jwtService.createRefreshToken(user.id)
-            await devicesService.createSession(req.ip, req.headers['user-agent'], refreshToken)
+            await this.devicesService.createSession(req.ip, req.headers['user-agent'], refreshToken)
 
             res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true})
             return res.status(200).send({"accessToken": token})
@@ -77,17 +83,17 @@ class AuthController {
         const verify = await jwtService.verifyToken(refreshToken)
 
         const getUser = await jwtService.getUserIdByToken(refreshToken)
-        await authRepository.blackList(refreshToken)
+        await this.authRepository.blackList(refreshToken)
 
         const accessToken = await jwtService.createJWT(getUser)
         const newRefreshToken = await jwtService.createNewRefreshToken(getUser, verify.deviceId)
 
-        const newToken = await authRepository.findInvalidToken(newRefreshToken)
+        const newToken = await this.authRepository.findInvalidToken(newRefreshToken)
 
         if (newToken !== null) {
             return res.sendStatus(401)
         } else {
-            await devicesRepository.updateSession(verify.deviceId)
+            await this.devicesRepository.updateSession(verify.deviceId)
             res.cookie('refreshToken', newRefreshToken, {httpOnly: true, secure: true})
             return res.status(200).send({
                 "accessToken": accessToken
@@ -181,8 +187,8 @@ class AuthController {
         const refreshToken = req.cookies.refreshToken
         const verifiedToken = await jwtService.verifyToken(refreshToken)
 
-        await authRepository.blackList(refreshToken);
-        await devicesRepository.deleteSessionById(verifiedToken.deviceId)
+        await this.authRepository.blackList(refreshToken);
+        await this.devicesRepository.deleteSessionById(verifiedToken.deviceId)
         return res.clearCookie('refreshToken').sendStatus(204)
     }
 }

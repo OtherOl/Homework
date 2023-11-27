@@ -1,8 +1,12 @@
 import {randomUUID} from "crypto";
 import {blogModel, createBlogModel} from "../models/blog-model";
-import {blogsRepository} from "../repositories/blogs-db-repository";
+import {BlogsRepository} from "../repositories/blogs-db-repository";
 
-class BlogsService {
+export class BlogsService {
+    blogsRepository: BlogsRepository
+    constructor() {
+        this.blogsRepository = new BlogsRepository()
+    }
     async getAllBlogs(
         searchNameTerm: string,
         sortBy: string,
@@ -10,7 +14,7 @@ class BlogsService {
         pageNumber: number,
         pageSize: number
     ) {
-        return await blogsRepository.getAllBlogs(
+        return await this.blogsRepository.getAllBlogs(
             searchNameTerm,
             sortBy,
             sortDirection,
@@ -26,7 +30,7 @@ class BlogsService {
         pageNumber: number,
         pageSize: number
     ) {
-        return await blogsRepository.getPostByBlogId(
+        return await this.blogsRepository.getPostByBlogId(
             blogId,
             sortBy,
             sortDirection,
@@ -37,7 +41,7 @@ class BlogsService {
 
 
     async getBlogById(id: string) {
-        return await blogsRepository.getBlogById(id)
+        return await this.blogsRepository.getBlogById(id)
     }
 
     async createBlog(inputData: createBlogModel): Promise<blogModel> {
@@ -49,16 +53,16 @@ class BlogsService {
             createdAt: new Date().toISOString(),
             isMembership: false
         }
-        return await blogsRepository.createBlog(newBlog)
+        return await this.blogsRepository.createBlog(newBlog)
     }
 
     async updateBlog(id: string, inputData: blogModel) {
-        return await blogsRepository.updateBlog(id, inputData)
+        return await this.blogsRepository.updateBlog(id, inputData)
     }
 
     async deleteBlog(id: string) {
-        return await blogsRepository.deleteBlog(id)
+        return await this.blogsRepository.deleteBlog(id)
     }
 }
 
-export const blogsService = new BlogsService()
+// export const blogsService = new BlogsService()
