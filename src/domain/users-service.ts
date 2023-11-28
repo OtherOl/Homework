@@ -10,12 +10,10 @@ import {EmailAdapter} from "../adapters/email-adapter";
 import {ObjectId} from "mongodb";
 
 export class UsersService {
-    usersRepository: UsersRepository
-    emailAdapter: EmailAdapter
-    constructor() {
-        this.usersRepository = new UsersRepository()
-        this.emailAdapter = new EmailAdapter()
-    }
+    constructor(
+        protected usersRepository: UsersRepository,
+        protected emailAdapter: EmailAdapter
+    ) {}
 
     async getAllUsers(
         sortBy: string,
@@ -196,4 +194,6 @@ export class UsersService {
     }
 }
 
-export const usersService = new UsersService() // only for middlewares
+const usersRepo = new UsersRepository()
+const email = new EmailAdapter(usersRepo)
+export const usersService = new UsersService(usersRepo, email) // only for middlewares

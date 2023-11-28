@@ -4,12 +4,10 @@ import {PostsRepository} from "../repositories/posts-db-repository";
 import {BlogsRepository} from "../repositories/blogs-db-repository";
 
 export class PostsService {
-    blogsRepository: BlogsRepository
-    postsRepository: PostsRepository
-    constructor() {
-        this.blogsRepository = new BlogsRepository()
-        this.postsRepository = new PostsRepository()
-    }
+    constructor(
+        protected blogsRepository: BlogsRepository,
+        protected postsRepository: PostsRepository
+    ) {}
     async getAllPosts(
         sortBy: string,
         sortDirection: string,

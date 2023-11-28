@@ -3,10 +3,8 @@ import {blogModel, createBlogModel} from "../models/blog-model";
 import {BlogsRepository} from "../repositories/blogs-db-repository";
 
 export class BlogsService {
-    blogsRepository: BlogsRepository
-    constructor() {
-        this.blogsRepository = new BlogsRepository()
-    }
+    constructor(protected blogsRepository: BlogsRepository) {}
+
     async getAllBlogs(
         searchNameTerm: string,
         sortBy: string,

@@ -10,11 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmailAdapter = void 0;
-const users_repository_1 = require("../repositories/users-repository");
 const email_manager_1 = require("../managers/email-manager");
 class EmailAdapter {
-    constructor() {
-        this.usersRepository = new users_repository_1.UsersRepository();
+    constructor(usersRepository) {
+        this.usersRepository = usersRepository;
     }
     resendEmailConfirmationCode(email, code) {
         return __awaiter(this, void 0, void 0, function* () {

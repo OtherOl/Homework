@@ -3,10 +3,7 @@ import {jwtService} from "../application/jwt-service";
 import {ObjectId} from "mongodb";
 
 export class DevicesService {
-    devicesRepository: DevicesRepository
-    constructor() {
-        this.devicesRepository = new DevicesRepository()
-    }
+    constructor(protected devicesRepository: DevicesRepository) {}
     async createSession(
         ip: string,
         title: string = "Chrome 105",
@@ -26,5 +23,3 @@ export class DevicesService {
         return newSession
     }
 }
-
-// export const devicesService = new DevicesService()

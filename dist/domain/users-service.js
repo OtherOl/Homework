@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersService = void 0;
+exports.usersService = exports.UsersService = void 0;
 const users_repository_1 = require("../repositories/users-repository");
 const crypto_1 = require("crypto");
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -22,9 +22,9 @@ const email_manager_1 = require("../managers/email-manager");
 const email_adapter_1 = require("../adapters/email-adapter");
 const mongodb_1 = require("mongodb");
 class UsersService {
-    constructor() {
-        this.usersRepository = new users_repository_1.UsersRepository();
-        this.emailAdapter = new email_adapter_1.EmailAdapter();
+    constructor(usersRepository, emailAdapter) {
+        this.usersRepository = usersRepository;
+        this.emailAdapter = emailAdapter;
     }
     getAllUsers(sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -175,3 +175,6 @@ class UsersService {
     }
 }
 exports.UsersService = UsersService;
+const usersRepo = new users_repository_1.UsersRepository();
+const email = new email_adapter_1.EmailAdapter(usersRepo);
+exports.usersService = new UsersService(usersRepo, email); // only for middlewares

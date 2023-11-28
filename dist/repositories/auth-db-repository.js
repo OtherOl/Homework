@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authRepository = void 0;
+exports.authRepository = exports.AuthRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
 class AuthRepository {
     blackList(token) {
@@ -23,4 +23,5 @@ class AuthRepository {
         });
     }
 }
+exports.AuthRepository = AuthRepository;
 exports.authRepository = new AuthRepository();

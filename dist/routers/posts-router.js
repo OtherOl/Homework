@@ -1,98 +1,17 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRouter = void 0;
 const express_1 = require("express");
 const body_post_validation_1 = require("../middlewares/body-post-validation");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 const authorisation_middleware_1 = require("../middlewares/authorisation-middleware");
-const posts_service_1 = require("../domain/posts-service");
 const auth_middleware_1 = require("../middlewares/auth-middleware");
+const compostion_root_1 = require("../compostion-root");
 exports.postsRouter = (0, express_1.Router)({});
-class PostsController {
-    getAllPosts(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const allPosts = yield posts_service_1.postsService.getAllPosts(req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10);
-            res.status(200).send(allPosts);
-        });
-    }
-    createPost(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { title, shortDescription, content, blogId } = req.body;
-            const newPost = yield posts_service_1.postsService.createPost({ blogId, content, title, shortDescription });
-            res.status(201).send(newPost);
-        });
-    }
-    getPostById(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const foundPost = yield posts_service_1.postsService.getPostById(req.params.id);
-            if (!foundPost) {
-                res.sendStatus(404);
-            }
-            else {
-                res.status(200).send(foundPost);
-            }
-        });
-    }
-    updatePost(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { title, shortDescription, content, blogId } = req.body;
-            const updatedPost = yield posts_service_1.postsService.updatePost(req.params.id, req.body);
-            if (updatedPost) {
-                res.sendStatus(204);
-            }
-            else {
-                res.sendStatus(404);
-            }
-        });
-    }
-    deletePost(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const successDel = yield posts_service_1.postsService.deletePost(req.params.id);
-            if (!successDel) {
-                res.sendStatus(404);
-            }
-            else {
-                res.sendStatus(204);
-            }
-        });
-    }
-    createCommentForPost(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const comment = yield posts_service_1.postsService.createComment(req.params.id, req.body.content, req.user.id);
-            if (!comment) {
-                res.sendStatus(404);
-            }
-            else {
-                res.status(201).send(comment);
-            }
-        });
-    }
-    getCommentById(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const comment = yield posts_service_1.postsService.getCommentById(req.params.id, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10, req.query.sortBy, req.query.sortDirection);
-            if (!comment) {
-                res.sendStatus(404);
-            }
-            else {
-                res.status(200).send(comment);
-            }
-        });
-    }
-}
-const postsControllerInstance = new PostsController();
-exports.postsRouter.get('/', postsControllerInstance.getAllPosts);
-exports.postsRouter.post('/', authorisation_middleware_1.authorisationMiddleware, body_post_validation_1.bodyPostValidation.blogId, body_post_validation_1.bodyPostValidation.title, body_post_validation_1.bodyPostValidation.shortDescription, body_post_validation_1.bodyPostValidation.content, input_validation_middleware_1.inputValidationMiddleware, postsControllerInstance.createPost);
-exports.postsRouter.get('/:id', postsControllerInstance.getPostById);
-exports.postsRouter.put('/:id', authorisation_middleware_1.authorisationMiddleware, body_post_validation_1.bodyPostValidation.title, body_post_validation_1.bodyPostValidation.shortDescription, body_post_validation_1.bodyPostValidation.content, body_post_validation_1.bodyPostValidation.blogId, input_validation_middleware_1.inputValidationMiddleware, postsControllerInstance.updatePost);
-exports.postsRouter.delete('/:id', authorisation_middleware_1.authorisationMiddleware, postsControllerInstance.deletePost);
-exports.postsRouter.post('/:id/comments', auth_middleware_1.authMiddleware, body_post_validation_1.bodyPostValidation.comment, input_validation_middleware_1.inputValidationMiddleware, postsControllerInstance.createCommentForPost);
-exports.postsRouter.get('/:id/comments', postsControllerInstance.getCommentById);
+exports.postsRouter.get('/', compostion_root_1.postsControllerInstance.getAllPosts.bind(compostion_root_1.postsControllerInstance));
+exports.postsRouter.post('/', authorisation_middleware_1.authorisationMiddleware, body_post_validation_1.bodyPostValidation.blogId, body_post_validation_1.bodyPostValidation.title, body_post_validation_1.bodyPostValidation.shortDescription, body_post_validation_1.bodyPostValidation.content, input_validation_middleware_1.inputValidationMiddleware, compostion_root_1.postsControllerInstance.createPost.bind(compostion_root_1.postsControllerInstance));
+exports.postsRouter.get('/:id', compostion_root_1.postsControllerInstance.getPostById.bind(compostion_root_1.postsControllerInstance));
+exports.postsRouter.put('/:id', authorisation_middleware_1.authorisationMiddleware, body_post_validation_1.bodyPostValidation.title, body_post_validation_1.bodyPostValidation.shortDescription, body_post_validation_1.bodyPostValidation.content, body_post_validation_1.bodyPostValidation.blogId, input_validation_middleware_1.inputValidationMiddleware, compostion_root_1.postsControllerInstance.updatePost.bind(compostion_root_1.postsControllerInstance));
+exports.postsRouter.delete('/:id', authorisation_middleware_1.authorisationMiddleware, compostion_root_1.postsControllerInstance.deletePost.bind(compostion_root_1.postsControllerInstance));
+exports.postsRouter.post('/:id/comments', auth_middleware_1.authMiddleware, body_post_validation_1.bodyPostValidation.comment, input_validation_middleware_1.inputValidationMiddleware, compostion_root_1.postsControllerInstance.createCommentForPost.bind(compostion_root_1.postsControllerInstance));
+exports.postsRouter.get('/:id/comments', compostion_root_1.postsControllerInstance.getCommentById.bind(compostion_root_1.postsControllerInstance));

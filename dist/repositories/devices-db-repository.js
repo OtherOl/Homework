@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.devicesRepository = void 0;
+exports.devicesRepository = exports.DevicesRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
 class DevicesRepository {
     addSession(inputData) {
@@ -45,4 +45,5 @@ class DevicesRepository {
         });
     }
 }
-exports.devicesRepository = new DevicesRepository();
+exports.DevicesRepository = DevicesRepository;
+exports.devicesRepository = new DevicesRepository(); // only for middlewares

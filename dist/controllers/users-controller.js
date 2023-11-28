@@ -9,26 +9,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CommentsService = void 0;
-class CommentsService {
-    constructor(commentsRepository) {
-        this.commentsRepository = commentsRepository;
+exports.UsersController = void 0;
+class UsersController {
+    constructor(usersService) {
+        this.usersService = usersService;
     }
-    getCommentById(id) {
+    getAllUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.commentsRepository.getCommentById(id);
+            const allUsers = yield this.usersService.getAllUsers(req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10, req.query.searchLoginTerm, req.query.searchEmailTerm);
+            res.status(200).send(allUsers);
         });
     }
-    updateComment(commentId, content) {
+    createUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.commentsRepository.updateComment(commentId, content);
+            const createdBlog = yield this.usersService.createUser(req.body.login, req.body.email, req.body.password);
+            res.status(201).send(createdBlog);
         });
     }
-    deleteCommentById(commentId) {
+    deleteUserById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.commentsRepository.deleteCommentById(commentId);
+            const deletedUser = yield this.usersService.deleteUser(req.params.id);
+            if (!deletedUser) {
+                res.sendStatus(404);
+            }
+            else {
+                res.sendStatus(204);
+            }
         });
     }
 }
-exports.CommentsService = CommentsService;
-// export const commentsService = new CommentsService()
+exports.UsersController = UsersController;

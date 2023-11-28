@@ -1,10 +1,7 @@
 import {CommentsRepository} from "../repositories/comments-db-repository";
 
 export class CommentsService {
-    commentsRepository: CommentsRepository
-    constructor() {
-        this.commentsRepository = new CommentsRepository()
-    }
+    constructor(protected commentsRepository: CommentsRepository) {}
     async getCommentById(
         id: string
     ) {

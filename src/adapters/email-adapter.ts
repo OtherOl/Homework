@@ -2,10 +2,7 @@ import {UsersRepository} from "../repositories/users-repository";
 import {emailManager} from "../managers/email-manager";
 
 export class EmailAdapter {
-    usersRepository: UsersRepository
-    constructor() {
-        this.usersRepository = new UsersRepository()
-    }
+    constructor(protected usersRepository: UsersRepository) {}
     async resendEmailConfirmationCode(
         email: string,
         code: string

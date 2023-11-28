@@ -9,24 +9,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postsService = void 0;
+exports.PostsService = void 0;
 const crypto_1 = require("crypto");
-const posts_db_repository_1 = require("../repositories/posts-db-repository");
-const blogs_db_repository_1 = require("../repositories/blogs-db-repository");
 class PostsService {
+    constructor(blogsRepository, postsRepository) {
+        this.blogsRepository = blogsRepository;
+        this.postsRepository = postsRepository;
+    }
     getAllPosts(sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield posts_db_repository_1.postsRepository.getAllPosts(sortBy, sortDirection, pageNumber, pageSize);
+            return yield this.postsRepository.getAllPosts(sortBy, sortDirection, pageNumber, pageSize);
         });
     }
     getPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield posts_db_repository_1.postsRepository.getPostById(id);
+            return yield this.postsRepository.getPostById(id);
         });
     }
     createPost(inputData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const blog = yield blogs_db_repository_1.blogsRepository.getBlogById(inputData.blogId);
+            const blog = yield this.blogsRepository.getBlogById(inputData.blogId);
             if (!blog)
                 return null;
             const newPost = {
@@ -38,7 +40,7 @@ class PostsService {
                 blogName: blog.name,
                 createdAt: new Date().toISOString()
             };
-            yield posts_db_repository_1.postsRepository.createPost(newPost);
+            yield this.postsRepository.createPost(newPost);
             return {
                 id: newPost.id,
                 title: newPost.title,
@@ -52,23 +54,24 @@ class PostsService {
     }
     updatePost(id, inputData) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield posts_db_repository_1.postsRepository.updatePost(id, inputData);
+            return yield this.postsRepository.updatePost(id, inputData);
         });
     }
     deletePost(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield posts_db_repository_1.postsRepository.deletePost(id);
+            return yield this.postsRepository.deletePost(id);
         });
     }
     createComment(id, content, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield posts_db_repository_1.postsRepository.createComment(id, content, userId);
+            return yield this.postsRepository.createComment(id, content, userId);
         });
     }
     getCommentById(id, pageNumber, pageSize, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield posts_db_repository_1.postsRepository.getCommentById(id, pageNumber, pageSize, sortBy, sortDirection);
+            return yield this.postsRepository.getCommentById(id, pageNumber, pageSize, sortBy, sortDirection);
         });
     }
 }
-exports.postsService = new PostsService();
+exports.PostsService = PostsService;
+// export const postsService = new PostsService()
