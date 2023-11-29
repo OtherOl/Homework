@@ -12,17 +12,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentsController = void 0;
 const jwt_service_1 = require("../application/jwt-service");
 class CommentsController {
-    constructor(commentsService) {
+    constructor(commentsService, likesService) {
         this.commentsService = commentsService;
+        this.likesService = likesService;
     }
     getCommentById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield this.commentsService.getCommentById(req.params.id);
             if (!comment) {
-                res.sendStatus(404);
+                return res.sendStatus(404);
             }
             else {
-                res.status(200).send(comment);
+                return res.status(200).send(comment);
             }
         });
     }
@@ -56,6 +57,25 @@ class CommentsController {
             else {
                 res.sendStatus(204);
             }
+        });
+    }
+    doLikeDislike(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const refreshToken = req.cookies.refreshToken;
+            const userId = yield jwt_service_1.jwtService.getUserIdByToken(refreshToken);
+            const comment = yield this.commentsService.getCommentById(req.params.id);
+            if (!comment)
+                return res.sendStatus(404);
+            if (req.body.likeStatus === "Like") {
+                yield this.likesService.createLike("Like", userId, comment.id);
+                return res.sendStatus(204);
+            }
+            if (req.body.likeStatus === "Dislike") {
+                yield this.likesService.createDislike("Dislike", userId, comment.id);
+                return res.sendStatus(204);
+            }
+            if (req.body.likeStatus === "None")
+                return res.sendStatus(204);
         });
     }
 }

@@ -72,7 +72,12 @@ class PostsRepository {
                         userId: foundUser.id,
                         userLogin: foundUser.login
                     },
-                    createdAt: new Date().toISOString()
+                    createdAt: new Date().toISOString(),
+                    likesInfo: {
+                        likesCount: 0,
+                        dislikesCount: 0,
+                        myStatus: "None"
+                    }
                 };
                 yield DB_Mongo_1.CommentModelClass.create(Object.assign({}, comment));
                 return comment;

@@ -3,33 +3,33 @@ import {bodyPostValidation} from "../middlewares/body-post-validation";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {authorisationMiddleware} from "../middlewares/authorisation-middleware";
 import {authMiddleware} from "../middlewares/auth-middleware";
-import {postsControllerInstance} from "../compostion-root";
+import {postsController} from "../compostion-root";
 
 export const postsRouter = Router({})
 
-postsRouter.get('/', postsControllerInstance.getAllPosts.bind(postsControllerInstance))
+postsRouter.get('/', postsController.getAllPosts.bind(postsController))
 
 postsRouter.post('/',
     authorisationMiddleware, bodyPostValidation.blogId,
     bodyPostValidation.title, bodyPostValidation.shortDescription,
     bodyPostValidation.content, inputValidationMiddleware,
-    postsControllerInstance.createPost.bind(postsControllerInstance))
+    postsController.createPost.bind(postsController))
 
-postsRouter.get('/:id', postsControllerInstance.getPostById.bind(postsControllerInstance))
+postsRouter.get('/:id', postsController.getPostById.bind(postsController))
 
 postsRouter.put('/:id',
     authorisationMiddleware, bodyPostValidation.title,
     bodyPostValidation.shortDescription, bodyPostValidation.content,
     bodyPostValidation.blogId, inputValidationMiddleware,
-    postsControllerInstance.updatePost.bind(postsControllerInstance))
+    postsController.updatePost.bind(postsController))
 
 postsRouter.delete('/:id',
     authorisationMiddleware,
-    postsControllerInstance.deletePost.bind(postsControllerInstance))
+    postsController.deletePost.bind(postsController))
 
 postsRouter.post('/:id/comments',
     authMiddleware,
     bodyPostValidation.comment, inputValidationMiddleware,
-    postsControllerInstance.createCommentForPost.bind(postsControllerInstance))
+    postsController.createCommentForPost.bind(postsController))
 
-postsRouter.get('/:id/comments', postsControllerInstance.getCommentById.bind(postsControllerInstance))
+postsRouter.get('/:id/comments', postsController.getCommentById.bind(postsController))

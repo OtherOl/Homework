@@ -1,16 +1,22 @@
 import {CommentsService} from "../domain/comments-service";
 import {Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
+import {LikesService} from "../domain/likes-service";
 
 export class CommentsController {
-    constructor(protected commentsService: CommentsService) {}
+    constructor(
+        protected commentsService: CommentsService,
+        protected likesService: LikesService
+        ) {
+    }
+
     async getCommentById(req: Request, res: Response) {
         const comment = await this.commentsService.getCommentById(req.params.id)
 
         if (!comment) {
-            res.sendStatus(404)
+            return res.sendStatus(404)
         } else {
-            res.status(200).send(comment)
+            return res.status(200).send(comment)
         }
     }
 
@@ -46,5 +52,21 @@ export class CommentsController {
         } else {
             res.sendStatus(204)
         }
+    }
+
+    async doLikeDislike(req: Request, res: Response) {
+        const refreshToken = req.cookies.refreshToken
+        const userId = await jwtService.getUserIdByToken(refreshToken)
+        const comment = await this.commentsService.getCommentById(req.params.id)
+        if (!comment) return res.sendStatus(404)
+        if (req.body.likeStatus === "Like") {
+            await this.likesService.createLike("Like", userId, comment.id)
+            return res.sendStatus(204)
+        }
+        if (req.body.likeStatus === "Dislike") {
+            await this.likesService.createDislike("Dislike", userId, comment.id)
+            return res.sendStatus(204)
+        }
+        if (req.body.likeStatus === "None") return res.sendStatus(204)
     }
 }

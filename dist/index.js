@@ -37,6 +37,7 @@ exports.app.delete('/testing/all-data', (req, res) => __awaiter(void 0, void 0, 
     yield DB_Mongo_1.AuthModelClass.deleteMany({});
     yield DB_Mongo_1.DeviceModelClass.deleteMany({});
     yield DB_Mongo_1.AttemptModelClass.deleteMany({});
+    yield DB_Mongo_1.LikeModelClass.deleteMany({});
     res.sendStatus(204);
 }));
 exports.app.use(express_1.default.json());

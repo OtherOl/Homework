@@ -10,12 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.attemptsMiddleware = void 0;
-const attempts_db_repository_1 = require("../repositories/attempts-db-repository");
+const attempts_repository_1 = require("../repositories/attempts-repository");
 const attemptsMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const ip = req.ip;
     const url = req.originalUrl;
     const date = new Date();
-    const attempts = yield attempts_db_repository_1.attemptsRepository.getAttemptsByIp(ip, url, date);
+    const attempts = yield attempts_repository_1.attemptsRepository.getAttemptsByIp(ip, url, date);
     if (attempts > 4) {
         return res.sendStatus(429);
     }

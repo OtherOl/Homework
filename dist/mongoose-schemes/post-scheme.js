@@ -13,4 +13,4 @@ exports.postScheme = new mongoose_1.default.Schema({
     blogId: String,
     blogName: String,
     createdAt: String
-});
+}, { versionKey: false });

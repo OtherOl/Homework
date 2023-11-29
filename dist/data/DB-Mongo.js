@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.runDb = exports.AttemptModelClass = exports.DeviceModelClass = exports.AuthModelClass = exports.CommentModelClass = exports.UserModelClass = exports.BlogModelClass = exports.PostModelClass = void 0;
+exports.runDb = exports.LikeModelClass = exports.AttemptModelClass = exports.DeviceModelClass = exports.AuthModelClass = exports.CommentModelClass = exports.UserModelClass = exports.BlogModelClass = exports.PostModelClass = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const post_scheme_1 = require("../mongoose-schemes/post-scheme");
@@ -22,6 +22,7 @@ const comment_scheme_1 = require("../mongoose-schemes/comment-scheme");
 const auth_scheme_1 = require("../mongoose-schemes/auth-scheme");
 const device_scheme_1 = require("../mongoose-schemes/device-scheme");
 const attempt_scheme_1 = require("../mongoose-schemes/attempt-scheme");
+const likes_scheme_1 = require("../mongoose-schemes/likes-scheme");
 dotenv_1.default.config();
 const mongoUri = process.env.MONGO_URL || `mongodb://0.0.0.0:27017/blogs_posts`;
 console.log(process.env.MONGO_URL);
@@ -35,6 +36,7 @@ exports.CommentModelClass = mongoose_1.default.model('comments', comment_scheme_
 exports.AuthModelClass = mongoose_1.default.model('auth', auth_scheme_1.authScheme);
 exports.DeviceModelClass = mongoose_1.default.model('devices', device_scheme_1.deviceScheme);
 exports.AttemptModelClass = mongoose_1.default.model('attempts', attempt_scheme_1.attemptScheme);
+exports.LikeModelClass = mongoose_1.default.model('likes', likes_scheme_1.likesScheme);
 function runDb() {
     return __awaiter(this, void 0, void 0, function* () {
         try {

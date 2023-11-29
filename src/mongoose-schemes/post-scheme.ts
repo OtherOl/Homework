@@ -9,4 +9,4 @@ export const postScheme = new mongoose.Schema<PostDbModel>({
     blogId: String,
     blogName: String,
     createdAt: String
-})
+}, {versionKey: false})

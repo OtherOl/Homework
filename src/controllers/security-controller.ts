@@ -1,4 +1,4 @@
-import {DevicesRepository} from "../repositories/devices-db-repository";
+import {DevicesRepository} from "../repositories/devices-repository";
 import {Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
 

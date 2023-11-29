@@ -9,4 +9,4 @@ exports.attemptScheme = new mongoose_1.default.Schema({
     IP: String,
     URL: String,
     date: Date
-});
+}, { versionKey: false });

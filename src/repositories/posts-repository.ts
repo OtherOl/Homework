@@ -76,7 +76,12 @@ export class PostsRepository {
                     userId: foundUser!.id,
                     userLogin: foundUser!.login
                 },
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                likesInfo: {
+                    likesCount: 0,
+                    dislikesCount: 0,
+                    myStatus: "None"
+                }
             }
             await CommentModelClass.create({...comment})
 

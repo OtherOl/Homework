@@ -2,18 +2,24 @@ import {Router} from "express";
 import {authMiddleware} from "../middlewares/auth-middleware";
 import {bodyPostValidation} from "../middlewares/body-post-validation";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
-import {commentsControllerInstance} from "../compostion-root";
+import {commentsController} from "../compostion-root";
 
 export const commentsRouter = Router({})
 
-commentsRouter.get('/:id', commentsControllerInstance.getCommentById.bind(commentsControllerInstance))
+commentsRouter.get('/:id', commentsController.getCommentById.bind(commentsController))
 
 commentsRouter.put('/:id',
     authMiddleware,
     bodyPostValidation.comment,
     inputValidationMiddleware,
-    commentsControllerInstance.updateComment.bind(commentsControllerInstance))
+    commentsController.updateComment.bind(commentsController))
+
+commentsRouter.put('/:id/like-status',
+    authMiddleware,
+    bodyPostValidation.likeStatus,
+    inputValidationMiddleware,
+    commentsController.doLikeDislike.bind(commentsController))
 
 commentsRouter.delete('/:commentId',
     authMiddleware,
-    commentsControllerInstance.deleteCommentById.bind(commentsControllerInstance))
+    commentsController.deleteCommentById.bind(commentsController))

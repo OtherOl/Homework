@@ -3,32 +3,32 @@ import {bodyBlogValidation} from "../middlewares/body-blog-validation";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {authorisationMiddleware} from "../middlewares/authorisation-middleware";
 import {bodyPostValidation} from "../middlewares/body-post-validation";
-import {blogsControllerInstance} from "../compostion-root";
+import {blogsController} from "../compostion-root";
 
 export const blogsRouter = Router({})
 
-blogsRouter.get('/', blogsControllerInstance.getAllBlogs.bind(blogsControllerInstance))
+blogsRouter.get('/', blogsController.getAllBlogs.bind(blogsController))
 
 blogsRouter.post('/',
     authorisationMiddleware, bodyBlogValidation.name,
     bodyBlogValidation.description,
     bodyBlogValidation.websiteUrl, inputValidationMiddleware,
-    blogsControllerInstance.createBlog.bind(blogsControllerInstance))
+    blogsController.createBlog.bind(blogsController))
 
-blogsRouter.get('/:blogId/posts', blogsControllerInstance.getPostByBlogId.bind(blogsControllerInstance))
+blogsRouter.get('/:blogId/posts', blogsController.getPostByBlogId.bind(blogsController))
 
 blogsRouter.post('/:blogId/posts',
     authorisationMiddleware, bodyPostValidation.title,
     bodyPostValidation.shortDescription,
     bodyPostValidation.content, inputValidationMiddleware,
-    blogsControllerInstance.createPostForBlog.bind(blogsControllerInstance))
+    blogsController.createPostForBlog.bind(blogsController))
 
-blogsRouter.get('/:id', blogsControllerInstance.getBlogById.bind(blogsControllerInstance))
+blogsRouter.get('/:id', blogsController.getBlogById.bind(blogsController))
 
 blogsRouter.put('/:id',
     authorisationMiddleware, bodyBlogValidation.name,
     bodyBlogValidation.description, bodyBlogValidation.websiteUrl,
     inputValidationMiddleware,
-    blogsControllerInstance.updateBlog.bind(blogsControllerInstance))
+    blogsController.updateBlog.bind(blogsController))
 
-blogsRouter.delete('/:id', authorisationMiddleware, blogsControllerInstance.deleteBlogById.bind(blogsControllerInstance))
+blogsRouter.delete('/:id', authorisationMiddleware, blogsController.deleteBlogById.bind(blogsController))

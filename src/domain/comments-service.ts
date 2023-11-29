@@ -1,4 +1,4 @@
-import {CommentsRepository} from "../repositories/comments-db-repository";
+import {CommentsRepository} from "../repositories/comments-repository";
 
 export class CommentsService {
     constructor(protected commentsRepository: CommentsRepository) {}
@@ -23,6 +23,12 @@ export class CommentsService {
     ) {
         return await this.commentsRepository.deleteCommentById(commentId)
     }
-}
 
-// export const commentsService = new CommentsService()
+    async updateLikesForComment(
+        commentId: string,
+        type: string,
+        userId: string
+    ) {
+
+    }
+}

@@ -9,29 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CommentsService = void 0;
-class CommentsService {
-    constructor(commentsRepository) {
-        this.commentsRepository = commentsRepository;
-    }
-    getCommentById(id) {
+exports.authRepository = exports.AuthRepository = void 0;
+const DB_Mongo_1 = require("../data/DB-Mongo");
+class AuthRepository {
+    blackList(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.commentsRepository.getCommentById(id);
+            return yield DB_Mongo_1.AuthModelClass.create({ token });
         });
     }
-    updateComment(commentId, content) {
+    findInvalidToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.commentsRepository.updateComment(commentId, content);
-        });
-    }
-    deleteCommentById(commentId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.commentsRepository.deleteCommentById(commentId);
-        });
-    }
-    updateLikesForComment(commentId, type, userId) {
-        return __awaiter(this, void 0, void 0, function* () {
+            return DB_Mongo_1.AuthModelClass.findOne({ token: token });
         });
     }
 }
-exports.CommentsService = CommentsService;
+exports.AuthRepository = AuthRepository;
+exports.authRepository = new AuthRepository();

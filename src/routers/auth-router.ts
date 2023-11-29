@@ -5,49 +5,49 @@ import {authMiddleware} from "../middlewares/auth-middleware";
 import {bodyUserValidation} from "../middlewares/body-user-validation";
 import {tokensMiddleware} from "../middlewares/tokens-middleware";
 import {attemptsMiddleware} from "../middlewares/attempts-middleware";
-import {authControllerInstance} from "../compostion-root";
+import {authController} from "../compostion-root";
 
 export const authRouter = Router({})
 
 authRouter.post('/login',
     attemptsMiddleware,
     bodyAuthValidation.loginOrEmail, bodyAuthValidation.password,
-    inputValidationMiddleware, authControllerInstance.login.bind(authControllerInstance))
+    inputValidationMiddleware, authController.login.bind(authController))
 
 authRouter.post('/password-recovery',
     attemptsMiddleware,
     bodyUserValidation.email, inputValidationMiddleware,
-    authControllerInstance.passwordRecovery.bind(authControllerInstance))
+    authController.passwordRecovery.bind(authController))
 
 authRouter.post('/new-password',
     attemptsMiddleware,
     bodyUserValidation.newPassword, bodyUserValidation.recoveryCode,
     inputValidationMiddleware,
-    authControllerInstance.newPassword.bind(authControllerInstance))
+    authController.newPassword.bind(authController))
 
 authRouter.post('/refresh-token',
     tokensMiddleware,
-    authControllerInstance.refreshToken.bind(authControllerInstance))
+    authController.refreshToken.bind(authController))
 
 authRouter.post('/registration',
     attemptsMiddleware,
     bodyUserValidation.login, bodyUserValidation.email,
     bodyUserValidation.password, inputValidationMiddleware,
-    authControllerInstance.registration.bind(authControllerInstance))
+    authController.registration.bind(authController))
 
 authRouter.post('/registration-confirmation',
     attemptsMiddleware,
-    authControllerInstance.registrationConfirmation.bind(authControllerInstance))
+    authController.registrationConfirmation.bind(authController))
 
 authRouter.post('/registration-email-resending',
     attemptsMiddleware,
     bodyUserValidation.email, inputValidationMiddleware,
-    authControllerInstance.registrationEmailResending.bind(authControllerInstance))
+    authController.registrationEmailResending.bind(authController))
 
 authRouter.get('/me',
     authMiddleware,
-    authControllerInstance.userInfo.bind(authControllerInstance))
+    authController.userInfo.bind(authController))
 
 authRouter.post('/logout',
     tokensMiddleware,
-    authControllerInstance.logout.bind(authControllerInstance))
+    authController.logout.bind(authController))

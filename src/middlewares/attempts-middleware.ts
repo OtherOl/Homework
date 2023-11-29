@@ -1,5 +1,5 @@
 import {NextFunction, Response, Request} from "express";
-import {attemptsRepository} from "../repositories/attempts-db-repository";
+import {attemptsRepository} from "../repositories/attempts-repository";
 
 export const attemptsMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const ip = req.ip

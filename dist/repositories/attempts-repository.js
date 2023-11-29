@@ -8,30 +8,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CommentsService = void 0;
-class CommentsService {
-    constructor(commentsRepository) {
-        this.commentsRepository = commentsRepository;
-    }
-    getCommentById(id) {
+exports.attemptsRepository = exports.AttemptsRepository = void 0;
+const DB_Mongo_1 = require("../data/DB-Mongo");
+const subSeconds_1 = __importDefault(require("date-fns/subSeconds"));
+class AttemptsRepository {
+    addAttempt(ip, url) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.commentsRepository.getCommentById(id);
+            yield DB_Mongo_1.AttemptModelClass.create({
+                IP: ip,
+                URL: url,
+                date: new Date()
+            });
+            return;
         });
     }
-    updateComment(commentId, content) {
+    getAttemptsByIp(ip, url, date) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.commentsRepository.updateComment(commentId, content);
-        });
-    }
-    deleteCommentById(commentId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.commentsRepository.deleteCommentById(commentId);
-        });
-    }
-    updateLikesForComment(commentId, type, userId) {
-        return __awaiter(this, void 0, void 0, function* () {
+            return DB_Mongo_1.AttemptModelClass.countDocuments({ IP: ip, URL: url, date: { $gt: (0, subSeconds_1.default)(date, 10) } });
         });
     }
 }
-exports.CommentsService = CommentsService;
+exports.AttemptsRepository = AttemptsRepository;
+exports.attemptsRepository = new AttemptsRepository();

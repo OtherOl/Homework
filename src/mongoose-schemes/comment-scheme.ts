@@ -8,5 +8,10 @@ export const commentScheme = new mongoose.Schema<commentDbModel>({
         userId: String,
         userLogin: String
     },
-    createdAt: String
-})
+    createdAt: String,
+    likesInfo: {
+        likesCount: Number,
+        dislikesCount: Number,
+        myStatus: String
+    }
+}, {versionKey: false})

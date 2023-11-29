@@ -1,17 +1,17 @@
 import {Router} from "express";
 import {tokensMiddleware} from "../middlewares/tokens-middleware";
-import {securityControllerInstance} from "../compostion-root";
+import {securityController} from "../compostion-root";
 
 export const securityRouter = Router({})
 
 securityRouter.get('/devices',
     tokensMiddleware,
-    securityControllerInstance.getAllSessions.bind(securityControllerInstance))
+    securityController.getAllSessions.bind(securityController))
 
 securityRouter.delete('/devices',
     tokensMiddleware,
-    securityControllerInstance.deleteSessionsExceptOne.bind(securityControllerInstance))
+    securityController.deleteSessionsExceptOne.bind(securityController))
 
 securityRouter.delete('/devices/:deviceId',
     tokensMiddleware,
-    securityControllerInstance.deleteSessionById.bind(securityControllerInstance))
+    securityController.deleteSessionById.bind(securityController))

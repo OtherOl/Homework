@@ -1,8 +1,8 @@
 import {UsersService} from "../domain/users-service";
 import {UsersRepository} from "../repositories/users-repository";
-import {AttemptsRepository} from "../repositories/attempts-db-repository";
-import {AuthRepository} from "../repositories/auth-db-repository";
-import {DevicesRepository} from "../repositories/devices-db-repository";
+import {AttemptsRepository} from "../repositories/attempts-repository";
+import {AuthRepository} from "../repositories/auth-repository";
+import {DevicesRepository} from "../repositories/devices-repository";
 import {DevicesService} from "../domain/devices-service";
 import {Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";

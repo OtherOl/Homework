@@ -9,29 +9,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CommentsService = void 0;
-class CommentsService {
-    constructor(commentsRepository) {
-        this.commentsRepository = commentsRepository;
-    }
-    getCommentById(id) {
+exports.LikesRepository = void 0;
+const DB_Mongo_1 = require("../data/DB-Mongo");
+class LikesRepository {
+    createNewLike(zeroLike) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.commentsRepository.getCommentById(id);
+            return yield DB_Mongo_1.LikeModelClass.insertMany(zeroLike);
         });
     }
-    updateComment(commentId, content) {
+    getLikeInfo(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.commentsRepository.updateComment(commentId, content);
+            return DB_Mongo_1.LikeModelClass.findOne({ userId: userId });
         });
     }
-    deleteCommentById(commentId) {
+    updateLike(newLike, likeId, zeroId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.commentsRepository.deleteCommentById(commentId);
-        });
-    }
-    updateLikesForComment(commentId, type, userId) {
-        return __awaiter(this, void 0, void 0, function* () {
+            return DB_Mongo_1.LikeModelClass.updateOne({ _id: likeId || zeroId }, { $set: { type: newLike.type, userId: newLike.userId, commentId: newLike.commentId } });
         });
     }
 }
-exports.CommentsService = CommentsService;
+exports.LikesRepository = LikesRepository;

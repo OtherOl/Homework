@@ -8,7 +8,7 @@ import {
     CommentModelClass,
     PostModelClass, DeviceModelClass,
     UserModelClass,
-    runDb
+    runDb, LikeModelClass
 } from "./data/DB-Mongo";
 import {usersRouter} from "./routers/users-router";
 import {authRouter} from "./routers/auth-router";
@@ -33,6 +33,7 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
     await AuthModelClass.deleteMany({})
     await DeviceModelClass.deleteMany({})
     await AttemptModelClass.deleteMany({})
+    await LikeModelClass.deleteMany({})
 
     res.sendStatus(204)
 })

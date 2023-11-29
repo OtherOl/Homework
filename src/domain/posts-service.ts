@@ -1,7 +1,7 @@
 import {CreatePostModel, PostDbModel, PostViewModel, UpdatePostModel} from "../models/post-model";
 import {randomUUID} from "crypto";
-import {PostsRepository} from "../repositories/posts-db-repository";
-import {BlogsRepository} from "../repositories/blogs-db-repository";
+import {PostsRepository} from "../repositories/posts-repository";
+import {BlogsRepository} from "../repositories/blogs-repository";
 
 export class PostsService {
     constructor(

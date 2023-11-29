@@ -40,4 +40,34 @@ export class CommentsRepository {
             return comment
         }
     }
+
+    async updateLikesInfo(
+        commentId: string,
+        type: string
+    ) {
+        const comment: commentDbModel | null = await CommentModelClass.findOne({id: commentId})
+
+        if (!comment) {
+            return false
+        } else {
+            await CommentModelClass.updateOne({id: commentId}, {$set: {
+                "likesInfo.myStatus": type}, $inc: {"likesInfo.likesCount": 1}})
+            return comment
+        }
+    }
+
+    async updateDislikesInfo(
+        commentId: string,
+        type: string
+    ) {
+        const comment: commentDbModel | null = await CommentModelClass.findOne({id: commentId})
+
+        if (!comment) {
+            return false
+        } else {
+            await CommentModelClass.updateOne({id: commentId}, {$set: {
+                    "likesInfo.myStatus": type}, $inc: {"likesInfo.dislikesCount": 1}})
+            return comment
+        }
+    }
 }
