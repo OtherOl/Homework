@@ -16,22 +16,24 @@ export class LikesService {
         return await this.likesRepository.getLikeInfo(userId)
     }
 
-    async createLike(
-        type: string,
-        userId: string,
-        commentId: string
+    async createZeroLike(
+        userId: string
     ) {
-        const like = await this.likesRepository.getLikeInfo(userId)
         const zeroLike = {
             _id: new ObjectId(),
             type: "None",
             userId: userId,
             commentId: ""
         }
-        if (!like) {
-            await this.likesRepository.createNewLike(zeroLike)
-        }
+            return await this.likesRepository.createNewLike(zeroLike)
+    }
 
+    async createLike(
+        type: string,
+        userId: string,
+        commentId: string,
+        like: likesModel
+    ) {
         const newLike: likesModel = {
             _id: new ObjectId(),
             type: type,
@@ -39,30 +41,21 @@ export class LikesService {
             commentId: commentId
         }
 
-        if (like!.type !== "Like") {
-            if(like!.type === "Dislike") {
+        if (like.type !== "Like") {
+            if(like.type === "Dislike") {
                 await this.commentsRepository.decreaseDislikes(commentId, type)
             }
             await this.commentsRepository.updateLikesInfo(commentId, type)
-            return await this.likesRepository.updateLike(newLike, like!._id, zeroLike._id)
+            return await this.likesRepository.updateLike(newLike, like._id)
         }
     }
 
     async createDislike(
         type: string,
         userId: string,
-        commentId: string
+        commentId: string,
+        like: likesModel
     ) {
-        const like = await this.likesRepository.getLikeInfo(userId)
-        const zeroLike = {
-            _id: new ObjectId(),
-            type: "None",
-            userId: userId,
-            commentId: ""
-        }
-        if (!like) {
-            await this.likesRepository.createNewLike(zeroLike)
-        }
         const newDislike: likesModel = {
             _id: new ObjectId(),
             type: type,
@@ -70,11 +63,11 @@ export class LikesService {
             commentId: commentId
         }
 
-        if (like!.type !== "Dislike") {
-            if (like!.type === "Like") {
+        if (like.type !== "Dislike") {
+            if (like.type === "Like") {
                 await this.commentsRepository.decreaseLikes(commentId, type)
             }
-            await this.likesRepository.updateLike(newDislike, like!._id, zeroLike._id)
+            await this.likesRepository.updateLike(newDislike, like._id)
             return await this.commentsRepository.updateDislikesInfo(commentId, userId)
         }
     }

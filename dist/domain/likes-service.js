@@ -21,18 +21,19 @@ class LikesService {
             return yield this.likesRepository.getLikeInfo(userId);
         });
     }
-    createLike(type, userId, commentId) {
+    createZeroLike(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const like = yield this.likesRepository.getLikeInfo(userId);
             const zeroLike = {
                 _id: new mongodb_1.ObjectId(),
                 type: "None",
                 userId: userId,
                 commentId: ""
             };
-            if (!like) {
-                yield this.likesRepository.createNewLike(zeroLike);
-            }
+            return yield this.likesRepository.createNewLike(zeroLike);
+        });
+    }
+    createLike(type, userId, commentId, like) {
+        return __awaiter(this, void 0, void 0, function* () {
             const newLike = {
                 _id: new mongodb_1.ObjectId(),
                 type: type,
@@ -44,22 +45,12 @@ class LikesService {
                     yield this.commentsRepository.decreaseDislikes(commentId, type);
                 }
                 yield this.commentsRepository.updateLikesInfo(commentId, type);
-                return yield this.likesRepository.updateLike(newLike, like._id, zeroLike._id);
+                return yield this.likesRepository.updateLike(newLike, like._id);
             }
         });
     }
-    createDislike(type, userId, commentId) {
+    createDislike(type, userId, commentId, like) {
         return __awaiter(this, void 0, void 0, function* () {
-            const like = yield this.likesRepository.getLikeInfo(userId);
-            const zeroLike = {
-                _id: new mongodb_1.ObjectId(),
-                type: "None",
-                userId: userId,
-                commentId: ""
-            };
-            if (!like) {
-                yield this.likesRepository.createNewLike(zeroLike);
-            }
             const newDislike = {
                 _id: new mongodb_1.ObjectId(),
                 type: type,
@@ -70,7 +61,7 @@ class LikesService {
                 if (like.type === "Like") {
                     yield this.commentsRepository.decreaseLikes(commentId, type);
                 }
-                yield this.likesRepository.updateLike(newDislike, like._id, zeroLike._id);
+                yield this.likesRepository.updateLike(newDislike, like._id);
                 return yield this.commentsRepository.updateDislikesInfo(commentId, userId);
             }
         });

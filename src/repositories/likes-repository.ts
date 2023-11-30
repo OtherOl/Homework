@@ -17,10 +17,9 @@ export class LikesRepository {
 
     async updateLike(
         newLike: likesModel,
-        likeId: ObjectId,
-        zeroId: ObjectId
+        likeId: ObjectId
     ) {
-        return LikeModelClass.updateOne({_id: likeId || zeroId},
+        return LikeModelClass.updateOne({_id: likeId},
             {$set: {type: newLike.type, userId: newLike.userId, commentId: newLike.commentId}})
     }
 }

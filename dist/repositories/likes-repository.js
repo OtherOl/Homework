@@ -22,9 +22,9 @@ class LikesRepository {
             return DB_Mongo_1.LikeModelClass.findOne({ userId: userId });
         });
     }
-    updateLike(newLike, likeId, zeroId) {
+    updateLike(newLike, likeId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return DB_Mongo_1.LikeModelClass.updateOne({ _id: likeId || zeroId }, { $set: { type: newLike.type, userId: newLike.userId, commentId: newLike.commentId } });
+            return DB_Mongo_1.LikeModelClass.updateOne({ _id: likeId }, { $set: { type: newLike.type, userId: newLike.userId, commentId: newLike.commentId } });
         });
     }
 }

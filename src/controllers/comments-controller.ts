@@ -62,13 +62,28 @@ export class CommentsController {
         const userId = await jwtService.getUserIdByToken(refreshToken)
         const comment = await this.commentsService.getCommentById(req.params.id)
         if (!comment) return res.sendStatus(404)
+
         if (req.body.likeStatus === "Like") {
-            await this.likesService.createLike("Like", userId, comment.id)
-            return res.sendStatus(204)
+            const like = await this.likesService.getLikeByUserId(userId)
+            if(!like) {
+                const zeroLike = await this.likesService.createZeroLike(userId)
+                await this.likesService.createLike("Like", userId, comment.id, zeroLike)
+                return res.sendStatus(204)
+            } else {
+                await this.likesService.createLike("Like", userId, comment.id, like)
+                return res.sendStatus(204)
+            }
         }
         if (req.body.likeStatus === "Dislike") {
-            await this.likesService.createDislike("Dislike", userId, comment.id)
-            return res.sendStatus(204)
+            const like = await this.likesService.getLikeByUserId(userId)
+            if(!like) {
+                const zeroLike = await this.likesService.createZeroLike(userId)
+                await this.likesService.createDislike("Dislike", userId, comment.id, zeroLike)
+                return res.sendStatus(204)
+            } else {
+                await this.likesService.createDislike("Dislike", userId, comment.id, like)
+                return res.sendStatus(204)
+            }
         }
         if (req.body.likeStatus === "None") return res.sendStatus(204)
     }
