@@ -14,9 +14,14 @@ class CommentsService {
     constructor(commentsRepository) {
         this.commentsRepository = commentsRepository;
     }
-    getCommentById(id) {
+    getCommentById(id, like) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.commentsRepository.getCommentById(id);
+            if (!like) {
+                return yield this.commentsRepository.getCommentById(id, "None");
+            }
+            else {
+                return yield this.commentsRepository.getCommentById(id, like.type);
+            }
         });
     }
     updateComment(commentId, content) {
@@ -27,10 +32,6 @@ class CommentsService {
     deleteCommentById(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.commentsRepository.deleteCommentById(commentId);
-        });
-    }
-    updateLikesForComment(commentId, type, userId) {
-        return __awaiter(this, void 0, void 0, function* () {
         });
     }
 }

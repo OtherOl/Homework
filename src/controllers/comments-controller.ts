@@ -2,6 +2,7 @@ import {CommentsService} from "../domain/comments-service";
 import {Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
 import {LikesService} from "../domain/likes-service";
+import {likesModel} from "../models/likes-model";
 
 export class CommentsController {
     constructor(
@@ -11,8 +12,10 @@ export class CommentsController {
     }
 
     async getCommentById(req: Request, res: Response) {
-        const comment = await this.commentsService.getCommentById(req.params.id)
-
+        const refreshToken = req.cookies.refreshToken
+        const userId = await jwtService.getUserIdByToken(refreshToken)
+        const like: likesModel | null = await this.likesService.getLikeByUserId(userId)
+        const comment = await this.commentsService.getCommentById(req.params.id, like)
         if (!comment) {
             return res.sendStatus(404)
         } else {

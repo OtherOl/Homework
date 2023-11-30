@@ -10,9 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsController = void 0;
+const jwt_service_1 = require("../application/jwt-service");
 class PostsController {
-    constructor(postsService) {
+    constructor(postsService, likesService) {
         this.postsService = postsService;
+        this.likesService = likesService;
     }
     getAllPosts(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -74,7 +76,10 @@ class PostsController {
     }
     getCommentById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const comment = yield this.postsService.getCommentById(req.params.id, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10, req.query.sortBy, req.query.sortDirection);
+            const refreshToken = req.cookies.refreshToken;
+            const userId = yield jwt_service_1.jwtService.getUserIdByToken(refreshToken);
+            const like = yield this.likesService.getLikeByUserId(userId);
+            const comment = yield this.postsService.getCommentById(req.params.id, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10, req.query.sortBy, req.query.sortDirection, like);
             if (!comment) {
                 res.sendStatus(404);
             }

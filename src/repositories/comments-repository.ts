@@ -1,16 +1,30 @@
-import {CommentModelClass} from "../data/DB-Mongo";
+import {CommentModelClass, LikeModelClass} from "../data/DB-Mongo";
 import {commentDbModel} from "../models/comments-model";
 
 export class CommentsRepository {
     async getCommentById(
-        id: string
+        id: string,
+        type: string
     ) {
-        const comment = await CommentModelClass.findOne({id: id}, {_id: 0})
+        const comment: commentDbModel | null = await CommentModelClass.findOne({id: id}, {_id: 0})
 
         if (!comment) {
             return false
         } else {
-            return comment
+            return {
+                id: comment.id,
+                content: comment.content,
+                commentatorInfo: {
+                    userId: comment.commentatorInfo.userId,
+                    userLogin: comment.commentatorInfo.userLogin
+                },
+                createdAt: comment.createdAt,
+                likesInfo: {
+                    likesCount: comment.likesInfo.likesCount,
+                    dislikesCount: comment.likesInfo.dislikesCount,
+                    myStatus: type
+                }
+            }
         }
     }
 
@@ -36,6 +50,7 @@ export class CommentsRepository {
         if (!comment) {
             return false
         } else {
+            await LikeModelClass.deleteMany({commentId: commentId})
             await CommentModelClass.deleteOne({id: commentId})
             return comment
         }
@@ -50,24 +65,48 @@ export class CommentsRepository {
         if (!comment) {
             return false
         } else {
-            await CommentModelClass.updateOne({id: commentId}, {$set: {
-                "likesInfo.myStatus": type}, $inc: {"likesInfo.likesCount": 1}})
+            await CommentModelClass.updateOne({id: commentId}, {
+                $set: {
+                    "likesInfo.myStatus": type
+                }, $inc: {"likesInfo.likesCount": 1}
+            })
             return comment
         }
     }
 
-    async updateDislikesInfo(
+    async decreaseLikes(
         commentId: string,
         type: string
     ) {
-        const comment: commentDbModel | null = await CommentModelClass.findOne({id: commentId})
+        await CommentModelClass.updateOne({id: commentId}, {
+            $set: {"likesInfo.myStatus": type}, $inc: {"likesInfo.likesCount": -1}
+        })
 
-        if (!comment) {
+    }
+
+    async updateDislikesInfo(
+        commentId: string,
+        userId: string
+    ) {
+        const comment: commentDbModel | null = await CommentModelClass.findOne({id: commentId})
+        const myLike = await LikeModelClass.findOne({userId: userId})
+        if (!comment || !myLike) {
             return false
         } else {
-            await CommentModelClass.updateOne({id: commentId}, {$set: {
-                    "likesInfo.myStatus": type}, $inc: {"likesInfo.dislikesCount": 1}})
+            await CommentModelClass.updateOne({id: commentId}, {
+                $set: {"likesInfo.myStatus": myLike.type}, $inc: {"likesInfo.dislikesCount": 1}
+            })
             return comment
         }
+    }
+
+    async decreaseDislikes(
+        commentId: string,
+        type: string
+    ) {
+        await CommentModelClass.updateOne({id: commentId}, {
+            $set: {"likesInfo.myStatus": type}, $inc: {"likesInfo.dislikesCount": -1}
+        })
+
     }
 }

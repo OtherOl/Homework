@@ -84,7 +84,7 @@ class PostsRepository {
             }
         });
     }
-    getCommentById(id, pageNumber, pageSize, sortBy = "createdAt", sortDirection = "desc") {
+    getCommentById(id, pageNumber, pageSize, sortBy = "createdAt", sortDirection = "desc", status) {
         return __awaiter(this, void 0, void 0, function* () {
             let sortQuery = {};
             sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;

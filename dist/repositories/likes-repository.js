@@ -14,7 +14,7 @@ const DB_Mongo_1 = require("../data/DB-Mongo");
 class LikesRepository {
     createNewLike(zeroLike) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DB_Mongo_1.LikeModelClass.insertMany(zeroLike);
+            return yield DB_Mongo_1.LikeModelClass.create(zeroLike);
         });
     }
     getLikeInfo(userId) {

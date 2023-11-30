@@ -16,25 +16,33 @@ class LikesService {
         this.likesRepository = likesRepository;
         this.commentsRepository = commentsRepository;
     }
+    getLikeByUserId(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.likesRepository.getLikeInfo(userId);
+        });
+    }
     createLike(type, userId, commentId) {
         return __awaiter(this, void 0, void 0, function* () {
             const like = yield this.likesRepository.getLikeInfo(userId);
+            const zeroLike = {
+                _id: new mongodb_1.ObjectId(),
+                type: "None",
+                userId: userId,
+                commentId: ""
+            };
+            if (!like) {
+                yield this.likesRepository.createNewLike(zeroLike);
+            }
             const newLike = {
                 _id: new mongodb_1.ObjectId(),
                 type: type,
                 userId: userId,
                 commentId: commentId
             };
-            const zeroLike = {
-                _id: new mongodb_1.ObjectId(),
-                type: "None",
-                userId: "",
-                commentId: ""
-            };
-            if (!like) {
-                yield this.likesRepository.createNewLike(zeroLike);
-            }
             if (like.type !== "Like") {
+                if (like.type === "Dislike") {
+                    yield this.commentsRepository.decreaseDislikes(commentId, type);
+                }
                 yield this.commentsRepository.updateLikesInfo(commentId, type);
                 return yield this.likesRepository.updateLike(newLike, like._id, zeroLike._id);
             }
@@ -43,24 +51,27 @@ class LikesService {
     createDislike(type, userId, commentId) {
         return __awaiter(this, void 0, void 0, function* () {
             const like = yield this.likesRepository.getLikeInfo(userId);
+            const zeroLike = {
+                _id: new mongodb_1.ObjectId(),
+                type: "None",
+                userId: userId,
+                commentId: ""
+            };
+            if (!like) {
+                yield this.likesRepository.createNewLike(zeroLike);
+            }
             const newDislike = {
                 _id: new mongodb_1.ObjectId(),
                 type: type,
                 userId: userId,
                 commentId: commentId
             };
-            const zeroLike = {
-                _id: new mongodb_1.ObjectId(),
-                type: "None",
-                userId: "",
-                commentId: ""
-            };
-            if (!like) {
-                yield this.likesRepository.createNewLike(zeroLike);
-            }
             if (like.type !== "Dislike") {
-                yield this.commentsRepository.updateDislikesInfo(commentId, type);
-                return yield this.likesRepository.updateLike(newDislike, like._id, zeroLike._id);
+                if (like.type === "Like") {
+                    yield this.commentsRepository.decreaseLikes(commentId, type);
+                }
+                yield this.likesRepository.updateLike(newDislike, like._id, zeroLike._id);
+                return yield this.commentsRepository.updateDislikesInfo(commentId, userId);
             }
         });
     }

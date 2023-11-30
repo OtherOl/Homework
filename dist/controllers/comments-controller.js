@@ -18,7 +18,10 @@ class CommentsController {
     }
     getCommentById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const comment = yield this.commentsService.getCommentById(req.params.id);
+            const refreshToken = req.cookies.refreshToken;
+            const userId = yield jwt_service_1.jwtService.getUserIdByToken(refreshToken);
+            const like = yield this.likesService.getLikeByUserId(userId);
+            const comment = yield this.commentsService.getCommentById(req.params.id, like);
             if (!comment) {
                 return res.sendStatus(404);
             }

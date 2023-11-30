@@ -67,11 +67,15 @@ class PostsService {
             return yield this.postsRepository.createComment(id, content, userId);
         });
     }
-    getCommentById(id, pageNumber, pageSize, sortBy, sortDirection) {
+    getCommentById(id, pageNumber, pageSize, sortBy, sortDirection, like) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.postsRepository.getCommentById(id, pageNumber, pageSize, sortBy, sortDirection);
+            if (!like) {
+                return yield this.postsRepository.getCommentById(id, pageNumber, pageSize, sortBy, sortDirection, "None");
+            }
+            else {
+                return yield this.postsRepository.getCommentById(id, pageNumber, pageSize, sortBy, sortDirection, like.type);
+            }
         });
     }
 }
 exports.PostsService = PostsService;
-// export const postsService = new PostsService()

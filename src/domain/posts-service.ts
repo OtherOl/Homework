@@ -2,6 +2,7 @@ import {CreatePostModel, PostDbModel, PostViewModel, UpdatePostModel} from "../m
 import {randomUUID} from "crypto";
 import {PostsRepository} from "../repositories/posts-repository";
 import {BlogsRepository} from "../repositories/blogs-repository";
+import {likesModel} from "../models/likes-model";
 
 export class PostsService {
     constructor(
@@ -78,16 +79,27 @@ export class PostsService {
         pageNumber: number,
         pageSize: number,
         sortBy: string,
-        sortDirection: string
+        sortDirection: string,
+        like?: likesModel | null
     ) {
-        return await this.postsRepository.getCommentById(
-            id,
-            pageNumber,
-            pageSize,
-            sortBy,
-            sortDirection
-        )
+        if(!like) {
+            return await this.postsRepository.getCommentById(
+                id,
+                pageNumber,
+                pageSize,
+                sortBy,
+                sortDirection,
+                "None"
+            )
+        } else {
+            return await this.postsRepository.getCommentById(
+                id,
+                pageNumber,
+                pageSize,
+                sortBy,
+                sortDirection,
+                like.type
+            )
+        }
     }
 }
-
-// export const postsService = new PostsService()

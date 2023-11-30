@@ -38,7 +38,7 @@ const devicesService = new DevicesService(devicesRepository)
 const likesService = new LikesService(likesRepository, commentsRepository)
 
 export const blogsController = new BlogsController(blogsService, postsService)
-export const postsController = new PostsController(postsService)
+export const postsController = new PostsController(postsService, likesService)
 export const commentsController = new CommentsController(commentsService, likesService)
 export const securityController = new SecurityController(devicesRepository)
 export const usersController = new UsersController(usersService)

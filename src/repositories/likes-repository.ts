@@ -6,7 +6,7 @@ export class LikesRepository {
     async createNewLike(
         zeroLike: likesModel
     ) {
-        return await LikeModelClass.insertMany(zeroLike)
+        return await LikeModelClass.create(zeroLike)
     }
 
     async getLikeInfo(

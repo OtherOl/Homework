@@ -84,7 +84,6 @@ export class PostsRepository {
                 }
             }
             await CommentModelClass.create({...comment})
-
             return comment;
         }
     }
@@ -94,7 +93,8 @@ export class PostsRepository {
         pageNumber: number,
         pageSize: number,
         sortBy: string = "createdAt",
-        sortDirection: string = "desc"
+        sortDirection: string = "desc",
+        status: string
     ) {
         let sortQuery: any = {}
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1

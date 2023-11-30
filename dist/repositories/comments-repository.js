@@ -12,14 +12,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentsRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
 class CommentsRepository {
-    getCommentById(id) {
+    getCommentById(id, type) {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield DB_Mongo_1.CommentModelClass.findOne({ id: id }, { _id: 0 });
             if (!comment) {
                 return false;
             }
             else {
-                return comment;
+                return {
+                    id: comment.id,
+                    content: comment.content,
+                    commentatorInfo: {
+                        userId: comment.commentatorInfo.userId,
+                        userLogin: comment.commentatorInfo.userLogin
+                    },
+                    createdAt: comment.createdAt,
+                    likesInfo: {
+                        likesCount: comment.likesInfo.likesCount,
+                        dislikesCount: comment.likesInfo.dislikesCount,
+                        myStatus: type
+                    }
+                };
             }
         });
     }
@@ -42,6 +55,7 @@ class CommentsRepository {
                 return false;
             }
             else {
+                yield DB_Mongo_1.LikeModelClass.deleteMany({ commentId: commentId });
                 yield DB_Mongo_1.CommentModelClass.deleteOne({ id: commentId });
                 return comment;
             }
@@ -54,25 +68,42 @@ class CommentsRepository {
                 return false;
             }
             else {
-                yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, { $set: {
+                yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
+                    $set: {
                         "likesInfo.myStatus": type
-                    }, $inc: { "likesInfo.likesCount": 1 } });
+                    }, $inc: { "likesInfo.likesCount": 1 }
+                });
                 return comment;
             }
         });
     }
-    updateDislikesInfo(commentId, type) {
+    decreaseLikes(commentId, type) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
+                $set: { "likesInfo.myStatus": type }, $inc: { "likesInfo.likesCount": -1 }
+            });
+        });
+    }
+    updateDislikesInfo(commentId, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield DB_Mongo_1.CommentModelClass.findOne({ id: commentId });
-            if (!comment) {
+            const myLike = yield DB_Mongo_1.LikeModelClass.findOne({ userId: userId });
+            if (!comment || !myLike) {
                 return false;
             }
             else {
-                yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, { $set: {
-                        "likesInfo.myStatus": type
-                    }, $inc: { "likesInfo.dislikesCount": 1 } });
+                yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
+                    $set: { "likesInfo.myStatus": myLike.type }, $inc: { "likesInfo.dislikesCount": 1 }
+                });
                 return comment;
             }
+        });
+    }
+    decreaseDislikes(commentId, type) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
+                $set: { "likesInfo.myStatus": type }, $inc: { "likesInfo.dislikesCount": -1 }
+            });
         });
     }
 }
