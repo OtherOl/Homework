@@ -114,13 +114,24 @@ export class PostsRepository {
             page: pageNumber,
             pageSize: pageSize,
             totalCount: count,
-            items: comment
+            items: comment.map(a => ({...a, a: a.likesInfo.myStatus = status}))
         }
 
         if (!isExists) {
             return false
         } else {
-            return objects
+            const result = objects.items.map(likes => {
+                // @ts-ignore
+                const {a, ...rest} = likes;
+                return rest
+            })
+            return {
+                pagesCount: objects.pagesCount,
+                page: objects.page,
+                pageSize: objects.pageSize,
+                totalCount: objects.totalCount,
+                items: result
+            }
         }
     }
 }
