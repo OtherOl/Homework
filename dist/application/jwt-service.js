@@ -19,17 +19,17 @@ const crypto_1 = require("crypto");
 exports.jwtService = {
     createJWT(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return jsonwebtoken_1.default.sign({ userId: id }, settings_1.settings.JWT_SECRET, { expiresIn: "30m" });
+            return jsonwebtoken_1.default.sign({ userId: id }, settings_1.settings.JWT_SECRET, { expiresIn: "10m" });
         });
     },
     createRefreshToken(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return jsonwebtoken_1.default.sign({ userId: id, deviceId: (0, crypto_1.randomUUID)() }, settings_1.settings.JWT_SECRET, { expiresIn: "40m" });
+            return jsonwebtoken_1.default.sign({ userId: id, deviceId: (0, crypto_1.randomUUID)() }, settings_1.settings.JWT_SECRET, { expiresIn: "20m" });
         });
     },
     createNewRefreshToken(id, deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return jsonwebtoken_1.default.sign({ userId: id, deviceId: deviceId }, settings_1.settings.JWT_SECRET, { expiresIn: "40m" });
+            return jsonwebtoken_1.default.sign({ userId: id, deviceId: deviceId }, settings_1.settings.JWT_SECRET, { expiresIn: "20m" });
         });
     },
     verifyToken(token) {

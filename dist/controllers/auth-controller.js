@@ -180,8 +180,6 @@ class AuthController {
         return __awaiter(this, void 0, void 0, function* () {
             const refreshToken = req.cookies.refreshToken;
             const verifiedToken = yield jwt_service_1.jwtService.verifyToken(refreshToken);
-            const token = req.headers.authorization.split(" ")[1];
-            yield this.authRepository.blackList(token);
             yield this.authRepository.blackList(refreshToken);
             yield this.devicesRepository.deleteSessionById(verifiedToken.deviceId);
             return res.clearCookie('refreshToken').sendStatus(204);
