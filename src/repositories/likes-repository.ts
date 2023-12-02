@@ -11,7 +11,7 @@ export class LikesRepository {
 
     async getLikeInfo(
         userId: string
-    ) {
+    ): Promise<likesModel | null> {
         return LikeModelClass.findOne({userId: userId})
     }
 
@@ -21,5 +21,13 @@ export class LikesRepository {
     ) {
         return LikeModelClass.updateOne({_id: likeId},
             {$set: {type: newLike.type, userId: newLike.userId, commentId: newLike.commentId}})
+    }
+
+    async updateToNone(
+        like: likesModel,
+        type: string
+    ) {
+        return LikeModelClass.updateOne({_id: like._id},
+            {$set: {type: type, userId: like.userId, commentId: like.commentId}})
     }
 }

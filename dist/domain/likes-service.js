@@ -66,5 +66,17 @@ class LikesService {
             }
         });
     }
+    setToNoneIfLike(like, type) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.commentsRepository.decreaseLikes(like.commentId, type);
+            return yield this.likesRepository.updateToNone(like, type);
+        });
+    }
+    setToNoneIfDis(like, type) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.commentsRepository.decreaseDislikes(like.commentId, type);
+            return yield this.likesRepository.updateToNone(like, type);
+        });
+    }
 }
 exports.LikesService = LikesService;

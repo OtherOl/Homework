@@ -93,8 +93,23 @@ class CommentsController {
                     return res.sendStatus(204);
                 }
             }
-            if (req.body.likeStatus === "None")
-                return res.sendStatus(204);
+            if (req.body.likeStatus === "None") {
+                const like = yield this.likesService.getLikeByUserId(userId);
+                if (!like) {
+                    return res.sendStatus(204);
+                }
+                else if (like.type === "Like") {
+                    yield this.likesService.setToNoneIfLike(like, "None");
+                    return res.sendStatus(204);
+                }
+                else if (like.type === "Dislike") {
+                    yield this.likesService.setToNoneIfDis(like, "None");
+                    return res.sendStatus(204);
+                }
+                else if (like.type === "None") {
+                    return res.sendStatus(204);
+                }
+            }
         });
     }
 }

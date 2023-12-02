@@ -25,7 +25,7 @@ export class LikesService {
             userId: userId,
             commentId: ""
         }
-            return await this.likesRepository.createNewLike(zeroLike)
+        return await this.likesRepository.createNewLike(zeroLike)
     }
 
     async createLike(
@@ -42,7 +42,7 @@ export class LikesService {
         }
 
         if (like.type !== "Like") {
-            if(like.type === "Dislike") {
+            if (like.type === "Dislike") {
                 await this.commentsRepository.decreaseDislikes(commentId, type)
             }
             await this.commentsRepository.updateLikesInfo(commentId, type)
@@ -70,5 +70,21 @@ export class LikesService {
             await this.likesRepository.updateLike(newDislike, like._id)
             return await this.commentsRepository.updateDislikesInfo(commentId, userId)
         }
+    }
+
+    async setToNoneIfLike(
+        like: likesModel,
+        type: string
+    ) {
+        await this.commentsRepository.decreaseLikes(like.commentId, type)
+        return await this.likesRepository.updateToNone(like, type)
+    }
+
+    async setToNoneIfDis(
+        like: likesModel,
+        type: string
+    ) {
+        await this.commentsRepository.decreaseDislikes(like.commentId, type)
+        return await this.likesRepository.updateToNone(like, type)
     }
 }

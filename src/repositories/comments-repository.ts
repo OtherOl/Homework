@@ -81,7 +81,6 @@ export class CommentsRepository {
         await CommentModelClass.updateOne({id: commentId}, {
             $set: {"likesInfo.myStatus": type}, $inc: {"likesInfo.likesCount": -1}
         })
-
     }
 
     async updateDislikesInfo(
