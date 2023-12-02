@@ -65,6 +65,11 @@ class CommentsController {
     }
     doLikeDislike(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            const token = req.headers.authorization.split(" ")[1];
+            const invalid = yield this.authRepository.findInvalidToken(token);
+            console.log(invalid);
+            if (invalid !== null)
+                return res.sendStatus(401);
             const refreshToken = req.cookies.refreshToken;
             const userId = yield jwt_service_1.jwtService.getUserIdByToken(refreshToken);
             const comment = yield this.commentsService.getCommentById(req.params.id);

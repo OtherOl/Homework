@@ -173,6 +173,8 @@ export class AuthController {
         const refreshToken = req.cookies.refreshToken
         const verifiedToken = await jwtService.verifyToken(refreshToken)
 
+        const token = req.headers.authorization!.split(" ")[1]
+        await this.authRepository.blackList(token)
         await this.authRepository.blackList(refreshToken);
         await this.devicesRepository.deleteSessionById(verifiedToken.deviceId)
         return res.clearCookie('refreshToken').sendStatus(204)
