@@ -3,11 +3,13 @@ import {Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
 import {LikesService} from "../domain/likes-service";
 import {likesModel} from "../models/likes-model";
+import {AuthRepository} from "../repositories/auth-repository";
 
 export class CommentsController {
     constructor(
         protected commentsService: CommentsService,
-        protected likesService: LikesService
+        protected likesService: LikesService,
+        protected authRepository: AuthRepository
     ) {
     }
 
@@ -59,6 +61,9 @@ export class CommentsController {
 
     async doLikeDislike(req: Request, res: Response) {
         const refreshToken = req.cookies.refreshToken
+        const invalid = await this.authRepository.findInvalidToken(refreshToken)
+        if(invalid || !refreshToken) return res.sendStatus(401)
+
         const userId = await jwtService.getUserIdByToken(refreshToken)
         const comment = await this.commentsService.getCommentById(req.params.id)
         if (!comment) return res.sendStatus(404)

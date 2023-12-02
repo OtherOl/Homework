@@ -39,7 +39,7 @@ const likesService = new LikesService(likesRepository, commentsRepository)
 
 export const blogsController = new BlogsController(blogsService, postsService)
 export const postsController = new PostsController(postsService, likesService)
-export const commentsController = new CommentsController(commentsService, likesService)
+export const commentsController = new CommentsController(commentsService, likesService, authRepository)
 export const securityController = new SecurityController(devicesRepository)
 export const usersController = new UsersController(usersService)
 export const authController = new AuthController(

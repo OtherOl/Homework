@@ -12,9 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentsController = void 0;
 const jwt_service_1 = require("../application/jwt-service");
 class CommentsController {
-    constructor(commentsService, likesService) {
+    constructor(commentsService, likesService, authRepository) {
         this.commentsService = commentsService;
         this.likesService = likesService;
+        this.authRepository = authRepository;
     }
     getCommentById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -65,6 +66,9 @@ class CommentsController {
     doLikeDislike(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const refreshToken = req.cookies.refreshToken;
+            const invalid = yield this.authRepository.findInvalidToken(refreshToken);
+            if (invalid || !refreshToken)
+                return res.sendStatus(401);
             const userId = yield jwt_service_1.jwtService.getUserIdByToken(refreshToken);
             const comment = yield this.commentsService.getCommentById(req.params.id);
             if (!comment)
