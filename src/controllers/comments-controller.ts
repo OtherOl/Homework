@@ -61,9 +61,6 @@ export class CommentsController {
 
     async doLikeDislike(req: Request, res: Response) {
         const refreshToken = req.cookies.refreshToken
-        const invalid = await this.authRepository.findInvalidToken(refreshToken)
-        if(invalid || !refreshToken) return res.sendStatus(401)
-
         const userId = await jwtService.getUserIdByToken(refreshToken)
         const comment = await this.commentsService.getCommentById(req.params.id)
         if (!comment) return res.sendStatus(404)
