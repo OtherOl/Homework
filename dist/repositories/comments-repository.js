@@ -61,7 +61,7 @@ class CommentsRepository {
             }
         });
     }
-    updateLikesInfo(commentId, type) {
+    updateLikesInfo(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield DB_Mongo_1.CommentModelClass.findOne({ id: commentId });
             if (!comment) {
@@ -69,40 +69,37 @@ class CommentsRepository {
             }
             else {
                 yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
-                    $set: {
-                        "likesInfo.myStatus": "None"
-                    }, $inc: { "likesInfo.likesCount": 1 }
+                    $inc: { "likesInfo.likesCount": 1 }
                 });
                 return comment;
             }
         });
     }
-    decreaseLikes(commentId, type) {
+    decreaseLikes(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
             yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
-                $set: { "likesInfo.myStatus": "None" }, $inc: { "likesInfo.likesCount": -1 }
+                $inc: { "likesInfo.likesCount": -1 }
             });
         });
     }
-    updateDislikesInfo(commentId, userId) {
+    updateDislikesInfo(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield DB_Mongo_1.CommentModelClass.findOne({ id: commentId });
-            const myLike = yield DB_Mongo_1.LikeModelClass.findOne({ userId: userId });
-            if (!comment || !myLike) {
+            if (!comment) {
                 return false;
             }
             else {
                 yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
-                    $set: { "likesInfo.myStatus": "None" }, $inc: { "likesInfo.dislikesCount": 1 }
+                    $inc: { "likesInfo.dislikesCount": 1 }
                 });
                 return comment;
             }
         });
     }
-    decreaseDislikes(commentId, type) {
+    decreaseDislikes(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
             yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
-                $set: { "likesInfo.myStatus": "None" }, $inc: { "likesInfo.dislikesCount": -1 }
+                $inc: { "likesInfo.dislikesCount": -1 }
             });
         });
     }

@@ -43,9 +43,9 @@ export class LikesService {
 
         if (like.type !== "Like") {
             if (like.type === "Dislike") {
-                await this.commentsRepository.decreaseDislikes(commentId, type)
+                await this.commentsRepository.decreaseDislikes(commentId)
             }
-            await this.commentsRepository.updateLikesInfo(commentId, type)
+            await this.commentsRepository.updateLikesInfo(commentId)
             return await this.likesRepository.updateLike(newLike, like._id)
         }
     }
@@ -65,10 +65,10 @@ export class LikesService {
 
         if (like.type !== "Dislike") {
             if (like.type === "Like") {
-                await this.commentsRepository.decreaseLikes(commentId, type)
+                await this.commentsRepository.decreaseLikes(commentId)
             }
             await this.likesRepository.updateLike(newDislike, like._id)
-            return await this.commentsRepository.updateDislikesInfo(commentId, userId)
+            return await this.commentsRepository.updateDislikesInfo(commentId)
         }
     }
 
@@ -76,7 +76,7 @@ export class LikesService {
         like: likesModel,
         type: string
     ) {
-        await this.commentsRepository.decreaseLikes(like.commentId, type)
+        await this.commentsRepository.decreaseLikes(like.commentId)
         return await this.likesRepository.updateToNone(like, type)
     }
 
@@ -84,7 +84,7 @@ export class LikesService {
         like: likesModel,
         type: string
     ) {
-        await this.commentsRepository.decreaseDislikes(like.commentId, type)
+        await this.commentsRepository.decreaseDislikes(like.commentId)
         return await this.likesRepository.updateToNone(like, type)
     }
 }

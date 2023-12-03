@@ -16,7 +16,7 @@ class CommentsService {
     }
     getCommentById(id, like) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!like) {
+            if (like === null || !like) {
                 return yield this.commentsRepository.getCommentById(id, "None");
             }
             else {

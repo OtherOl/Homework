@@ -7,7 +7,7 @@ export class CommentsService {
         id: string,
         like?: likesModel | null
     ) {
-        if(!like) {
+        if(like === null || !like) {
             return await this.commentsRepository.getCommentById(id, "None")
         } else {
             return await this.commentsRepository.getCommentById(id, like.type)

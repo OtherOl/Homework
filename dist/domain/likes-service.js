@@ -42,9 +42,9 @@ class LikesService {
             };
             if (like.type !== "Like") {
                 if (like.type === "Dislike") {
-                    yield this.commentsRepository.decreaseDislikes(commentId, type);
+                    yield this.commentsRepository.decreaseDislikes(commentId);
                 }
-                yield this.commentsRepository.updateLikesInfo(commentId, type);
+                yield this.commentsRepository.updateLikesInfo(commentId);
                 return yield this.likesRepository.updateLike(newLike, like._id);
             }
         });
@@ -59,22 +59,22 @@ class LikesService {
             };
             if (like.type !== "Dislike") {
                 if (like.type === "Like") {
-                    yield this.commentsRepository.decreaseLikes(commentId, type);
+                    yield this.commentsRepository.decreaseLikes(commentId);
                 }
                 yield this.likesRepository.updateLike(newDislike, like._id);
-                return yield this.commentsRepository.updateDislikesInfo(commentId, userId);
+                return yield this.commentsRepository.updateDislikesInfo(commentId);
             }
         });
     }
     setToNoneIfLike(like, type) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.commentsRepository.decreaseLikes(like.commentId, type);
+            yield this.commentsRepository.decreaseLikes(like.commentId);
             return yield this.likesRepository.updateToNone(like, type);
         });
     }
     setToNoneIfDis(like, type) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.commentsRepository.decreaseDislikes(like.commentId, type);
+            yield this.commentsRepository.decreaseDislikes(like.commentId);
             return yield this.likesRepository.updateToNone(like, type);
         });
     }
