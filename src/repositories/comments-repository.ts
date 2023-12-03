@@ -65,7 +65,7 @@ export class CommentsRepository {
             return false
         } else {
             await CommentModelClass.updateOne({id: commentId}, {
-                $inc: {"likesInfo.likesCount": 1}
+                $inc: {"likesInfo.likesCount": +1}
             })
             return comment
         }
@@ -88,7 +88,7 @@ export class CommentsRepository {
             return false
         } else {
             await CommentModelClass.updateOne({id: commentId}, {
-                $inc: {"likesInfo.dislikesCount": 1}
+                $inc: {"likesInfo.dislikesCount": +1}
             })
             return comment
         }

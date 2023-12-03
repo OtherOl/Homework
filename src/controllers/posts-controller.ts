@@ -63,14 +63,13 @@ export class PostsController {
         const comment = await this.postsService.createComment(req.params.id, req.body.content, req.user!.id)
 
         if (!comment) {
-            res.sendStatus(404)
+            return res.sendStatus(404)
         } else {
-            res.status(201).send(comment)
+            return res.status(201).send(comment)
         }
     }
 
     async getCommentById(req: Request<{ id: string }, {}, {}, commentGeneric>, res: Response) {
-        //делать через access и проверять его
         const accessToken = req.headers.authorization
         const userId = await jwtService.getUserIdByToken(accessToken?.split(" ")[1])
         const like: likesModel | null = await this.likesService.getLikeByUserId(userId)
@@ -82,9 +81,9 @@ export class PostsController {
         )
 
         if (!comment) {
-            res.sendStatus(404)
+            return res.sendStatus(404)
         } else {
-            res.status(200).send(comment)
+            return res.status(200).send(comment)
         }
     }
 }

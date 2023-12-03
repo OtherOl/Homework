@@ -69,7 +69,7 @@ class CommentsRepository {
             }
             else {
                 yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
-                    $inc: { "likesInfo.likesCount": 1 }
+                    $inc: { "likesInfo.likesCount": +1 }
                 });
                 return comment;
             }
@@ -90,7 +90,7 @@ class CommentsRepository {
             }
             else {
                 yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
-                    $inc: { "likesInfo.dislikesCount": 1 }
+                    $inc: { "likesInfo.dislikesCount": +1 }
                 });
                 return comment;
             }
