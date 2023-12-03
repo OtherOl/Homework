@@ -19,7 +19,7 @@ const crypto_1 = require("crypto");
 exports.jwtService = {
     createJWT(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return jsonwebtoken_1.default.sign({ userId: id }, settings_1.settings.JWT_SECRET, { expiresIn: "10m" });
+            return jsonwebtoken_1.default.sign({ userId: id }, settings_1.settings.JWT_SECRET, { expiresIn: "5m" });
         });
     },
     createRefreshToken(id) {

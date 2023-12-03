@@ -70,7 +70,7 @@ class CommentsRepository {
             else {
                 yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
                     $set: {
-                        "likesInfo.myStatus": type
+                        "likesInfo.myStatus": "None"
                     }, $inc: { "likesInfo.likesCount": 1 }
                 });
                 return comment;
@@ -80,7 +80,7 @@ class CommentsRepository {
     decreaseLikes(commentId, type) {
         return __awaiter(this, void 0, void 0, function* () {
             yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
-                $set: { "likesInfo.myStatus": type }, $inc: { "likesInfo.likesCount": -1 }
+                $set: { "likesInfo.myStatus": "None" }, $inc: { "likesInfo.likesCount": -1 }
             });
         });
     }
@@ -93,7 +93,7 @@ class CommentsRepository {
             }
             else {
                 yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
-                    $set: { "likesInfo.myStatus": myLike.type }, $inc: { "likesInfo.dislikesCount": 1 }
+                    $set: { "likesInfo.myStatus": "None" }, $inc: { "likesInfo.dislikesCount": 1 }
                 });
                 return comment;
             }
@@ -102,7 +102,7 @@ class CommentsRepository {
     decreaseDislikes(commentId, type) {
         return __awaiter(this, void 0, void 0, function* () {
             yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
-                $set: { "likesInfo.myStatus": type }, $inc: { "likesInfo.dislikesCount": -1 }
+                $set: { "likesInfo.myStatus": "None" }, $inc: { "likesInfo.dislikesCount": -1 }
             });
         });
     }

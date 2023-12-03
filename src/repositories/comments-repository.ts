@@ -67,7 +67,7 @@ export class CommentsRepository {
         } else {
             await CommentModelClass.updateOne({id: commentId}, {
                 $set: {
-                    "likesInfo.myStatus": type
+                    "likesInfo.myStatus": "None"
                 }, $inc: {"likesInfo.likesCount": 1}
             })
             return comment
@@ -79,7 +79,7 @@ export class CommentsRepository {
         type: string
     ) {
         await CommentModelClass.updateOne({id: commentId}, {
-            $set: {"likesInfo.myStatus": type}, $inc: {"likesInfo.likesCount": -1}
+            $set: {"likesInfo.myStatus": "None"}, $inc: {"likesInfo.likesCount": -1}
         })
     }
 
@@ -93,7 +93,7 @@ export class CommentsRepository {
             return false
         } else {
             await CommentModelClass.updateOne({id: commentId}, {
-                $set: {"likesInfo.myStatus": myLike.type}, $inc: {"likesInfo.dislikesCount": 1}
+                $set: {"likesInfo.myStatus": "None"}, $inc: {"likesInfo.dislikesCount": 1}
             })
             return comment
         }
@@ -104,7 +104,7 @@ export class CommentsRepository {
         type: string
     ) {
         await CommentModelClass.updateOne({id: commentId}, {
-            $set: {"likesInfo.myStatus": type}, $inc: {"likesInfo.dislikesCount": -1}
+            $set: {"likesInfo.myStatus": "None"}, $inc: {"likesInfo.dislikesCount": -1}
         })
 
     }
