@@ -10,18 +10,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentsService = void 0;
+const jwt_service_1 = require("../application/jwt-service");
 class CommentsService {
-    constructor(commentsRepository) {
+    constructor(commentsRepository, likesService) {
         this.commentsRepository = commentsRepository;
+        this.likesService = likesService;
     }
-    getCommentById(id, like) {
+    getCommentById(id, accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (like === null || !like) {
+            if (!accessToken)
                 return yield this.commentsRepository.getCommentById(id, "None");
-            }
-            else {
-                return yield this.commentsRepository.getCommentById(id, like.type);
-            }
+            const userId = yield jwt_service_1.jwtService.getUserIdByToken(accessToken.split(" ")[1]);
+            const like = yield this.likesService.getLikeByUserId(userId);
+            if (!like)
+                return yield this.commentsRepository.getCommentById(id, "None");
+            return yield this.commentsRepository.getCommentById(id, like.type);
         });
     }
     updateComment(commentId, content) {

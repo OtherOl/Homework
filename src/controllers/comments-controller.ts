@@ -2,7 +2,6 @@ import {CommentsService} from "../domain/comments-service";
 import {Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
 import {LikesService} from "../domain/likes-service";
-import {likesModel} from "../models/likes-model";
 import {AuthRepository} from "../repositories/auth-repository";
 
 export class CommentsController {
@@ -14,11 +13,9 @@ export class CommentsController {
     }
 
     async getCommentById(req: Request, res: Response) {
-        const refreshToken = req.cookies.refreshToken
-        const userId = await jwtService.getUserIdByToken(refreshToken)
-        const like: likesModel | null = await this.likesService.getLikeByUserId(userId)
-        const comment = await this.commentsService.getCommentById(req.params.id, like)
-        if (!comment) {
+        const accessToken = req.headers.authorization
+        const comment = await this.commentsService.getCommentById(req.params.id, accessToken)
+        if(!comment) {
             return res.sendStatus(404)
         } else {
             return res.status(200).send(comment)
@@ -60,9 +57,10 @@ export class CommentsController {
     }
 
     async doLikeDislike(req: Request, res: Response) {
-        const refreshToken = req.cookies.refreshToken
-        const userId = await jwtService.getUserIdByToken(refreshToken)
-        const comment = await this.commentsService.getCommentById(req.params.id)
+        //делать через access и проверять его
+        const accessToken = req.headers.authorization
+        const comment = await this.commentsService.getCommentById(req.params.id, accessToken)
+        const userId = await jwtService.getUserIdByToken(accessToken?.split(" ")[1])
         if (!comment) return res.sendStatus(404)
 
         if (req.body.likeStatus === "Like") {
@@ -76,6 +74,7 @@ export class CommentsController {
                 return res.sendStatus(204)
             }
         }
+
         if (req.body.likeStatus === "Dislike") {
             const like = await this.likesService.getLikeByUserId(userId)
             if (!like) {
@@ -87,6 +86,7 @@ export class CommentsController {
                 return res.sendStatus(204)
             }
         }
+
         if (req.body.likeStatus === "None") {
             const like = await this.likesService.getLikeByUserId(userId)
             if (!like) {

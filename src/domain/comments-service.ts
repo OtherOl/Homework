@@ -1,17 +1,25 @@
 import {CommentsRepository} from "../repositories/comments-repository";
-import {likesModel} from "../models/likes-model";
+import {jwtService} from "../application/jwt-service";
+import {LikesService} from "./likes-service";
 
 export class CommentsService {
-    constructor(protected commentsRepository: CommentsRepository) {}
+    constructor(
+        private commentsRepository: CommentsRepository,
+        private likesService: LikesService
+    ) {
+    }
     async getCommentById(
         id: string,
-        like?: likesModel | null
+        accessToken: string | undefined
     ) {
-        if(like === null || !like) {
-            return await this.commentsRepository.getCommentById(id, "None")
-        } else {
-            return await this.commentsRepository.getCommentById(id, like.type)
-        }
+        if (!accessToken) return await this.commentsRepository.getCommentById(id, "None")
+
+        const userId = await jwtService.getUserIdByToken(accessToken.split(" ")[1])
+        const like = await this.likesService.getLikeByUserId(userId)
+
+        if(!like) return await this.commentsRepository.getCommentById(id, "None")
+
+        return await this.commentsRepository.getCommentById(id, like.type)
     }
 
     async updateComment(

@@ -19,10 +19,8 @@ class CommentsController {
     }
     getCommentById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const refreshToken = req.cookies.refreshToken;
-            const userId = yield jwt_service_1.jwtService.getUserIdByToken(refreshToken);
-            const like = yield this.likesService.getLikeByUserId(userId);
-            const comment = yield this.commentsService.getCommentById(req.params.id, like);
+            const accessToken = req.headers.authorization;
+            const comment = yield this.commentsService.getCommentById(req.params.id, accessToken);
             if (!comment) {
                 return res.sendStatus(404);
             }
@@ -65,9 +63,10 @@ class CommentsController {
     }
     doLikeDislike(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const refreshToken = req.cookies.refreshToken;
-            const userId = yield jwt_service_1.jwtService.getUserIdByToken(refreshToken);
-            const comment = yield this.commentsService.getCommentById(req.params.id);
+            //делать через access и проверять его
+            const accessToken = req.headers.authorization;
+            const comment = yield this.commentsService.getCommentById(req.params.id, accessToken);
+            const userId = yield jwt_service_1.jwtService.getUserIdByToken(accessToken === null || accessToken === void 0 ? void 0 : accessToken.split(" ")[1]);
             if (!comment)
                 return res.sendStatus(404);
             if (req.body.likeStatus === "Like") {

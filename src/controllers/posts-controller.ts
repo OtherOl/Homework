@@ -70,8 +70,9 @@ export class PostsController {
     }
 
     async getCommentById(req: Request<{ id: string }, {}, {}, commentGeneric>, res: Response) {
-        const refreshToken = req.cookies.refreshToken
-        const userId = await jwtService.getUserIdByToken(refreshToken)
+        //делать через access и проверять его
+        const accessToken = req.headers.authorization
+        const userId = await jwtService.getUserIdByToken(accessToken?.split(" ")[1])
         const like: likesModel | null = await this.likesService.getLikeByUserId(userId)
         const comment = await this.postsService.getCommentById(
             req.params.id,

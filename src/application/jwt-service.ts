@@ -6,7 +6,7 @@ export const jwtService = {
     async createJWT(
         id: string
     ) {
-        return jwt.sign({userId: id}, settings.JWT_SECRET, {expiresIn: "5m"})
+        return jwt.sign({userId: id}, settings.JWT_SECRET, {expiresIn: "10m"})
     },
 
     async createRefreshToken(
@@ -34,8 +34,9 @@ export const jwtService = {
     },
 
     async getUserIdByToken(
-        token: string
+        token: string | undefined
     ) {
+        if(!token) return false
         try {
             const result: any = jwt.verify(token, settings.JWT_SECRET)
 

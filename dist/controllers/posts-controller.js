@@ -76,8 +76,9 @@ class PostsController {
     }
     getCommentById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const refreshToken = req.cookies.refreshToken;
-            const userId = yield jwt_service_1.jwtService.getUserIdByToken(refreshToken);
+            //делать через access и проверять его
+            const accessToken = req.headers.authorization;
+            const userId = yield jwt_service_1.jwtService.getUserIdByToken(accessToken === null || accessToken === void 0 ? void 0 : accessToken.split(" ")[1]);
             const like = yield this.likesService.getLikeByUserId(userId);
             const comment = yield this.postsService.getCommentById(req.params.id, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10, req.query.sortBy, req.query.sortDirection, like);
             if (!comment) {
