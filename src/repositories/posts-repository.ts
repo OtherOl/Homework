@@ -87,7 +87,20 @@ export class PostsRepository {
                 }
             }
             await CommentModelClass.create({...comment})
-            return comment;
+            return {
+                id: comment.id,
+                content: comment.content,
+                commentatorInfo: {
+                    userId: comment.commentatorInfo.userId,
+                    userLogin: comment.commentatorInfo.userLogin
+                },
+                createdAt: comment.createdAt,
+                likesInfo: {
+                    likesCount: comment.likesInfo.likesCount,
+                    dislikesCount: comment.likesInfo.dislikesCount,
+                    myStatus: comment.likesInfo.myStatus
+                }
+            };
         }
     }
 

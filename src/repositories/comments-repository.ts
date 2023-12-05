@@ -22,17 +22,10 @@ export class CommentsRepository {
                 likesInfo: {
                     likesCount: comment.likesInfo.likesCount,
                     dislikesCount: comment.likesInfo.dislikesCount,
-                    myStatus: type,
-                    // likesList: comment.likesInfo.likesList
+                    myStatus: type
                 }
             }
         }
-    }
-
-    async getCommentByPostId(
-        postId: string
-    ) {
-        return CommentModelClass.find({postId: postId}).lean()
     }
 
     async updateComment(
