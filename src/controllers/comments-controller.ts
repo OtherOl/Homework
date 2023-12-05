@@ -57,14 +57,13 @@ export class CommentsController {
     }
 
     async doLikeDislike(req: Request, res: Response) {
-        //делать через access и проверять его
         const accessToken = req.headers.authorization
         const comment = await this.commentsService.getCommentById(req.params.id, accessToken)
         const userId = await jwtService.getUserIdByToken(accessToken?.split(" ")[1])
         if (!comment) return res.sendStatus(404)
 
         if (req.body.likeStatus === "Like") {
-            const like = await this.likesService.getLikeByUserId(userId)
+            const like = await this.likesService.getLikeByUserId(userId, comment.id)
             if (!like) {
                 const zeroLike = await this.likesService.createZeroLike(userId)
                 await this.likesService.createLike("Like", userId, comment.id, zeroLike)
@@ -76,7 +75,7 @@ export class CommentsController {
         }
 
         if (req.body.likeStatus === "Dislike") {
-            const like = await this.likesService.getLikeByUserId(userId)
+            const like = await this.likesService.getLikeByUserId(userId, comment.id)
             if (!like) {
                 const zeroLike = await this.likesService.createZeroLike(userId)
                 await this.likesService.createDislike("Dislike", userId, comment.id, zeroLike)
@@ -88,7 +87,7 @@ export class CommentsController {
         }
 
         if (req.body.likeStatus === "None") {
-            const like = await this.likesService.getLikeByUserId(userId)
+            const like = await this.likesService.getLikeByUserId(userId, comment.id)
             if (!like) {
                 return res.sendStatus(204)
             } else if (like.type === "Like") {

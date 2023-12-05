@@ -11,9 +11,10 @@ export class LikesService {
     }
 
     async getLikeByUserId(
-        userId: string
+        userId: string,
+        commentId: string | null
     ) {
-        return await this.likesRepository.getLikeInfo(userId)
+        return await this.likesRepository.getLikeInfo(userId, commentId)
     }
 
     async createZeroLike(
@@ -43,9 +44,9 @@ export class LikesService {
 
         if (like.type !== "Like") {
             if (like.type === "Dislike") {
-                await this.commentsRepository.decreaseDislikes(commentId)
+                await this.commentsRepository.decreaseDislikes(commentId, userId)
             }
-            await this.commentsRepository.updateLikesInfo(commentId)
+            await this.commentsRepository.updateLikesInfo(commentId, userId)
             return await this.likesRepository.updateLike(newLike, like._id)
         }
     }
@@ -65,10 +66,10 @@ export class LikesService {
 
         if (like.type !== "Dislike") {
             if (like.type === "Like") {
-                await this.commentsRepository.decreaseLikes(commentId)
+                await this.commentsRepository.decreaseLikes(commentId, userId)
             }
             await this.likesRepository.updateLike(newDislike, like._id)
-            return await this.commentsRepository.updateDislikesInfo(commentId)
+            return await this.commentsRepository.updateDislikesInfo(commentId, userId)
         }
     }
 
@@ -76,7 +77,7 @@ export class LikesService {
         like: likesModel,
         type: string
     ) {
-        await this.commentsRepository.decreaseLikes(like.commentId)
+        await this.commentsRepository.decreaseLikes(like.commentId, like.userId)
         return await this.likesRepository.updateToNone(like, type)
     }
 
@@ -84,7 +85,7 @@ export class LikesService {
         like: likesModel,
         type: string
     ) {
-        await this.commentsRepository.decreaseDislikes(like.commentId)
+        await this.commentsRepository.decreaseDislikes(like.commentId, like.userId)
         return await this.likesRepository.updateToNone(like, type)
     }
 }

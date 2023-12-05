@@ -16,9 +16,9 @@ class LikesService {
         this.likesRepository = likesRepository;
         this.commentsRepository = commentsRepository;
     }
-    getLikeByUserId(userId) {
+    getLikeByUserId(userId, commentId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.likesRepository.getLikeInfo(userId);
+            return yield this.likesRepository.getLikeInfo(userId, commentId);
         });
     }
     createZeroLike(userId) {
@@ -42,9 +42,9 @@ class LikesService {
             };
             if (like.type !== "Like") {
                 if (like.type === "Dislike") {
-                    yield this.commentsRepository.decreaseDislikes(commentId);
+                    yield this.commentsRepository.decreaseDislikes(commentId, userId);
                 }
-                yield this.commentsRepository.updateLikesInfo(commentId);
+                yield this.commentsRepository.updateLikesInfo(commentId, userId);
                 return yield this.likesRepository.updateLike(newLike, like._id);
             }
         });
@@ -59,22 +59,22 @@ class LikesService {
             };
             if (like.type !== "Dislike") {
                 if (like.type === "Like") {
-                    yield this.commentsRepository.decreaseLikes(commentId);
+                    yield this.commentsRepository.decreaseLikes(commentId, userId);
                 }
                 yield this.likesRepository.updateLike(newDislike, like._id);
-                return yield this.commentsRepository.updateDislikesInfo(commentId);
+                return yield this.commentsRepository.updateDislikesInfo(commentId, userId);
             }
         });
     }
     setToNoneIfLike(like, type) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.commentsRepository.decreaseLikes(like.commentId);
+            yield this.commentsRepository.decreaseLikes(like.commentId, like.userId);
             return yield this.likesRepository.updateToNone(like, type);
         });
     }
     setToNoneIfDis(like, type) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.commentsRepository.decreaseDislikes(like.commentId);
+            yield this.commentsRepository.decreaseDislikes(like.commentId, like.userId);
             return yield this.likesRepository.updateToNone(like, type);
         });
     }

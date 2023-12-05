@@ -1,13 +1,14 @@
 import {PostsService} from "../domain/posts-service";
 import {Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
-import {likesModel} from "../models/likes-model";
 import {LikesService} from "../domain/likes-service";
+import {CommentsService} from "../domain/comments-service";
 
 export class PostsController {
     constructor(
         protected postsService: PostsService,
-        protected likesService: LikesService
+        protected likesService: LikesService,
+        protected commentsService: CommentsService,
     ) {
     }
 
@@ -72,12 +73,12 @@ export class PostsController {
     async getCommentById(req: Request<{ id: string }, {}, {}, commentGeneric>, res: Response) {
         const accessToken = req.headers.authorization
         const userId = await jwtService.getUserIdByToken(accessToken?.split(" ")[1])
-        const like: likesModel | null = await this.likesService.getLikeByUserId(userId)
+
         const comment = await this.postsService.getCommentById(
             req.params.id,
             req.query.pageNumber ? +req.query.pageNumber : 1,
             req.query.pageSize ? +req.query.pageSize : 10,
-            req.query.sortBy, req.query.sortDirection, like
+            req.query.sortBy, req.query.sortDirection, userId
         )
 
         if (!comment) {

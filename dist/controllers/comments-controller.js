@@ -63,14 +63,13 @@ class CommentsController {
     }
     doLikeDislike(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            //делать через access и проверять его
             const accessToken = req.headers.authorization;
             const comment = yield this.commentsService.getCommentById(req.params.id, accessToken);
             const userId = yield jwt_service_1.jwtService.getUserIdByToken(accessToken === null || accessToken === void 0 ? void 0 : accessToken.split(" ")[1]);
             if (!comment)
                 return res.sendStatus(404);
             if (req.body.likeStatus === "Like") {
-                const like = yield this.likesService.getLikeByUserId(userId);
+                const like = yield this.likesService.getLikeByUserId(userId, comment.id);
                 if (!like) {
                     const zeroLike = yield this.likesService.createZeroLike(userId);
                     yield this.likesService.createLike("Like", userId, comment.id, zeroLike);
@@ -82,7 +81,7 @@ class CommentsController {
                 }
             }
             if (req.body.likeStatus === "Dislike") {
-                const like = yield this.likesService.getLikeByUserId(userId);
+                const like = yield this.likesService.getLikeByUserId(userId, comment.id);
                 if (!like) {
                     const zeroLike = yield this.likesService.createZeroLike(userId);
                     yield this.likesService.createDislike("Dislike", userId, comment.id, zeroLike);
@@ -94,7 +93,7 @@ class CommentsController {
                 }
             }
             if (req.body.likeStatus === "None") {
-                const like = yield this.likesService.getLikeByUserId(userId);
+                const like = yield this.likesService.getLikeByUserId(userId, comment.id);
                 if (!like) {
                     return res.sendStatus(204);
                 }

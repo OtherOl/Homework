@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.commentScheme = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 exports.commentScheme = new mongoose_1.default.Schema({
+    postId: String,
     id: String,
     content: { type: String, required: true },
     commentatorInfo: {
@@ -16,6 +17,7 @@ exports.commentScheme = new mongoose_1.default.Schema({
     likesInfo: {
         likesCount: Number,
         dislikesCount: Number,
-        myStatus: String
+        myStatus: String,
+        likesList: []
     }
 }, { versionKey: false });

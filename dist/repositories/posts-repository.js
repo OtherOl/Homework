@@ -8,20 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
+const crypto_1 = require("crypto");
 class PostsRepository {
     getAllPosts(sortBy = "createdAt", sortDirection = "desc", pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -77,7 +67,8 @@ class PostsRepository {
             }
             else {
                 const comment = {
-                    id: foundPost.id,
+                    postId: foundPost.id,
+                    id: (0, crypto_1.randomUUID)(),
                     content: content,
                     commentatorInfo: {
                         userId: foundUser.id,
@@ -87,7 +78,8 @@ class PostsRepository {
                     likesInfo: {
                         likesCount: 0,
                         dislikesCount: 0,
-                        myStatus: "None"
+                        myStatus: "None",
+                        likesList: []
                     }
                 };
                 yield DB_Mongo_1.CommentModelClass.create(Object.assign({}, comment));
@@ -95,11 +87,11 @@ class PostsRepository {
             }
         });
     }
-    getCommentById(id, pageNumber, pageSize, sortBy = "createdAt", sortDirection = "desc", status) {
+    getCommentById(postId, pageNumber, pageSize, sortBy = "createdAt", sortDirection = "desc", userId) {
         return __awaiter(this, void 0, void 0, function* () {
             let sortQuery = {};
             sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
-            const filter = { id: id };
+            const filter = { postId: postId };
             const isExists = yield DB_Mongo_1.CommentModelClass.findOne(filter);
             const count = yield DB_Mongo_1.CommentModelClass.countDocuments(filter);
             const comment = yield DB_Mongo_1.CommentModelClass
@@ -108,29 +100,40 @@ class PostsRepository {
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)
                 .lean();
+            const like = yield DB_Mongo_1.LikeModelClass.find({ userId: userId });
+            const commentsQuery = comment.map(item => {
+                let likeStatus = "";
+                const status = like.find(a => a.commentId === item.id);
+                if (status) {
+                    likeStatus = status.type;
+                }
+                else {
+                    likeStatus = 'None';
+                }
+                return {
+                    id: item.id,
+                    content: item.content,
+                    commentatorInfo: item.commentatorInfo,
+                    createdAt: item.createdAt,
+                    likesInfo: {
+                        likesCount: item.likesInfo.likesCount,
+                        dislikesCount: item.likesInfo.dislikesCount,
+                        myStatus: likeStatus
+                    }
+                };
+            });
             const objects = {
                 pagesCount: Math.ceil(count / pageSize),
                 page: pageNumber,
                 pageSize: pageSize,
                 totalCount: count,
-                items: comment.map(a => (Object.assign(Object.assign({}, a), { a: a.likesInfo.myStatus = status })))
+                items: commentsQuery
             };
             if (!isExists) {
                 return false;
             }
             else {
-                const result = objects.items.map(likes => {
-                    // @ts-ignore
-                    const { a } = likes, rest = __rest(likes, ["a"]);
-                    return rest;
-                });
-                return {
-                    pagesCount: objects.pagesCount,
-                    page: objects.page,
-                    pageSize: objects.pageSize,
-                    totalCount: objects.totalCount,
-                    items: result
-                };
+                return objects;
             }
         });
     }

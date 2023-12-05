@@ -21,7 +21,7 @@ class CommentsService {
             if (!accessToken)
                 return yield this.commentsRepository.getCommentById(id, "None");
             const userId = yield jwt_service_1.jwtService.getUserIdByToken(accessToken.split(" ")[1]);
-            const like = yield this.likesService.getLikeByUserId(userId);
+            const like = yield this.likesService.getLikeByUserId(userId, id);
             if (!like)
                 return yield this.commentsRepository.getCommentById(id, "None");
             return yield this.commentsRepository.getCommentById(id, like.type);

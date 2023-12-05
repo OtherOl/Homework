@@ -1,7 +1,8 @@
 import {PostDbModel, PostViewModel, UpdatePostModel} from "../models/post-model";
 import {paginationModel} from "../models/pagination-model";
 import {commentDbModel} from "../models/comments-model";
-import {CommentModelClass, PostModelClass, UserModelClass} from "../data/DB-Mongo";
+import {CommentModelClass, LikeModelClass, PostModelClass, UserModelClass} from "../data/DB-Mongo";
+import {randomUUID} from "crypto";
 
 export class PostsRepository {
     async getAllPosts(
@@ -70,7 +71,8 @@ export class PostsRepository {
             return false
         } else {
             const comment: commentDbModel = {
-                id: foundPost.id,
+                postId: foundPost.id,
+                id: randomUUID(),
                 content: content,
                 commentatorInfo: {
                     userId: foundUser!.id,
@@ -80,7 +82,8 @@ export class PostsRepository {
                 likesInfo: {
                     likesCount: 0,
                     dislikesCount: 0,
-                    myStatus: "None"
+                    myStatus: "None",
+                    likesList: []
                 }
             }
             await CommentModelClass.create({...comment})
@@ -89,17 +92,17 @@ export class PostsRepository {
     }
 
     async getCommentById(
-        id: string,
+        postId: string,
         pageNumber: number,
         pageSize: number,
         sortBy: string = "createdAt",
         sortDirection: string = "desc",
-        status: string
+        userId: string
     ) {
         let sortQuery: any = {}
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
-        const filter = {id: id}
+        const filter = {postId: postId}
         const isExists = await CommentModelClass.findOne(filter)
         const count: number = await CommentModelClass.countDocuments(filter)
         const comment: commentDbModel[] = await CommentModelClass
@@ -109,29 +112,41 @@ export class PostsRepository {
             .limit(pageSize)
             .lean()
 
+        const like = await LikeModelClass.find({userId: userId})
+        const commentsQuery: any[] = comment.map(item => {
+            let likeStatus = ""
+            const status = like.find(a => a.commentId === item.id)
+            if(status) {
+                likeStatus = status.type
+            } else {
+                likeStatus = 'None'
+            }
+
+            return {
+                id: item.id,
+                content: item.content,
+                commentatorInfo: item.commentatorInfo,
+                createdAt: item.createdAt,
+                likesInfo: {
+                    likesCount: item.likesInfo.likesCount,
+                    dislikesCount: item.likesInfo.dislikesCount,
+                    myStatus: likeStatus
+                }
+            }
+        })
+
         const objects: paginationModel<commentDbModel> = {
             pagesCount: Math.ceil(count / pageSize),
             page: pageNumber,
             pageSize: pageSize,
             totalCount: count,
-            items: comment.map(a => ({...a, a: a.likesInfo.myStatus = status}))
+            items: commentsQuery
         }
 
         if (!isExists) {
             return false
         } else {
-            const result = objects.items.map(likes => {
-                // @ts-ignore
-                const {a, ...rest} = likes;
-                return rest
-            })
-            return {
-                pagesCount: objects.pagesCount,
-                page: objects.page,
-                pageSize: objects.pageSize,
-                totalCount: objects.totalCount,
-                items: result
-            }
+            return objects
         }
     }
 }

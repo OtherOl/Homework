@@ -15,7 +15,7 @@ export class CommentsService {
         if (!accessToken) return await this.commentsRepository.getCommentById(id, "None")
 
         const userId = await jwtService.getUserIdByToken(accessToken.split(" ")[1])
-        const like = await this.likesService.getLikeByUserId(userId)
+        const like = await this.likesService.getLikeByUserId(userId, id)
 
         if(!like) return await this.commentsRepository.getCommentById(id, "None")
 

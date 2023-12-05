@@ -67,14 +67,9 @@ class PostsService {
             return yield this.postsRepository.createComment(id, content, userId);
         });
     }
-    getCommentById(id, pageNumber, pageSize, sortBy, sortDirection, like) {
+    getCommentById(postId, pageNumber, pageSize, sortBy, sortDirection, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!like) {
-                return yield this.postsRepository.getCommentById(id, pageNumber, pageSize, sortBy, sortDirection, "None");
-            }
-            else {
-                return yield this.postsRepository.getCommentById(id, pageNumber, pageSize, sortBy, sortDirection, like.type);
-            }
+            return yield this.postsRepository.getCommentById(postId, pageNumber, pageSize, sortBy, sortDirection, userId);
         });
     }
 }

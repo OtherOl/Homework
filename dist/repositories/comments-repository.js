@@ -30,10 +30,16 @@ class CommentsRepository {
                     likesInfo: {
                         likesCount: comment.likesInfo.likesCount,
                         dislikesCount: comment.likesInfo.dislikesCount,
-                        myStatus: type
+                        myStatus: type,
+                        // likesList: comment.likesInfo.likesList
                     }
                 };
             }
+        });
+    }
+    getCommentByPostId(postId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return DB_Mongo_1.CommentModelClass.find({ postId: postId }).lean();
         });
     }
     updateComment(commentId, content) {
@@ -61,7 +67,7 @@ class CommentsRepository {
             }
         });
     }
-    updateLikesInfo(commentId) {
+    updateLikesInfo(commentId, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield DB_Mongo_1.CommentModelClass.findOne({ id: commentId });
             if (!comment) {
@@ -69,20 +75,20 @@ class CommentsRepository {
             }
             else {
                 yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
-                    $inc: { "likesInfo.likesCount": +1 }
+                    $inc: { "likesInfo.likesCount": +1 }, $push: { "likesInfo.likesList": userId }
                 });
                 return comment;
             }
         });
     }
-    decreaseLikes(commentId) {
+    decreaseLikes(commentId, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
-                $inc: { "likesInfo.likesCount": -1 }
+                $inc: { "likesInfo.likesCount": -1 }, $pull: { "likesInfo.likesList": userId }
             });
         });
     }
-    updateDislikesInfo(commentId) {
+    updateDislikesInfo(commentId, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield DB_Mongo_1.CommentModelClass.findOne({ id: commentId });
             if (!comment) {
@@ -90,16 +96,16 @@ class CommentsRepository {
             }
             else {
                 yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
-                    $inc: { "likesInfo.dislikesCount": +1 }
+                    $inc: { "likesInfo.dislikesCount": +1 }, $push: { "likesInfo.likesList": userId }
                 });
                 return comment;
             }
         });
     }
-    decreaseDislikes(commentId) {
+    decreaseDislikes(commentId, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             yield DB_Mongo_1.CommentModelClass.updateOne({ id: commentId }, {
-                $inc: { "likesInfo.dislikesCount": -1 }
+                $inc: { "likesInfo.dislikesCount": -1 }, $pull: { "likesInfo.likesList": userId }
             });
         });
     }

@@ -22,10 +22,17 @@ export class CommentsRepository {
                 likesInfo: {
                     likesCount: comment.likesInfo.likesCount,
                     dislikesCount: comment.likesInfo.dislikesCount,
-                    myStatus: type
+                    myStatus: type,
+                    // likesList: comment.likesInfo.likesList
                 }
             }
         }
+    }
+
+    async getCommentByPostId(
+        postId: string
+    ) {
+        return CommentModelClass.find({postId: postId}).lean()
     }
 
     async updateComment(
@@ -57,7 +64,8 @@ export class CommentsRepository {
     }
 
     async updateLikesInfo(
-        commentId: string
+        commentId: string,
+        userId: string
     ) {
         const comment: commentDbModel | null = await CommentModelClass.findOne({id: commentId})
 
@@ -65,22 +73,24 @@ export class CommentsRepository {
             return false
         } else {
             await CommentModelClass.updateOne({id: commentId}, {
-                $inc: {"likesInfo.likesCount": +1}
+                $inc: {"likesInfo.likesCount": +1}, $push: {"likesInfo.likesList": userId}
             })
             return comment
         }
     }
 
     async decreaseLikes(
-        commentId: string
+        commentId: string,
+        userId: string
     ) {
         await CommentModelClass.updateOne({id: commentId}, {
-            $inc: {"likesInfo.likesCount": -1}
+            $inc: {"likesInfo.likesCount": -1}, $pull: {"likesInfo.likesList": userId}
         })
     }
 
     async updateDislikesInfo(
-        commentId: string
+        commentId: string,
+        userId: string
     ) {
         const comment: commentDbModel | null = await CommentModelClass.findOne({id: commentId})
 
@@ -88,17 +98,18 @@ export class CommentsRepository {
             return false
         } else {
             await CommentModelClass.updateOne({id: commentId}, {
-                $inc: {"likesInfo.dislikesCount": +1}
+                $inc: {"likesInfo.dislikesCount": +1}, $push: {"likesInfo.likesList": userId}
             })
             return comment
         }
     }
 
     async decreaseDislikes(
-        commentId: string
+        commentId: string,
+        userId: string
     ) {
         await CommentModelClass.updateOne({id: commentId}, {
-            $inc: {"likesInfo.dislikesCount": -1}
+            $inc: {"likesInfo.dislikesCount": -1}, $pull: {"likesInfo.likesList": userId}
         })
 
     }

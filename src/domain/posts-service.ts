@@ -2,7 +2,6 @@ import {CreatePostModel, PostDbModel, PostViewModel, UpdatePostModel} from "../m
 import {randomUUID} from "crypto";
 import {PostsRepository} from "../repositories/posts-repository";
 import {BlogsRepository} from "../repositories/blogs-repository";
-import {likesModel} from "../models/likes-model";
 
 export class PostsService {
     constructor(
@@ -75,31 +74,20 @@ export class PostsService {
     }
 
     async getCommentById(
-        id: string,
+        postId: string,
         pageNumber: number,
         pageSize: number,
         sortBy: string,
         sortDirection: string,
-        like?: likesModel | null
+        userId: string
     ) {
-        if(!like) {
-            return await this.postsRepository.getCommentById(
-                id,
-                pageNumber,
-                pageSize,
-                sortBy,
-                sortDirection,
-                "None"
-            )
-        } else {
-            return await this.postsRepository.getCommentById(
-                id,
-                pageNumber,
-                pageSize,
-                sortBy,
-                sortDirection,
-                like.type
-            )
-        }
+        return await this.postsRepository.getCommentById(
+            postId,
+            pageNumber,
+            pageSize,
+            sortBy,
+            sortDirection,
+            userId
+        )
     }
 }

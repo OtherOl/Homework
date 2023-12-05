@@ -10,9 +10,10 @@ export class LikesRepository {
     }
 
     async getLikeInfo(
-        userId: string
+        userId: string,
+        commentId: string | null
     ): Promise<likesModel | null> {
-        return LikeModelClass.findOne({userId: userId})
+        return LikeModelClass.findOne({userId: userId, commentId: commentId})
     }
 
     async updateLike(

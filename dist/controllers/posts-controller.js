@@ -12,9 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsController = void 0;
 const jwt_service_1 = require("../application/jwt-service");
 class PostsController {
-    constructor(postsService, likesService) {
+    constructor(postsService, likesService, commentsService) {
         this.postsService = postsService;
         this.likesService = likesService;
+        this.commentsService = commentsService;
     }
     getAllPosts(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -67,25 +68,23 @@ class PostsController {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield this.postsService.createComment(req.params.id, req.body.content, req.user.id);
             if (!comment) {
-                res.sendStatus(404);
+                return res.sendStatus(404);
             }
             else {
-                res.status(201).send(comment);
+                return res.status(201).send(comment);
             }
         });
     }
     getCommentById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            //делать через access и проверять его
             const accessToken = req.headers.authorization;
             const userId = yield jwt_service_1.jwtService.getUserIdByToken(accessToken === null || accessToken === void 0 ? void 0 : accessToken.split(" ")[1]);
-            const like = yield this.likesService.getLikeByUserId(userId);
-            const comment = yield this.postsService.getCommentById(req.params.id, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10, req.query.sortBy, req.query.sortDirection, like);
+            const comment = yield this.postsService.getCommentById(req.params.id, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10, req.query.sortBy, req.query.sortDirection, userId);
             if (!comment) {
-                res.sendStatus(404);
+                return res.sendStatus(404);
             }
             else {
-                res.status(200).send(comment);
+                return res.status(200).send(comment);
             }
         });
     }

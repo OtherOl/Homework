@@ -1,4 +1,5 @@
 export type commentDbModel = {
+    postId: string
     id: string
     content: string
     commentatorInfo: {
@@ -10,5 +11,6 @@ export type commentDbModel = {
         likesCount: number
         dislikesCount: number
         myStatus: string
+        likesList: string[]
     }
 }

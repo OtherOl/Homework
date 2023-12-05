@@ -17,9 +17,9 @@ class LikesRepository {
             return yield DB_Mongo_1.LikeModelClass.create(zeroLike);
         });
     }
-    getLikeInfo(userId) {
+    getLikeInfo(userId, commentId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return DB_Mongo_1.LikeModelClass.findOne({ userId: userId });
+            return DB_Mongo_1.LikeModelClass.findOne({ userId: userId, commentId: commentId });
         });
     }
     updateLike(newLike, likeId) {
