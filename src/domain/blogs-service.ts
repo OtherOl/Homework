@@ -26,14 +26,16 @@ export class BlogsService {
         sortBy: string,
         sortDirection: string,
         pageNumber: number,
-        pageSize: number
+        pageSize: number,
+        userId: string
     ) {
         return await this.blogsRepository.getPostByBlogId(
             blogId,
             sortBy,
             sortDirection,
             pageNumber,
-            pageSize
+            pageSize,
+            userId
         )
     }
 

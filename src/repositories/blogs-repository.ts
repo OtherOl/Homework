@@ -1,7 +1,8 @@
 import {blogModel, createBlogModel} from "../models/blog-model";
 import {paginationModel} from "../models/pagination-model";
 import {PostDbModel, PostViewModel} from "../models/post-model";
-import {BlogModelClass, PostModelClass} from "../data/DB-Mongo";
+import {BlogModelClass, LikeModelClass, PostModelClass} from "../data/DB-Mongo";
+import {likesPostModel} from "../models/likes-model";
 
 export class BlogsRepository {
     async getAllBlogs(
@@ -40,28 +41,63 @@ export class BlogsRepository {
         sortBy: string = "createdAt",
         sortDirection: string = "desc",
         pageNumber: number,
-        pageSize: number
+        pageSize: number,
+        userId: string
     ) {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1
 
         const filter = {blogId: blogId}
 
+        const like = await LikeModelClass.find({userId: userId}).lean()
         const isExists = await BlogModelClass.findOne({id: blogId})
         const countPosts: number = await PostModelClass.countDocuments(filter)
         const foundPosts: PostDbModel[] = await PostModelClass
-            .find(filter, {projection: {_id: 0}})
+            .find(filter, {_id: 0})
             .sort(sortQuery)
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
             .lean()
+
+        const likes: likesPostModel[] = await LikeModelClass.find({type: "Like"},
+            {_id: 0, type: 0}).sort({addedAt: -1}).limit(3).lean()
+
+        const postsQuery: any[] = foundPosts.map(post => {
+            let likeStatus = ""
+            const status = like.find(a => a.postId === post.id)
+            const newestLikes = likes.filter(a => a.postId === post.id)
+            if (status) {
+                likeStatus = status.type
+            } else {
+                likeStatus = 'None'
+            }
+
+            return {
+                id: post.id,
+                title: post.title,
+                shortDescription: post.shortDescription,
+                content: post.content,
+                blogId: post.blogId,
+                blogName: post.blogName,
+                createdAt: post.createdAt,
+                extendedLikesInfo: {
+                    likesCount: post.extendedLikesInfo.likesCount,
+                    dislikesCount: post.extendedLikesInfo.dislikesCount,
+                    myStatus: likeStatus,
+                    newestLikes: newestLikes.map(like => {
+                        const {postId, ...rest} = like
+                        return rest
+                    })
+                }
+            }
+        })
 
         const objects: paginationModel<PostViewModel> = {
             pagesCount: Math.ceil(countPosts / pageSize),
             page: pageNumber,
             pageSize: pageSize,
             totalCount: countPosts,
-            items: foundPosts
+            items: postsQuery
         }
 
         if (!isExists) {

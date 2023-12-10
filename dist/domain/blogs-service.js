@@ -20,9 +20,9 @@ class BlogsService {
             return yield this.blogsRepository.getAllBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize);
         });
     }
-    getPostByBlogId(blogId, sortBy, sortDirection, pageNumber, pageSize) {
+    getPostByBlogId(blogId, sortBy, sortDirection, pageNumber, pageSize, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.blogsRepository.getPostByBlogId(blogId, sortBy, sortDirection, pageNumber, pageSize);
+            return yield this.blogsRepository.getPostByBlogId(blogId, sortBy, sortDirection, pageNumber, pageSize, userId);
         });
     }
     getBlogById(id) {

@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BlogsController = void 0;
+const jwt_service_1 = require("../application/jwt-service");
 class BlogsController {
     constructor(blogsService, postsService) {
         this.blogsService = blogsService;
@@ -30,7 +31,9 @@ class BlogsController {
     }
     getPostByBlogId(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const foundPost = yield this.blogsService.getPostByBlogId(req.params.blogId, req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10);
+            const accessToken = req.headers.authorization;
+            const userId = yield jwt_service_1.jwtService.getUserIdByToken(accessToken === null || accessToken === void 0 ? void 0 : accessToken.split(" ")[1]);
+            const foundPost = yield this.blogsService.getPostByBlogId(req.params.blogId, req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10, userId);
             if (foundPost === false) {
                 res.sendStatus(404);
             }

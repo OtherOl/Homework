@@ -1,6 +1,7 @@
 import {BlogsService} from "../domain/blogs-service";
 import {PostsService} from "../domain/posts-service";
 import {Request, Response} from "express";
+import {jwtService} from "../application/jwt-service";
 
 export class BlogsController {
     constructor(
@@ -26,10 +27,12 @@ export class BlogsController {
     }
 
     async getPostByBlogId(req: Request<{ blogId: string }, {}, {}, blogGeneric>, res: Response) {
+        const accessToken = req.headers.authorization
+        const userId = await jwtService.getUserIdByToken(accessToken?.split(" ")[1])
         const foundPost = await this.blogsService.getPostByBlogId(
             req.params.blogId, req.query.sortBy,
             req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1,
-            req.query.pageSize ? +req.query.pageSize : 10
+            req.query.pageSize ? +req.query.pageSize : 10, userId
         )
 
         if (foundPost === false) {
