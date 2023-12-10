@@ -26,11 +26,11 @@ export type PostDbModel = {
         dislikesCount: number,
         myStatus: string,
         newestLikes: [
-            {
-                addedAt: string,
-                userId: string,
-                login: string
-            }
+            // {
+            //     addedAt: string,
+            //     userId: string,
+            //     login: string
+            // }
         ]
     }
 }

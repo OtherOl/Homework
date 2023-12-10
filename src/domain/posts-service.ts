@@ -58,13 +58,7 @@ export class PostsService {
                 likesCount: 0,
                 dislikesCount: 0,
                 myStatus: "None",
-                newestLikes: [
-                    {
-                        addedAt: "",
-                        userId: "",
-                        login: ""
-                    }
-                ]
+                newestLikes: []
             }
         }
 
