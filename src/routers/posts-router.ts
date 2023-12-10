@@ -23,6 +23,11 @@ postsRouter.put('/:id',
     bodyPostValidation.blogId, inputValidationMiddleware,
     postsController.updatePost.bind(postsController))
 
+postsRouter.put('/:id/like-status',
+    authMiddleware, bodyPostValidation.likeStatus,
+    inputValidationMiddleware,
+    postsController.doLikesDislikes.bind(postsController))
+
 postsRouter.delete('/:id',
     authorisationMiddleware,
     postsController.deletePost.bind(postsController))

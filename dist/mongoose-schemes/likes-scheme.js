@@ -11,4 +11,7 @@ exports.likesScheme = new mongoose_1.default.Schema({
     type: String,
     userId: String,
     commentId: String,
-});
+    postId: String,
+    addedAt: String,
+    login: String
+}, { versionKey: false });

@@ -8,5 +8,17 @@ export const postScheme = new mongoose.Schema<PostDbModel>({
     content: {type: String, required: true},
     blogId: String,
     blogName: String,
-    createdAt: String
+    createdAt: String,
+    extendedLikesInfo: {
+        likesCount: Number,
+        dislikesCount: Number,
+        myStatus: String,
+        newestLikes: [
+            {
+                addedAt: String,
+                userId: String,
+                login: String
+            }
+        ]
+    }
 }, {versionKey: false})

@@ -63,31 +63,31 @@ export class CommentsController {
         if (!comment) return res.sendStatus(404)
 
         if (req.body.likeStatus === "Like") {
-            const like = await this.likesService.getLikeByUserId(userId, comment.id)
+            const like = await this.likesService.getLikeByUserIdComment(userId, comment.id)
             if (!like) {
                 const zeroLike = await this.likesService.createZeroLike(userId)
-                await this.likesService.createLike("Like", userId, comment.id, zeroLike)
+                await this.likesService.createCommentLike("Like", userId, comment.id, zeroLike)
                 return res.sendStatus(204)
             } else {
-                await this.likesService.createLike("Like", userId, comment.id, like)
+                await this.likesService.createCommentLike("Like", userId, comment.id, like)
                 return res.sendStatus(204)
             }
         }
 
         if (req.body.likeStatus === "Dislike") {
-            const like = await this.likesService.getLikeByUserId(userId, comment.id)
+            const like = await this.likesService.getLikeByUserIdComment(userId, comment.id)
             if (!like) {
                 const zeroLike = await this.likesService.createZeroLike(userId)
-                await this.likesService.createDislike("Dislike", userId, comment.id, zeroLike)
+                await this.likesService.createCommentDislike("Dislike", userId, comment.id, zeroLike)
                 return res.sendStatus(204)
             } else {
-                await this.likesService.createDislike("Dislike", userId, comment.id, like)
+                await this.likesService.createCommentDislike("Dislike", userId, comment.id, like)
                 return res.sendStatus(204)
             }
         }
 
         if (req.body.likeStatus === "None") {
-            const like = await this.likesService.getLikeByUserId(userId, comment.id)
+            const like = await this.likesService.getLikeByUserIdComment(userId, comment.id)
             if (!like) {
                 return res.sendStatus(204)
             } else if (like.type === "Like") {

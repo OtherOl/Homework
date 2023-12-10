@@ -69,31 +69,31 @@ class CommentsController {
             if (!comment)
                 return res.sendStatus(404);
             if (req.body.likeStatus === "Like") {
-                const like = yield this.likesService.getLikeByUserId(userId, comment.id);
+                const like = yield this.likesService.getLikeByUserIdComment(userId, comment.id);
                 if (!like) {
                     const zeroLike = yield this.likesService.createZeroLike(userId);
-                    yield this.likesService.createLike("Like", userId, comment.id, zeroLike);
+                    yield this.likesService.createCommentLike("Like", userId, comment.id, zeroLike);
                     return res.sendStatus(204);
                 }
                 else {
-                    yield this.likesService.createLike("Like", userId, comment.id, like);
+                    yield this.likesService.createCommentLike("Like", userId, comment.id, like);
                     return res.sendStatus(204);
                 }
             }
             if (req.body.likeStatus === "Dislike") {
-                const like = yield this.likesService.getLikeByUserId(userId, comment.id);
+                const like = yield this.likesService.getLikeByUserIdComment(userId, comment.id);
                 if (!like) {
                     const zeroLike = yield this.likesService.createZeroLike(userId);
-                    yield this.likesService.createDislike("Dislike", userId, comment.id, zeroLike);
+                    yield this.likesService.createCommentDislike("Dislike", userId, comment.id, zeroLike);
                     return res.sendStatus(204);
                 }
                 else {
-                    yield this.likesService.createDislike("Dislike", userId, comment.id, like);
+                    yield this.likesService.createCommentDislike("Dislike", userId, comment.id, like);
                     return res.sendStatus(204);
                 }
             }
             if (req.body.likeStatus === "None") {
-                const like = yield this.likesService.getLikeByUserId(userId, comment.id);
+                const like = yield this.likesService.getLikeByUserIdComment(userId, comment.id);
                 if (!like) {
                     return res.sendStatus(204);
                 }

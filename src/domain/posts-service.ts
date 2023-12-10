@@ -2,28 +2,44 @@ import {CreatePostModel, PostDbModel, PostViewModel, UpdatePostModel} from "../m
 import {randomUUID} from "crypto";
 import {PostsRepository} from "../repositories/posts-repository";
 import {BlogsRepository} from "../repositories/blogs-repository";
+import {jwtService} from "../application/jwt-service";
+import {LikesRepository} from "../repositories/likes-repository";
 
 export class PostsService {
     constructor(
         protected blogsRepository: BlogsRepository,
-        protected postsRepository: PostsRepository
+        protected postsRepository: PostsRepository,
+        private likesRepository: LikesRepository
     ) {}
+
     async getAllPosts(
         sortBy: string,
         sortDirection: string,
         pageNumber: number,
-        pageSize: number
+        pageSize: number,
+        userId: string
     ) {
         return await this.postsRepository.getAllPosts(
             sortBy,
             sortDirection,
             pageNumber,
-            pageSize
+            pageSize,
+            userId
         )
     }
 
-    async getPostById(id: string) {
-        return await this.postsRepository.getPostById(id)
+    async getPostById(
+        id: string,
+        accessToken: string | undefined
+        ) {
+        if(!accessToken) return await this.postsRepository.getPostById(id, "None")
+
+        const userId = await jwtService.getUserIdByToken(accessToken.split(" ")[1])
+
+        const like = await this.likesRepository.getLikeInfoPost(userId, id)
+        if(!like) return await this.postsRepository.getPostById(id, "None")
+
+        return await this.postsRepository.getPostById(id, like.type)
     }
 
     async createPost(inputData: CreatePostModel): Promise<PostViewModel | null> {
@@ -37,19 +53,23 @@ export class PostsService {
             content: inputData.content,
             blogId: blog.id,
             blogName: blog.name,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            extendedLikesInfo: {
+                likesCount: 0,
+                dislikesCount: 0,
+                myStatus: "None",
+                newestLikes: [
+                    {
+                        addedAt: "",
+                        userId: "",
+                        login: ""
+                    }
+                ]
+            }
         }
 
         await this.postsRepository.createPost(newPost)
-        return {
-            id: newPost.id,
-            title: newPost.title,
-            shortDescription: newPost.shortDescription,
-            content: newPost.content,
-            blogId: newPost.blogId,
-            blogName: newPost.blogName,
-            createdAt: newPost.createdAt
-        }
+        return newPost
     }
 
     async updatePost(
@@ -89,5 +109,19 @@ export class PostsService {
             sortDirection,
             userId
         )
+    }
+
+    async updateLikesInfo(
+        postId: string,
+        type: string
+    ) {
+        return await this.postsRepository.updateLikesInfo(postId, type)
+    }
+
+    async decreaseLikes(
+        postId: string,
+        type: string
+    ) {
+        return await this.postsRepository.decreaseLikes(postId, type)
     }
 }

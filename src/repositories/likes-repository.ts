@@ -1,23 +1,36 @@
-import {likesModel} from "../models/likes-model";
+import {likesCommentModel, likesPostModel} from "../models/likes-model";
 import {LikeModelClass} from "../data/DB-Mongo";
 import {ObjectId} from "mongodb";
 
 export class LikesRepository {
-    async createNewLike(
-        zeroLike: likesModel
+    async createNewCommentLike(
+        zeroLike: likesCommentModel
     ) {
         return await LikeModelClass.create(zeroLike)
     }
 
-    async getLikeInfo(
+    async createPostLike(
+        like: likesPostModel
+    ) {
+        return await LikeModelClass.create(like)
+    }
+
+    async getLikeInfoComment(
         userId: string,
         commentId: string | null
-    ): Promise<likesModel | null> {
+    ): Promise<likesCommentModel | null> {
         return LikeModelClass.findOne({userId: userId, commentId: commentId})
     }
 
+    async getLikeInfoPost(
+        userId: string,
+        postId: string | null
+    ): Promise<likesPostModel | null> {
+        return LikeModelClass.findOne({userId: userId, postId: postId})
+    }
+
     async updateLike(
-        newLike: likesModel,
+        newLike: likesCommentModel,
         likeId: ObjectId
     ) {
         return LikeModelClass.updateOne({_id: likeId},
@@ -25,10 +38,19 @@ export class LikesRepository {
     }
 
     async updateToNone(
-        like: likesModel,
+        like: likesCommentModel,
         type: string
     ) {
         return LikeModelClass.updateOne({_id: like._id},
             {$set: {type: type, userId: like.userId, commentId: like.commentId}})
+    }
+
+    async updateLikeType(
+        likeId: ObjectId,
+        type: string
+    ) {
+        return LikeModelClass.updateOne({_id: likeId}, {
+            $set: {type: type}
+        })
     }
 }

@@ -12,5 +12,17 @@ exports.postScheme = new mongoose_1.default.Schema({
     content: { type: String, required: true },
     blogId: String,
     blogName: String,
-    createdAt: String
+    createdAt: String,
+    extendedLikesInfo: {
+        likesCount: Number,
+        dislikesCount: Number,
+        myStatus: String,
+        newestLikes: [
+            {
+                addedAt: String,
+                userId: String,
+                login: String
+            }
+        ]
+    }
 }, { versionKey: false });

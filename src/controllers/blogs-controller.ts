@@ -65,7 +65,7 @@ export class BlogsController {
     async updateBlog(req: Request, res: Response) {
         const {name, description, websiteUrl} = req.body
 
-        const updatedBlog = await this.blogsService.updateBlog(req.params.id, req.body)
+        const updatedBlog = await this.blogsService.updateBlog(req.params.id, {name, description, websiteUrl})
 
         if (updatedBlog) {
             res.sendStatus(204)

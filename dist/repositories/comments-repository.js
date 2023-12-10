@@ -30,16 +30,10 @@ class CommentsRepository {
                     likesInfo: {
                         likesCount: comment.likesInfo.likesCount,
                         dislikesCount: comment.likesInfo.dislikesCount,
-                        myStatus: type,
-                        // likesList: comment.likesInfo.likesList
+                        myStatus: type
                     }
                 };
             }
-        });
-    }
-    getCommentByPostId(postId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return DB_Mongo_1.CommentModelClass.find({ postId: postId }).lean();
         });
     }
     updateComment(commentId, content) {

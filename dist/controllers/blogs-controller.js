@@ -66,7 +66,7 @@ class BlogsController {
     updateBlog(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { name, description, websiteUrl } = req.body;
-            const updatedBlog = yield this.blogsService.updateBlog(req.params.id, req.body);
+            const updatedBlog = yield this.blogsService.updateBlog(req.params.id, { name, description, websiteUrl });
             if (updatedBlog) {
                 res.sendStatus(204);
             }

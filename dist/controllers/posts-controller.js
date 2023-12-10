@@ -12,14 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsController = void 0;
 const jwt_service_1 = require("../application/jwt-service");
 class PostsController {
-    constructor(postsService, likesService, commentsService) {
+    constructor(postsService, likesService, commentsService, usersService) {
         this.postsService = postsService;
         this.likesService = likesService;
         this.commentsService = commentsService;
+        this.usersService = usersService;
     }
     getAllPosts(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const allPosts = yield this.postsService.getAllPosts(req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10);
+            const accessToken = req.headers.authorization;
+            const userId = yield jwt_service_1.jwtService.getUserIdByToken(accessToken === null || accessToken === void 0 ? void 0 : accessToken.split(" ")[1]);
+            const allPosts = yield this.postsService.getAllPosts(req.query.sortBy, req.query.sortDirection, req.query.pageNumber ? +req.query.pageNumber : 1, req.query.pageSize ? +req.query.pageSize : 10, userId);
             res.status(200).send(allPosts);
         });
     }
@@ -32,7 +35,8 @@ class PostsController {
     }
     getPostById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const foundPost = yield this.postsService.getPostById(req.params.id);
+            const accessToken = req.headers.authorization;
+            const foundPost = yield this.postsService.getPostById(req.params.id, accessToken);
             if (!foundPost) {
                 res.sendStatus(404);
             }
@@ -44,7 +48,7 @@ class PostsController {
     updatePost(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { title, shortDescription, content, blogId } = req.body;
-            const updatedPost = yield this.postsService.updatePost(req.params.id, req.body);
+            const updatedPost = yield this.postsService.updatePost(req.params.id, { title, shortDescription, content, blogId });
             if (updatedPost) {
                 res.sendStatus(204);
             }
@@ -85,6 +89,52 @@ class PostsController {
             }
             else {
                 return res.status(200).send(comment);
+            }
+        });
+    }
+    doLikesDislikes(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const accessToken = req.headers.authorization;
+            const post = yield this.postsService.getPostById(req.params.id, accessToken.split("")[1]);
+            const userId = yield jwt_service_1.jwtService.getUserIdByToken(accessToken.split(" ")[1]);
+            const userLogin = yield this.usersService.findUserById(userId);
+            if (!post)
+                return res.sendStatus(404);
+            if (req.body.likeStatus === "Like") {
+                const like = yield this.likesService.getLikeByUserIdPost(userId, post.id);
+                if (!like) {
+                    yield this.likesService.createPostLike(null, "Like", userId, post.id, userLogin.login);
+                    return res.sendStatus(204);
+                }
+                else {
+                    yield this.likesService.createPostLike(like, "Like", userId, post.id, userLogin.login);
+                    return res.sendStatus(204);
+                }
+            }
+            if (req.body.likeStatus === "Dislike") {
+                const like = yield this.likesService.getLikeByUserIdPost(userId, post.id);
+                if (!like) {
+                    yield this.likesService.createPostDislike(null, "Dislike", userId, post.id, userLogin.login);
+                    return res.sendStatus(204);
+                }
+                else {
+                    yield this.likesService.createPostDislike(like, "Dislike", userId, post.id, userLogin.login);
+                    return res.sendStatus(204);
+                }
+            }
+            if (req.body.likeStatus === "None") {
+                const like = yield this.likesService.getLikeByUserIdPost(userId, post.id);
+                if (!like)
+                    return res.sendStatus(204);
+                if (like.type === "Like") {
+                    yield this.likesService.updateToNone(like);
+                    return res.sendStatus(204);
+                }
+                if (like.type === "Dislike") {
+                    yield this.likesService.updateToNone(like);
+                    return res.sendStatus(204);
+                }
+                return res.sendStatus(204);
             }
         });
     }

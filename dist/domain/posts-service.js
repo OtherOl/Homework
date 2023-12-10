@@ -11,19 +11,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsService = void 0;
 const crypto_1 = require("crypto");
+const jwt_service_1 = require("../application/jwt-service");
 class PostsService {
-    constructor(blogsRepository, postsRepository) {
+    constructor(blogsRepository, postsRepository, likesRepository) {
         this.blogsRepository = blogsRepository;
         this.postsRepository = postsRepository;
+        this.likesRepository = likesRepository;
     }
-    getAllPosts(sortBy, sortDirection, pageNumber, pageSize) {
+    getAllPosts(sortBy, sortDirection, pageNumber, pageSize, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.postsRepository.getAllPosts(sortBy, sortDirection, pageNumber, pageSize);
+            return yield this.postsRepository.getAllPosts(sortBy, sortDirection, pageNumber, pageSize, userId);
         });
     }
-    getPostById(id) {
+    getPostById(id, accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.postsRepository.getPostById(id);
+            if (!accessToken)
+                return yield this.postsRepository.getPostById(id, "None");
+            const userId = yield jwt_service_1.jwtService.getUserIdByToken(accessToken.split(" ")[1]);
+            const like = yield this.likesRepository.getLikeInfoPost(userId, id);
+            if (!like)
+                return yield this.postsRepository.getPostById(id, "None");
+            return yield this.postsRepository.getPostById(id, like.type);
         });
     }
     createPost(inputData) {
@@ -38,18 +46,22 @@ class PostsService {
                 content: inputData.content,
                 blogId: blog.id,
                 blogName: blog.name,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                extendedLikesInfo: {
+                    likesCount: 0,
+                    dislikesCount: 0,
+                    myStatus: "None",
+                    newestLikes: [
+                        {
+                            addedAt: "",
+                            userId: "",
+                            login: ""
+                        }
+                    ]
+                }
             };
             yield this.postsRepository.createPost(newPost);
-            return {
-                id: newPost.id,
-                title: newPost.title,
-                shortDescription: newPost.shortDescription,
-                content: newPost.content,
-                blogId: newPost.blogId,
-                blogName: newPost.blogName,
-                createdAt: newPost.createdAt
-            };
+            return newPost;
         });
     }
     updatePost(id, inputData) {
@@ -70,6 +82,16 @@ class PostsService {
     getCommentById(postId, pageNumber, pageSize, sortBy, sortDirection, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.postsRepository.getCommentById(postId, pageNumber, pageSize, sortBy, sortDirection, userId);
+        });
+    }
+    updateLikesInfo(postId, type) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.postsRepository.updateLikesInfo(postId, type);
+        });
+    }
+    decreaseLikes(postId, type) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.postsRepository.decreaseLikes(postId, type);
         });
     }
 }

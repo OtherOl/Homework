@@ -21,6 +21,18 @@ export type PostDbModel = {
     blogId: string
     blogName: string
     createdAt: string
+    extendedLikesInfo: {
+        likesCount: number,
+        dislikesCount: number,
+        myStatus: string,
+        newestLikes: [
+            {
+                addedAt: string,
+                userId: string,
+                login: string
+            }
+        ]
+    }
 }
 
 export type PostViewModel = {

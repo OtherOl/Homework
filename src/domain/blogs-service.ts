@@ -54,7 +54,7 @@ export class BlogsService {
         return await this.blogsRepository.createBlog(newBlog)
     }
 
-    async updateBlog(id: string, inputData: blogModel) {
+    async updateBlog(id: string, inputData: createBlogModel) {
         return await this.blogsRepository.updateBlog(id, inputData)
     }
 

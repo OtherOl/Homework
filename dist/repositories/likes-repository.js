@@ -12,14 +12,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LikesRepository = void 0;
 const DB_Mongo_1 = require("../data/DB-Mongo");
 class LikesRepository {
-    createNewLike(zeroLike) {
+    createNewCommentLike(zeroLike) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield DB_Mongo_1.LikeModelClass.create(zeroLike);
         });
     }
-    getLikeInfo(userId, commentId) {
+    createPostLike(like) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield DB_Mongo_1.LikeModelClass.create(like);
+        });
+    }
+    getLikeInfoComment(userId, commentId) {
         return __awaiter(this, void 0, void 0, function* () {
             return DB_Mongo_1.LikeModelClass.findOne({ userId: userId, commentId: commentId });
+        });
+    }
+    getLikeInfoPost(userId, postId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return DB_Mongo_1.LikeModelClass.findOne({ userId: userId, postId: postId });
         });
     }
     updateLike(newLike, likeId) {
@@ -30,6 +40,13 @@ class LikesRepository {
     updateToNone(like, type) {
         return __awaiter(this, void 0, void 0, function* () {
             return DB_Mongo_1.LikeModelClass.updateOne({ _id: like._id }, { $set: { type: type, userId: like.userId, commentId: like.commentId } });
+        });
+    }
+    updateLikeType(likeId, type) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return DB_Mongo_1.LikeModelClass.updateOne({ _id: likeId }, {
+                $set: { type: type }
+            });
         });
     }
 }

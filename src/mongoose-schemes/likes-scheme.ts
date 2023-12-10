@@ -7,4 +7,7 @@ export const likesScheme = new mongoose.Schema<likesModel>({
     type: String,
     userId: String,
     commentId: String,
-})
+    postId: String,
+    addedAt: String,
+    login: String
+}, {versionKey: false})

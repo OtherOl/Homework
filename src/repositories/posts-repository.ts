@@ -3,17 +3,20 @@ import {paginationModel} from "../models/pagination-model";
 import {commentDbModel} from "../models/comments-model";
 import {CommentModelClass, LikeModelClass, PostModelClass, UserModelClass} from "../data/DB-Mongo";
 import {randomUUID} from "crypto";
+import {likesPostModel} from "../models/likes-model";
 
 export class PostsRepository {
     async getAllPosts(
         sortBy: string = "createdAt",
         sortDirection: string = "desc",
         pageNumber: number,
-        pageSize: number
+        pageSize: number,
+        userId: string
     ): Promise<paginationModel<PostViewModel>> {
         let sortQuery: any = {};
         sortQuery[sortBy] = sortDirection === "asc" ? 1 : -1;
 
+        const like = await LikeModelClass.find({userId: userId}).lean()
         const countPosts: number = await PostModelClass.countDocuments()
         const foundPost: PostDbModel[] = await PostModelClass
             .find({}, {_id: 0})
@@ -22,19 +25,74 @@ export class PostsRepository {
             .limit(pageSize)
             .lean()
 
+        const likes: likesPostModel[] = await LikeModelClass.find({type: "Like"},
+            {_id: 0, type: 0}).sort({addedAt: -1}).limit(3).lean()
+
+        const postsQuery: any[] = foundPost.map(post => {
+            let likeStatus = ""
+            const status = like.find(a => a.postId === post.id)
+            const newestLikes = likes.filter(a => a.postId === post.id)
+            if (status) {
+                likeStatus = status.type
+            } else {
+                likeStatus = 'None'
+            }
+
+            return {
+                id: post.id,
+                title: post.title,
+                shortDescription: post.shortDescription,
+                content: post.content,
+                blogId: post.blogId,
+                blogName: post.blogName,
+                createdAt: post.createdAt,
+                extendedLikesInfo: {
+                    likesCount: post.extendedLikesInfo.likesCount,
+                    dislikesCount: post.extendedLikesInfo.dislikesCount,
+                    myStatus: likeStatus,
+                    newestLikes: newestLikes.map(like => {
+                        const {postId, ...rest} = like
+                        return rest
+                    })
+                }
+            }
+        })
+
         const objects: paginationModel<PostViewModel> = {
             pagesCount: Math.ceil(countPosts / pageSize),
             page: pageNumber,
             pageSize: pageSize,
             totalCount: countPosts,
-            items: foundPost,
+            items: postsQuery,
         }
 
         return objects
     }
 
-    async getPostById(id: string) {
-        return PostModelClass.findOne({id: id}, {_id: 0})
+    async getPostById(
+        id: string,
+        type: string
+    ) {
+        const post = await PostModelClass.findOne({id: id}, {_id: 0}).lean()
+        if(!post) return false
+        const likes: likesPostModel[] = await LikeModelClass.find({postId: id, type: "Like"},
+            {_id: 0, postId: 0, type: 0}).sort({addedAt: -1}).limit(3).lean()
+
+        return {
+            id: post.id,
+            title: post.title,
+            shortDescription: post.shortDescription,
+            content: post.content,
+            blogId: post.blogId,
+            blogName: post.blogName,
+            createdAt: post.createdAt,
+            extendedLikesInfo: {
+                likesCount: post.extendedLikesInfo.likesCount,
+                dislikesCount: post.extendedLikesInfo.dislikesCount,
+                myStatus: type,
+                newestLikes: likes
+            }
+        }
     }
 
     async createPost(inputData: PostDbModel) {
@@ -129,7 +187,7 @@ export class PostsRepository {
         const commentsQuery: any[] = comment.map(item => {
             let likeStatus = ""
             const status = like.find(a => a.commentId === item.id)
-            if(status) {
+            if (status) {
                 likeStatus = status.type
             } else {
                 likeStatus = 'None'
@@ -161,5 +219,42 @@ export class PostsRepository {
         } else {
             return objects
         }
+    }
+
+    async updateLikesInfo(
+        postId: string,
+        type: string
+    ) {
+        if (type === "Like") {
+            return PostModelClass.updateOne({id: postId}, {
+                $inc: {"extendedLikesInfo.likesCount": +1}
+            })
+        }
+        if (type === "Dislike") {
+            return PostModelClass.updateOne({id: postId}, {
+                $inc: {"extendedLikesInfo.dislikesCount": +1}
+            })
+        }
+    }
+
+    async decreaseLikes(
+        postId: string,
+        type: string
+    ) {
+        if (type === "Like") return PostModelClass.updateOne({id: postId}, {
+            $inc: {"extendedLikesInfo.dislikesCount": -1, "extendedLikesInfo.likesCount": +1}
+        })
+
+        if (type === "Dislike") return PostModelClass.updateOne({id: postId}, {
+            $inc: {"extendedLikesInfo.dislikesCount": +1, "extendedLikesInfo.likesCount": -1}
+        })
+
+        if(type === "Like to none") return PostModelClass.updateOne({id: postId}, {
+            $inc: {"extendedLikesInfo.likesCount": -1}
+        })
+
+        if(type === "Dislike to none") return PostModelClass.updateOne({id: postId}, {
+            $inc: {"extendedLikesInfo.dislikesCount": -1}
+        })
     }
 }
