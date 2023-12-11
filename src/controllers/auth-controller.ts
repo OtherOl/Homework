@@ -7,7 +7,9 @@ import {DevicesService} from "../domain/devices-service";
 import {Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
 import {emailManager} from "../managers/email-manager";
+import {injectable} from "inversify";
 
+@injectable()
 export class AuthController {
     constructor(
         protected usersService: UsersService,

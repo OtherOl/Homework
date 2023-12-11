@@ -5,7 +5,9 @@ import {LikesService} from "../domain/likes-service";
 import {CommentsService} from "../domain/comments-service";
 import {likesPostModel} from "../models/likes-model";
 import {UsersService} from "../domain/users-service";
+import {injectable} from "inversify";
 
+@injectable()
 export class PostsController {
     constructor(
         protected postsService: PostsService,

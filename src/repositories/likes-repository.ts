@@ -1,7 +1,9 @@
 import {likesCommentModel, likesPostModel} from "../models/likes-model";
 import {LikeModelClass} from "../data/DB-Mongo";
 import {ObjectId} from "mongodb";
+import {injectable} from "inversify";
 
+@injectable()
 export class LikesRepository {
     async createNewCommentLike(
         zeroLike: likesCommentModel

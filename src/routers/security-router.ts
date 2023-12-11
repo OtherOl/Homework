@@ -1,6 +1,9 @@
 import {Router} from "express";
 import {tokensMiddleware} from "../middlewares/tokens-middleware";
-import {securityController} from "../compostion-root";
+import {container} from "../compostion-root";
+import {SecurityController} from "../controllers/security-controller";
+
+const securityController = container.resolve(SecurityController)
 
 export const securityRouter = Router({})
 

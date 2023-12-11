@@ -8,7 +8,9 @@ import add from 'date-fns/add'
 import {emailManager} from "../managers/email-manager";
 import {EmailAdapter} from "../adapters/email-adapter";
 import {ObjectId} from "mongodb";
+import {injectable} from "inversify";
 
+@injectable()
 export class UsersService {
     constructor(
         protected usersRepository: UsersRepository,

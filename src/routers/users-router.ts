@@ -2,7 +2,10 @@ import {Router} from "express";
 import {authorisationMiddleware} from "../middlewares/authorisation-middleware";
 import {bodyUserValidation} from "../middlewares/body-user-validation";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
-import {usersController} from "../compostion-root";
+import {container} from "../compostion-root";
+import {UsersController} from "../controllers/users-controller";
+
+const usersController = container.resolve(UsersController)
 
 export const usersRouter = Router({})
 

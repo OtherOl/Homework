@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import {AuthRepository} from "./repositories/auth-repository";
 import {AttemptsRepository} from "./repositories/attempts-repository";
 import {BlogsRepository} from "./repositories/blogs-repository";
@@ -19,30 +20,31 @@ import {UsersController} from "./controllers/users-controller";
 import {BlogsController} from "./controllers/blogs-controller";
 import {LikesRepository} from "./repositories/likes-repository";
 import {LikesService} from "./domain/likes-service";
+import {Container} from "inversify";
 
-const attemptsRepository = new AttemptsRepository()
-const authRepository = new AuthRepository()
-const blogsRepository = new BlogsRepository()
-const commentsRepository = new CommentsRepository()
-const devicesRepository = new DevicesRepository()
-const postsRepository = new PostsRepository()
-const usersRepository = new UsersRepository()
-const likesRepository = new LikesRepository()
+export const container = new Container()
 
-const emailAdapter = new EmailAdapter(usersRepository)
-const blogsService = new BlogsService(blogsRepository)
-const postsService = new PostsService(blogsRepository, postsRepository, likesRepository)
-const usersService = new UsersService(usersRepository, emailAdapter)
-const devicesService = new DevicesService(devicesRepository)
-const likesService = new LikesService(likesRepository, commentsRepository, postsService)
-const commentsService = new CommentsService(commentsRepository, likesService)
+container.bind(BlogsController).to(BlogsController)
+container.bind(PostsController).to(PostsController)
+container.bind(CommentsController).to(CommentsController)
+container.bind(SecurityController).to(SecurityController)
+container.bind(UsersController).to(UsersController)
+container.bind(AuthController).to(AuthController)
 
-export const blogsController = new BlogsController(blogsService, postsService)
-export const postsController = new PostsController(postsService, likesService, commentsService, usersService)
-export const commentsController = new CommentsController(commentsService, likesService, authRepository)
-export const securityController = new SecurityController(devicesRepository)
-export const usersController = new UsersController(usersService)
-export const authController = new AuthController(
-    usersService, usersRepository, attemptsRepository,
-    authRepository, devicesRepository, devicesService
-)
+container.bind(EmailAdapter).to(EmailAdapter)
+container.bind(BlogsService).to(BlogsService)
+container.bind(PostsService).to(PostsService)
+container.bind(UsersService).to(UsersService)
+container.bind(DevicesService).to(DevicesService)
+container.bind(LikesService).to(LikesService)
+container.bind(CommentsService).to(CommentsService)
+
+container.bind(AttemptsRepository).to(AttemptsRepository)
+container.bind(AuthRepository).to(AuthRepository)
+container.bind(BlogsRepository).to(BlogsRepository)
+container.bind(CommentsRepository).to(CommentsRepository)
+container.bind(DevicesRepository).to(DevicesRepository)
+container.bind(PostsRepository).to(PostsRepository)
+container.bind(UsersRepository).to(UsersRepository)
+container.bind(LikesRepository).to(LikesRepository)
+

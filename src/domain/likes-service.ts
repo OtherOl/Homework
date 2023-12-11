@@ -3,7 +3,9 @@ import {likesCommentModel, likesPostModel} from "../models/likes-model";
 import {ObjectId} from "mongodb";
 import {CommentsRepository} from "../repositories/comments-repository";
 import {PostsService} from "./posts-service";
+import {injectable} from "inversify";
 
+@injectable()
 export class LikesService {
     constructor(
         protected likesRepository: LikesRepository,

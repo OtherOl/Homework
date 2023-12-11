@@ -1,7 +1,9 @@
 import {UserModelClass} from "../data/DB-Mongo";
 import {paginationModel} from "../models/pagination-model";
 import {createNewUserModel, userViewModel} from "../models/user-model";
+import {injectable} from "inversify";
 
+@injectable()
 export class UsersRepository {
     async getAllUsers(
         sortBy: string = "createdAt",

@@ -1,5 +1,7 @@
 import {AuthModelClass} from "../data/DB-Mongo";
+import {injectable} from "inversify";
 
+@injectable()
 export class AuthRepository {
     async blackList(
         token: string

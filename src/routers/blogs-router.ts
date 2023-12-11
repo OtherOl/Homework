@@ -3,7 +3,10 @@ import {bodyBlogValidation} from "../middlewares/body-blog-validation";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {authorisationMiddleware} from "../middlewares/authorisation-middleware";
 import {bodyPostValidation} from "../middlewares/body-post-validation";
-import {blogsController} from "../compostion-root";
+import {container} from "../compostion-root";
+import {BlogsController} from "../controllers/blogs-controller";
+
+const blogsController = container.resolve(BlogsController)
 
 export const blogsRouter = Router({})
 

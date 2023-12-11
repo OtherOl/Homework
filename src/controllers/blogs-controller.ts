@@ -2,7 +2,9 @@ import {BlogsService} from "../domain/blogs-service";
 import {PostsService} from "../domain/posts-service";
 import {Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
+import {injectable} from "inversify";
 
+@injectable()
 export class BlogsController {
     constructor(
         protected blogsService: BlogsService,

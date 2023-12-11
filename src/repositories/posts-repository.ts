@@ -4,7 +4,9 @@ import {commentDbModel} from "../models/comments-model";
 import {CommentModelClass, LikeModelClass, PostModelClass, UserModelClass} from "../data/DB-Mongo";
 import {randomUUID} from "crypto";
 import {likesPostModel} from "../models/likes-model";
+import {injectable} from "inversify";
 
+@injectable()
 export class PostsRepository {
     async getAllPosts(
         sortBy: string = "createdAt",

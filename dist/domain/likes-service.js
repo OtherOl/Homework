@@ -1,4 +1,13 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,8 +19,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LikesService = void 0;
+const likes_repository_1 = require("../repositories/likes-repository");
 const mongodb_1 = require("mongodb");
-class LikesService {
+const comments_repository_1 = require("../repositories/comments-repository");
+const posts_service_1 = require("./posts-service");
+const inversify_1 = require("inversify");
+let LikesService = class LikesService {
     constructor(likesRepository, commentsRepository, postsService) {
         this.likesRepository = likesRepository;
         this.commentsRepository = commentsRepository;
@@ -155,5 +168,11 @@ class LikesService {
             }
         });
     }
-}
+};
 exports.LikesService = LikesService;
+exports.LikesService = LikesService = __decorate([
+    (0, inversify_1.injectable)(),
+    __metadata("design:paramtypes", [likes_repository_1.LikesRepository,
+        comments_repository_1.CommentsRepository,
+        posts_service_1.PostsService])
+], LikesService);

@@ -3,7 +3,10 @@ import {bodyPostValidation} from "../middlewares/body-post-validation";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {authorisationMiddleware} from "../middlewares/authorisation-middleware";
 import {authMiddleware} from "../middlewares/auth-middleware";
-import {postsController} from "../compostion-root";
+import {container} from "../compostion-root";
+import {PostsController} from "../controllers/posts-controller";
+
+const postsController = container.resolve(PostsController)
 
 export const postsRouter = Router({})
 

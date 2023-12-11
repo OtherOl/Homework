@@ -1,6 +1,8 @@
 import {CommentModelClass, LikeModelClass} from "../data/DB-Mongo";
 import {commentDbModel} from "../models/comments-model";
+import {injectable} from "inversify";
 
+@injectable()
 export class CommentsRepository {
     async getCommentById(
         id: string,

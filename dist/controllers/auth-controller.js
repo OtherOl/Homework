@@ -1,4 +1,13 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,9 +19,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
+const users_service_1 = require("../domain/users-service");
+const users_repository_1 = require("../repositories/users-repository");
+const attempts_repository_1 = require("../repositories/attempts-repository");
+const auth_repository_1 = require("../repositories/auth-repository");
+const devices_repository_1 = require("../repositories/devices-repository");
+const devices_service_1 = require("../domain/devices-service");
 const jwt_service_1 = require("../application/jwt-service");
 const email_manager_1 = require("../managers/email-manager");
-class AuthController {
+const inversify_1 = require("inversify");
+let AuthController = class AuthController {
     constructor(usersService, usersRepository, attemptsRepository, authRepository, devicesRepository, devicesService) {
         this.usersService = usersService;
         this.usersRepository = usersRepository;
@@ -185,5 +201,14 @@ class AuthController {
             return res.clearCookie('refreshToken').sendStatus(204);
         });
     }
-}
+};
 exports.AuthController = AuthController;
+exports.AuthController = AuthController = __decorate([
+    (0, inversify_1.injectable)(),
+    __metadata("design:paramtypes", [users_service_1.UsersService,
+        users_repository_1.UsersRepository,
+        attempts_repository_1.AttemptsRepository,
+        auth_repository_1.AuthRepository,
+        devices_repository_1.DevicesRepository,
+        devices_service_1.DevicesService])
+], AuthController);

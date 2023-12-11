@@ -1,6 +1,8 @@
 import {devicesViewModel} from "../models/devices-model";
 import {DeviceModelClass} from "../data/DB-Mongo";
+import {injectable} from "inversify";
 
+@injectable()
 export class DevicesRepository {
     async addSession(
         inputData: devicesViewModel

@@ -3,7 +3,9 @@ import {paginationModel} from "../models/pagination-model";
 import {PostDbModel} from "../models/post-model";
 import {BlogModelClass, LikeModelClass, PostModelClass} from "../data/DB-Mongo";
 import {likesPostModel} from "../models/likes-model";
+import {injectable} from "inversify";
 
+@injectable()
 export class BlogsRepository {
     async getAllBlogs(
         searchNameTerm: string,

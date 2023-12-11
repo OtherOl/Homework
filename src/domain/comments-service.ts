@@ -1,7 +1,9 @@
 import {CommentsRepository} from "../repositories/comments-repository";
 import {jwtService} from "../application/jwt-service";
 import {LikesService} from "./likes-service";
+import {injectable} from "inversify";
 
+@injectable()
 export class CommentsService {
     constructor(
         private commentsRepository: CommentsRepository,

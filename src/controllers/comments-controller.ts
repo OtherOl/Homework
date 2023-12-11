@@ -3,7 +3,9 @@ import {Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
 import {LikesService} from "../domain/likes-service";
 import {AuthRepository} from "../repositories/auth-repository";
+import {injectable} from "inversify";
 
+@injectable()
 export class CommentsController {
     constructor(
         protected commentsService: CommentsService,

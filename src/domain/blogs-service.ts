@@ -1,7 +1,9 @@
 import {randomUUID} from "crypto";
 import {blogModel, createBlogModel} from "../models/blog-model";
 import {BlogsRepository} from "../repositories/blogs-repository";
+import {injectable} from "inversify";
 
+@injectable()
 export class BlogsService {
     constructor(protected blogsRepository: BlogsRepository) {}
 

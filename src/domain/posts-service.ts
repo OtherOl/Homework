@@ -4,7 +4,9 @@ import {PostsRepository} from "../repositories/posts-repository";
 import {BlogsRepository} from "../repositories/blogs-repository";
 import {jwtService} from "../application/jwt-service";
 import {LikesRepository} from "../repositories/likes-repository";
+import {injectable} from "inversify";
 
+@injectable()
 export class PostsService {
     constructor(
         protected blogsRepository: BlogsRepository,

@@ -1,6 +1,8 @@
 import {AttemptModelClass} from "../data/DB-Mongo";
 import subSeconds from 'date-fns/subSeconds'
+import {injectable} from "inversify";
 
+@injectable()
 export class AttemptsRepository {
     async addAttempt(
         ip: string,

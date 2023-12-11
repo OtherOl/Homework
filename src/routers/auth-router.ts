@@ -5,7 +5,10 @@ import {authMiddleware} from "../middlewares/auth-middleware";
 import {bodyUserValidation} from "../middlewares/body-user-validation";
 import {tokensMiddleware} from "../middlewares/tokens-middleware";
 import {attemptsMiddleware} from "../middlewares/attempts-middleware";
-import {authController} from "../compostion-root";
+import {container} from "../compostion-root";
+import {AuthController} from "../controllers/auth-controller";
+
+const authController = container.resolve(AuthController)
 
 export const authRouter = Router({})
 
