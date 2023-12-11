@@ -1,6 +1,6 @@
 import {blogModel, createBlogModel} from "../models/blog-model";
 import {paginationModel} from "../models/pagination-model";
-import {PostDbModel, PostViewModel} from "../models/post-model";
+import {PostDbModel} from "../models/post-model";
 import {BlogModelClass, LikeModelClass, PostModelClass} from "../data/DB-Mongo";
 import {likesPostModel} from "../models/likes-model";
 
@@ -60,16 +60,23 @@ export class BlogsRepository {
             .lean()
 
         const likes: likesPostModel[] = await LikeModelClass.find({type: "Like"},
-            {_id: 0, type: 0}).sort({addedAt: -1}).limit(3).lean()
+            {_id: 0, type: 0}).sort({addedAt: -1}).lean()
 
         const postsQuery: any[] = foundPosts.map(post => {
             let likeStatus = ""
             const status = like.find(a => a.postId === post.id)
-            const newestLikes = likes.filter(a => a.postId === post.id)
+            let newestLikes = likes.filter(a => a.postId === post.id).map(like => {
+                const {postId, ...rest} = like
+                return rest
+            })
             if (status) {
                 likeStatus = status.type
             } else {
                 likeStatus = 'None'
+            }
+
+            if(newestLikes.length > 3) {
+                newestLikes = newestLikes.slice(0, 3)
             }
 
             return {
@@ -84,15 +91,12 @@ export class BlogsRepository {
                     likesCount: post.extendedLikesInfo.likesCount,
                     dislikesCount: post.extendedLikesInfo.dislikesCount,
                     myStatus: likeStatus,
-                    newestLikes: newestLikes.map(like => {
-                        const {postId, ...rest} = like
-                        return rest
-                    })
+                    newestLikes: newestLikes
                 }
             }
         })
 
-        const objects: paginationModel<PostViewModel> = {
+        const objects: paginationModel<PostDbModel> = {
             pagesCount: Math.ceil(countPosts / pageSize),
             page: pageNumber,
             pageSize: pageSize,

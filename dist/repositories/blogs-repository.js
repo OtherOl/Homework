@@ -59,16 +59,22 @@ class BlogsRepository {
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)
                 .lean();
-            const likes = yield DB_Mongo_1.LikeModelClass.find({ type: "Like" }, { _id: 0, type: 0 }).sort({ addedAt: -1 }).limit(3).lean();
+            const likes = yield DB_Mongo_1.LikeModelClass.find({ type: "Like" }, { _id: 0, type: 0 }).sort({ addedAt: -1 }).lean();
             const postsQuery = foundPosts.map(post => {
                 let likeStatus = "";
                 const status = like.find(a => a.postId === post.id);
-                const newestLikes = likes.filter(a => a.postId === post.id);
+                let newestLikes = likes.filter(a => a.postId === post.id).map(like => {
+                    const { postId } = like, rest = __rest(like, ["postId"]);
+                    return rest;
+                });
                 if (status) {
                     likeStatus = status.type;
                 }
                 else {
                     likeStatus = 'None';
+                }
+                if (newestLikes.length > 3) {
+                    newestLikes = newestLikes.slice(0, 3);
                 }
                 return {
                     id: post.id,
@@ -82,10 +88,7 @@ class BlogsRepository {
                         likesCount: post.extendedLikesInfo.likesCount,
                         dislikesCount: post.extendedLikesInfo.dislikesCount,
                         myStatus: likeStatus,
-                        newestLikes: newestLikes.map(like => {
-                            const { postId } = like, rest = __rest(like, ["postId"]);
-                            return rest;
-                        })
+                        newestLikes: newestLikes
                     }
                 };
             });
